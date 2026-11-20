@@ -42,23 +42,6 @@ _HEADER_Y   = 230
 
 # ── score helpers ─────────────────────────────────────────────────────────────
 
-def _max_trial_score(score_csv: Path) -> float:
-    """Max possible feedback_score for a single trial across all domains."""
-    best = 0.0
-    try:
-        with open(score_csv, newline="", encoding="utf-8") as f:
-            for row in csv.DictReader(f, skipinitialspace=True):
-                for k, v in row.items():
-                    if k.startswith("sc_"):
-                        try:
-                            best = max(best, float(v))
-                        except ValueError:
-                            pass
-    except Exception:
-        return 60.0
-    return best if best > 0 else 60.0
-
-
 def _accuracy_from_csv(trials_csv: Path, max_score: float) -> float | None:
     """Ratio of perfect-score trials to responded trials. None if file missing."""
     if not trials_csv.exists():
@@ -139,18 +122,17 @@ def run_ending(
     win: visual.Window,
     subject_id: str,
     cumulative_score: float,
-    score_csv: Path,
+    max_trial_score: float,
     elapsed_seconds: float = 0.0,
 ) -> None:
     """Show top-4 leaderboard by accuracy and highlight current subject's rank.
 
-    score_csv : phase-1 score table; its max sc_* value defines a "perfect" trial.
+    max_trial_score : the single-trial score that counts as a "perfect" trial.
     """
-    max_score = _max_trial_score(Path(score_csv))
-    entries   = _load_all_accuracies(DATA_DIR, max_score)
+    entries = _load_all_accuracies(DATA_DIR, max_trial_score)
 
     my_acc = _accuracy_from_csv(
-        DATA_DIR / f"sub-{subject_id}" / "trials.csv", max_score
+        DATA_DIR / f"sub-{subject_id}" / "trials.csv", max_trial_score
     ) or 0.0
 
     for e in entries:

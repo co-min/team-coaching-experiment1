@@ -8,7 +8,7 @@ Reads data/sub-{id}/trials.csv and produces:
 
 Experiment structure assumed
 ----------------------------
-Blocks run sequentially and alternate phase_1 / phase_2 (see config/modes.py).
+Blocks run sequentially and alternate phase_1 / phase_2 (see BLOCK_PHASES in config/settings.py).
 Each block's trials are spread evenly across its domains.
 Each block uses a dedicated animal group (4 animals).
 

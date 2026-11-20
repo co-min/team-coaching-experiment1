@@ -39,27 +39,6 @@ _STRINGS: dict[str, dict[str, str]] = {
         "en": "Take a short break.\n\nThe experimenter will resume the task when you are ready.",
     },
 
-    "inst_practice_phase1": {
-        "ko": "연습 1단계: 보이는 능력치\n\n"
-              "숨겨진 팀워크를 생각해보세요. 이 중 만점인 두 동물은 누굴까요?\n\n"
-              "[Space] 키를 눌러 시작",
-        "en": "Practice Phase 1: Visible Performance\n\n"
-              "Think about their hidden teamwork. Which two animals have a perfect score?\n\n"
-              "Press [Space] to start",
-    },
-    "inst_practice_phase2": {
-        "ko": "연습 2단계: 보이는 팀워크\n\n"
-              "숨겨진 개인 능력을 생각해보세요. 이 중 만점인 두 동물은 누굴까요?\n\n"
-              "[Space] 키를 눌러 시작",
-        "en": "Practice Phase 2: Visible Teamwork\n\n"
-              "Think about their hidden individual performance. Which two animals have a perfect score?\n\n"
-              "Press [Space] to start",
-    },
-    "inst_practice_end": {
-        "ko": "연습이 끝났습니다.\n잠시 후 본 실험이 시작됩니다.",
-        "en": "Practice is complete.\nThe main task will begin shortly.",
-    },
-
     # ── ending screen ────────────────────────────────────────────────────────
     "ending_title":              {"ko": "게임이 끝났습니다!", "en": "The game is over!"},
     "ending_subtitle":           {"ko": "수고하셨습니다.", "en": "Well done!"},

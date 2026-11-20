@@ -13,8 +13,8 @@ import sys
 
 from psychopy import monitors, visual
 
-from config.modes import get_config
-from config.settings import BACKGROUND_COLOR, MISSION_MODE, WINDOW_SIZE
+from config.settings import BACKGROUND_COLOR, WINDOW_SIZE
+from recording.stimuli_loader import load_stimuli
 from task.screens.ending import run_ending
 
 
@@ -33,6 +33,6 @@ if __name__ == "__main__":
 
     win = _make_window()
     run_ending(win, subject_id, cumulative_score,
-               score_csv=get_config(MISSION_MODE).phase('phase_1').score_csv,
+               max_trial_score=load_stimuli().max_trial_score,
                elapsed_seconds=elapsed_seconds)
     win.close()

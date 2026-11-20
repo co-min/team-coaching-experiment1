@@ -4,7 +4,7 @@ import threading
 from dataclasses import dataclass
 from typing import Any, Callable, Dict, List
 
-from config.modes import PhaseSpec
+from config.settings import DOMAINS
 from hardware.events import on_block_start, PHASE_INT
 from recording.frame_logger import make_frame_log, get_rows
 from recording.stimuli_loader import StimulusSet, pair_key
@@ -46,13 +46,13 @@ def _persist_trial(subject_id, record, rows, save_dir):
     save_frame_log(rows, save_dir)
 
 
-def _score_and_feedback(env: BlockEnv, result, phase, spec: PhaseSpec, domain, char_order,
+def _score_and_feedback(env: BlockEnv, result, phase, domain, char_order,
                         cumulative, trial_index, n_per_domain, frame_log) -> float:
     """Update cumulative scores and show feedback. Returns the trial score (0 if no response)."""
     if not result:
         return 0
 
-    score = env.stim.scores[phase].get(pair_key(result['choice1'], result['choice2']), {}).get(domain, 0)
+    score = env.stim.scores.get(pair_key(result['choice1'], result['choice2']), {}).get(domain, 0)
     cumulative['total'] += score
     cumulative['phase'] += score
     cumulative[domain]  += score
@@ -61,11 +61,11 @@ def _score_and_feedback(env: BlockEnv, result, phase, spec: PhaseSpec, domain, c
     code_to_animal = {env.stim.char_code[a]: a for a in char_order}
     run_feedback(
         env.win, score, domain,
-        score_ranges=env.stim.score_ranges[phase],
-        block_domains=spec.domains,
+        score_ranges=env.stim.score_ranges,
+        block_domains=DOMAINS,
         cumulative_score=cumulative['total'],
         phase_score=cumulative['phase'],
-        domain_scores={d: cumulative[d] for d in spec.domains},
+        domain_scores={d: cumulative[d] for d in DOMAINS},
         n_trials_per_domain=n_per_domain,
         handle=env.handle,
         phase=PHASE_INT[phase],
@@ -81,7 +81,7 @@ def _score_and_feedback(env: BlockEnv, result, phase, spec: PhaseSpec, domain, c
 
 # ── entry point ───────────────────────────────────────────────────────────────
 
-def run_block_trials(env: BlockEnv, block_index: int, phase: str, spec: PhaseSpec,
+def run_block_trials(env: BlockEnv, block_index: int, phase: str,
                      block_schedule: List[dict], cumulative: dict) -> None:
     """
     Run all trials for one block.
@@ -91,7 +91,7 @@ def run_block_trials(env: BlockEnv, block_index: int, phase: str, spec: PhaseSpe
     File I/O is offloaded to a background thread during the following ITI.
     """
     trial_runner = TRIAL_RUNNERS[phase]
-    n_per_domain = len(block_schedule) // len(spec.domains)
+    n_per_domain = len(block_schedule) // len(DOMAINS)
     slot_info    = env.factory.get_slot_info()
     win_size     = (int(env.win.size[0]), int(env.win.size[1]))
     save_thread  = None
@@ -114,7 +114,7 @@ def run_block_trials(env: BlockEnv, block_index: int, phase: str, spec: PhaseSpe
         )
 
         fb_score = _score_and_feedback(
-            env, result, phase, spec, domain, char_order, cumulative,
+            env, result, phase, domain, char_order, cumulative,
             trial_index, n_per_domain, frame_log,
         )
 

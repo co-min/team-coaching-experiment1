@@ -11,11 +11,11 @@ ROOT_DIR     = Path(__file__).resolve().parents[1]
 DATA_DIR     = ROOT_DIR / "data"
 STIMULI_DIR  = ROOT_DIR / "stimuli"
 TABLES_DIR   = STIMULI_DIR / "tables"
-PRACTICE_DIR = STIMULI_DIR / "practice"
 IMAGE_DIR    = STIMULI_DIR / "images"
 
-MONKEY_IMAGE  = IMAGE_DIR / "monkey.png"
-SYNERGY_CSV   = TABLES_DIR / "synergy.csv"
+MONKEY_IMAGE      = IMAGE_DIR / "monkey.png"
+COMPETENCE_CSV    = TABLES_DIR / "competence_d3.csv"
+SYNERGY_CSV       = TABLES_DIR / "synergy.csv"
 SYNERGY_COLOR_CSV = TABLES_DIR / "synergy_color.csv"
 
 

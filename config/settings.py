@@ -3,16 +3,20 @@ settings.py
 -----------
 Experiment-wide constants only. No file I/O happens at import time.
 
-Mode-dependent values (CSV paths, domains, trial counts, block order) live in
-config/modes.py; select the active preset with MISSION_MODE below.
+Stimulus table locations live in config/paths.py.
 """
 
 import platform
 
-# ─── Mode / language ──────────────────────────────────────────────────────────
-# See config/modes.py for what each mode means.
-MISSION_MODE = 4
+# ─── Task design ──────────────────────────────────────────────────────────────
+DOMAINS            = ['cooking', 'repairing', 'tennis']
+N_TRIALS_PER_BLOCK = 15
+BLOCK_PHASES       = ['phase_1', 'phase_2'] * 3     # one animal group per block
 
+# Competence level → border colour (low ≤3 / middle ≤6 / high)
+COMPETENCE_COLOR = {1: '#F44336', 2: '#FFEB3B', 3: '#4CAF50'}
+
+# ─── Language ─────────────────────────────────────────────────────────────────
 # True  : all participant-facing text is shown in English (see config/strings.py)
 # False : all participant-facing text is shown in Korean
 MODE_ENG = False
@@ -52,13 +56,6 @@ FONT = "AppleGothic" if platform.system() == "Darwin" else "Malgun Gothic"
 # ─── Arrow keys ──────────────────────────────────────────────────────────────
 ARROW_OFFSET = 70
 ARROW_RADIUS = 40
-
-# ─── Practice ────────────────────────────────────────────────────────────────
-PRACTICE_MODE         = False   # True: 본 실험 전 연습 세션 실행 / False: 건너뜀
-PRACTICE_DOMAINS      = ['cooking', 'repairing']
-PRACTICE_P1_TRIALS    = 4       # Phase 1 연습 총 trial 수
-PRACTICE_P2_TRIALS    = 4       # Phase 2 연습 총 trial 수
-PRACTICE_END_DURATION = 3.0
 
 # ─── LabJack ─────────────────────────────────────────────────────────────────
 LABJACK_DEVICE = "T4"
