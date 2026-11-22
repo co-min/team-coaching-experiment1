@@ -17,6 +17,7 @@ MONKEY_IMAGE      = IMAGE_DIR / "monkey.png"
 COMPETENCE_CSV    = TABLES_DIR / "competence_d3.csv"
 SYNERGY_CSV       = TABLES_DIR / "synergy.csv"
 SYNERGY_COLOR_CSV = TABLES_DIR / "synergy_color.csv"
+FORCED_FIRST_CSV  = TABLES_DIR / "forced_first_schedule.csv"   # tools/make_forced_first_schedule.py
 
 
 def domain_image(domain: str) -> str:

@@ -2,7 +2,7 @@
 
 import threading
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable, Dict, List, Optional
 
 from config.settings import DOMAINS
 from hardware.events import on_block_start, PHASE_INT
@@ -13,6 +13,7 @@ from recording.writers import (
     build_trial_record, build_trial_save_dir, save_trial_metadata,
     save_frame_log, append_trial_row, append_frame_rows,
 )
+from task.forced_first import forced_first_for
 from task.screens.feedback import run_feedback
 from task.screens.iti import run_gaussian_iti
 from task.trials.phase1 import run_phase1_trial
@@ -35,6 +36,7 @@ class BlockEnv:
     subject_id:   str
     handle:       Any
     neon_client:  Any
+    schedule_version: Optional[str] = None   # forced-first CSV version (forced mode)
 
 
 # ── helpers ───────────────────────────────────────────────────────────────────
@@ -86,7 +88,8 @@ def run_block_trials(env: BlockEnv, block_index: int, phase: str,
     """
     Run all trials for one block.
 
-    block_schedule : list of {'domain': str, 'char_order': list[str]}
+    block_schedule : list of {'domain': str, 'char_order': list[str]
+                              [, 'forced_first': str]}  (see task/forced_first.py)
     cumulative     : {'total', 'phase', <domain>...} running scores (mutated)
     File I/O is offloaded to a background thread during the following ITI.
     """
@@ -101,6 +104,7 @@ def run_block_trials(env: BlockEnv, block_index: int, phase: str,
     for trial_index, trial_info in enumerate(block_schedule):
         domain       = trial_info['domain']
         char_order   = trial_info['char_order']
+        forced_first = forced_first_for(trial_info)
         stim_pair_id = f"block{block_index}_{phase}_t{trial_index:02d}"
         frame_log    = make_frame_log(phase=phase, trial_id=trial_index, stim_pair_id=stim_pair_id)
 
@@ -110,7 +114,7 @@ def run_block_trials(env: BlockEnv, block_index: int, phase: str,
 
         result = trial_runner(
             env.win, env.global_clock, frame_log, env.factory, env.stim, domain, char_order,
-            env.handle, neon_client=env.neon_client,
+            env.handle, neon_client=env.neon_client, forced_first=forced_first,
         )
 
         fb_score = _score_and_feedback(
@@ -129,6 +133,9 @@ def run_block_trials(env: BlockEnv, block_index: int, phase: str,
             win_size=win_size,
             slot_coords=slot_info['slot_coords'],
             animal_size_px=slot_info['animal_size_px'],
+            first_choice_mode='forced' if forced_first is not None else 'free',
+            forced_first_animal=forced_first,
+            schedule_version=env.schedule_version,
         )
         save_dir = build_trial_save_dir(env.subject_id, block_index, phase, domain, stim_pair_id)
         save_trial_metadata(save_dir, record)

@@ -5,11 +5,13 @@ Trial flow
 ----------
 domain onset → Choice 1 → Choice 1 locked, remaining animals coloured by
 synergy with Choice 1 → Choice 2.
+Forced mode replaces the Choice 1 response with a fixed-duration display of the
+assigned (already locked) first animal.
 """
 
 from psychopy import event, core
 
-from config.settings import MAX_RESPONSE_TIME, DOMAIN_ONSET_DURATION
+from config.settings import MAX_RESPONSE_TIME, DOMAIN_ONSET_DURATION, FORCED_FIRST_DURATION
 from hardware.frame_marker import get_shared_marker
 from recording.frame_logger import FrameRecorder
 from task.keyboard import ArrowKeyboard
@@ -18,7 +20,7 @@ from hardware.events import (
     on_choice_lj, on_choice_neon,
     on_trial_end,
 )
-from task.trials.common import show_domain_onset as _show_domain_onset
+from task.trials.common import show_domain_onset as _show_domain_onset, show_forced_first, stamp_on_flip
 
 
 def _apply_synergy_colors(factory, char_list, pivot_idx, pivot_code, stim, also_hide_idx=None):
@@ -106,7 +108,7 @@ def _run_choice_loop(
 
 
 def run_phase2_trial(win, global_clock, frame_log, factory, stim, domain, char_order,
-                     handle=None, neon_client=None):
+                     handle=None, neon_client=None, forced_first=None):
     """
     Run one Phase 2 trial.
 
@@ -120,10 +122,13 @@ def run_phase2_trial(win, global_clock, frame_log, factory, stim, domain, char_o
     domain       : str   'cooking' | 'repairing' | 'tennis'
     char_order   : list  [up_animal, down_animal, right_animal, left_animal]
     neon_client  : NeonEventClient | NullNeonClient (optional)
+    forced_first : animal name → forced mode (Choice 1 is assigned, rt1 = None);
+                   None → free mode
 
     Returns
     -------
-    dict  {'choice1': char_code, 'choice2': char_code, 'rt1': float, 'rt2': float}
+    dict  {'choice1': char_code, 'choice2': char_code, 'rt1': float | None, 'rt2': float,
+           'forced_first_onset': float | None, 'choice2_onset': float}
     or None on timeout
     """
     trial_index = frame_log.get("trial_id", 0)
@@ -146,19 +151,29 @@ def run_phase2_trial(win, global_clock, frame_log, factory, stim, domain, char_o
         trial_index=trial_index,
         duration=DOMAIN_ONSET_DURATION,
     )
-    recorder.start_segment("CHOICE1")
+    onsets = {'forced_first_onset': None, 'choice2_onset': None}
 
     # ── Choice 1 ──────────────────────────────────────────────────────────────
-    keyboard.reset_colors()
-    choice1_idx, choice1_code, rt1 = _run_choice_loop(
-        win, factory, keyboard, recorder, char_list, stim,
-        handle, phase=2, slot=1, trial_index=trial_index,
-        freeze_colors=True,
-        neon_client=neon_client,
-    )
-    if choice1_code is None:
-        on_trial_end(neon_client, handle, 2, trial_index)
-        return None
+    if forced_first is None:
+        recorder.start_segment("CHOICE1")
+        keyboard.reset_colors()
+        choice1_idx, choice1_code, rt1 = _run_choice_loop(
+            win, factory, keyboard, recorder, char_list, stim,
+            handle, phase=2, slot=1, trial_index=trial_index,
+            freeze_colors=True,
+            neon_client=neon_client,
+        )
+        if choice1_code is None:
+            on_trial_end(neon_client, handle, 2, trial_index)
+            return None
+    else:
+        choice1_idx, choice1_code, rt1 = char_list.index(forced_first), stim.char_code[forced_first], None
+        show_forced_first(
+            win, factory, keyboard, recorder, handle,
+            phase=2, neon_client=neon_client, trial_index=trial_index,
+            forced_idx=choice1_idx, duration=FORCED_FIRST_DURATION,
+            global_clock=global_clock, onsets=onsets,
+        )
 
     # Lock Choice 1; seed synergy colours for Choice 2 resting state
     factory.set_animal_locked(char_list[choice1_idx], True)
@@ -168,6 +183,7 @@ def run_phase2_trial(win, global_clock, frame_log, factory, stim, domain, char_o
     recorder.start_segment("CHOICE2")
     keyboard.reset_colors()
     keyboard.set_excluded(choice1_idx)
+    stamp_on_flip(win, global_clock, onsets, 'choice2_onset')
     _, choice2_code, rt2 = _run_choice_loop(
         win, factory, keyboard, recorder, char_list, stim,
         handle, phase=2, slot=2, trial_index=trial_index,
@@ -182,4 +198,4 @@ def run_phase2_trial(win, global_clock, frame_log, factory, stim, domain, char_o
         return None
 
     on_trial_end(neon_client, handle, 2, trial_index)
-    return {'choice1': choice1_code, 'choice2': choice2_code, 'rt1': rt1, 'rt2': rt2}
+    return {'choice1': choice1_code, 'choice2': choice2_code, 'rt1': rt1, 'rt2': rt2, **onsets}

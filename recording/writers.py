@@ -66,6 +66,9 @@ def save_session_metadata(
     frame_rate: int,
     slot_info: Optional[Dict[str, Any]] = None,
     neon_recording_id: Optional[str] = None,
+    first_choice_mode: Optional[str] = None,
+    schedule_version: Optional[str] = None,
+    forced_first_duration: Optional[float] = None,
 ) -> Path:
     """Save one-time session-level metadata (ground-truth win.size + slot AOIs)."""
     record: Dict[str, Any] = {
@@ -79,6 +82,9 @@ def save_session_metadata(
         "frame_rate":        frame_rate,
         "mission_mode":      mission_mode,
         "neon_recording_id": neon_recording_id,
+        "first_choice_mode": first_choice_mode,
+        "schedule_version":  schedule_version,
+        "forced_first_duration": forced_first_duration,
     }
     if slot_info:
         record["slot_coords"]    = {k: [int(x), int(y)] for k, (x, y) in slot_info['slot_coords'].items()}
@@ -98,6 +104,10 @@ def _trig_code(phase: str, animal: Optional[str], slot: int) -> Optional[int]:
     return choice_trigger_code(PHASE_INT.get(phase, 0), slot, animal)
 
 
+def _round(v: Optional[float]) -> Optional[float]:
+    return round(v, 4) if v is not None else None
+
+
 def build_trial_record(
     subject_id: str,
     block_i: int,
@@ -115,8 +125,15 @@ def build_trial_record(
     win_size: Optional[tuple] = None,
     slot_coords: Optional[Dict[str, Any]] = None,
     animal_size_px: Optional[int] = None,
+    first_choice_mode: str = 'free',
+    forced_first_animal: Optional[str] = None,
+    schedule_version: Optional[str] = None,
 ) -> Dict[str, Any]:
-    """Build and return the trial metadata dict (does not write to disk)."""
+    """Build and return the trial metadata dict (does not write to disk).
+
+    Forced mode: choice1_* describe the assigned animal; trig_choice1 and
+    rt_choice1 stay None because no participant response / TTL exists for it.
+    """
     layout = {slot: animal for slot, animal in zip(_SLOT_NAMES, char_order)}
     code_to_animal = {char_code[animal]: animal for animal in char_order}
     responded = result is not None
@@ -124,6 +141,7 @@ def build_trial_record(
     c2 = result['choice2'] if responded else None
     c1_animal = code_to_animal.get(c1) if c1 else None
     c2_animal = code_to_animal.get(c2) if c2 else None
+    forced    = forced_first_animal is not None
     return {
         "subject_id":        subject_id,
         "session_id":        session_id,
@@ -139,7 +157,7 @@ def build_trial_record(
         "choice2_code":      c2,
         "choice1_animal":    c1_animal,
         "choice2_animal":    c2_animal,
-        "trig_choice1":      _trig_code(phase, c1_animal, 1) if responded else None,
+        "trig_choice1":      _trig_code(phase, c1_animal, 1) if responded and not forced else None,
         "trig_choice2":      _trig_code(phase, c2_animal, 2) if responded else None,
         "rt_choice1":        round(result['rt1'], 4) if responded and result.get('rt1') is not None else None,
         "rt_choice2":        round(result['rt2'], 4) if responded and result.get('rt2') is not None else None,
@@ -149,6 +167,13 @@ def build_trial_record(
         "win_size":          [int(v) for v in win_size] if win_size is not None else None,
         "slot_coords":       {k: [int(x), int(y)] for k, (x, y) in slot_coords.items()} if slot_coords else None,
         "animal_size_px":    animal_size_px,
+        "first_choice_mode":   first_choice_mode,
+        "forced_first_animal": forced_first_animal,
+        "forced_first_code":   char_code[forced_first_animal] if forced else None,
+        "forced_first_onset":  _round(result.get('forced_first_onset')) if responded else None,
+        "second_choice_onset": _round(result.get('choice2_onset')) if responded else None,
+        "selected_team":       "+".join(sorted([c1_animal, c2_animal])) if responded else None,
+        "schedule_version":    schedule_version,
     }
 
 
@@ -163,7 +188,7 @@ def save_trial_metadata(save_dir: Path, record: Dict[str, Any]) -> Path:
 _FRAME_LOG_FIELDS = [
     "frame_idx",
     "phase",
-    "segment",        # "DOMAIN_ONSET" | "CHOICE1" | "CHOICE2" | "FEEDBACK" | "" — screen phase within trial
+    "segment",        # "DOMAIN_ONSET" | "CHOICE1" | "FORCED_FIRST" | "CHOICE2" | "FEEDBACK" | "" — screen phase within trial
     "trial_id",
     "stim_pair_id",
     "elapsed_time",
@@ -202,6 +227,9 @@ _TRIAL_FIELDS = [
     "choice1_code", "choice2_code", "choice1_animal", "choice2_animal",
     "trig_choice1", "trig_choice2",
     "rt_choice1", "rt_choice2", "feedback_score", "elapsed_time", "timestamp",
+    # forced-first additions (appended so existing column positions are unchanged)
+    "first_choice_mode", "forced_first_animal", "forced_first_code",
+    "forced_first_onset", "second_choice_onset", "selected_team", "schedule_version",
 ]
 
 _FRAME_FIELDS = [

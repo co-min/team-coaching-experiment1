@@ -27,6 +27,15 @@ MODE_ENG = False
 DOMAIN_ORDER  = 'random'
 SCHEDULE_SEED = 42
 
+# FIRST_CHOICE_MODE: 첫 번째 동물 선택 방식
+#   'free'   — 참가자가 두 마리를 순서대로 직접 선택 (기존 방식)
+#   'forced' — 첫 번째 동물은 stimuli/tables/forced_first_schedule.csv 에 따라
+#              자동 배정 (모든 참가자 동일), 참가자는 두 번째 동물만 선택
+# The forced CSV is built for the domain order produced by DOMAIN_ORDER /
+# SCHEDULE_SEED below; changing either requires regenerating it
+# (python -m tools.make_forced_first_schedule). main.py refuses to start otherwise.
+FIRST_CHOICE_MODE = 'forced'
+
 # Blocks (1-indexed) that show a break screen before the phase instruction
 BREAK_BEFORE_BLOCKS = {3, 5}
 
@@ -42,6 +51,7 @@ SCREEN_NUMBER    = 1
 MAX_RESPONSE_TIME     = 300.0    # seconds; None = unlimited
 FRAME_RATE            = 60       # Hz – recorded in session metadata
 DOMAIN_ONSET_DURATION = 0.7      # seconds domain image is shown before choices appear
+FORCED_FIRST_DURATION = 1.0      # forced mode: seconds the assigned first animal is shown before Choice 2
 FB_TIME               = 3.5      # feedback screen duration (seconds)
 
 # Gaussian ITI (seconds)

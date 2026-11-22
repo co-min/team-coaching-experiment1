@@ -17,22 +17,27 @@ _STRINGS: dict[str, dict[str, str]] = {
     "inst_phase1": {
         "ko": "[{block_num} / {total_blocks}]\n\n"
               "이번 단계에서, 각자 수행하는 능력이 보여요.\n"
-              "숨겨진 팀워크를 생각하면서 만점인 동물 두 마리를 찾아볼까요?\n\n"
+              "숨겨진 팀워크를 생각하면서 만점인 동물 두 마리를 찾아볼까요?{forced_note}\n\n"
               "[Space] 키를 눌러 시작",
         "en": "[{block_num} / {total_blocks}]\n\n"
               "In this phase, you can see each animal's individual performance.\n"
-              "Think about their hidden teamwork and find the two animals with a perfect score.\n\n"
+              "Think about their hidden teamwork and find the two animals with a perfect score.{forced_note}\n\n"
               "Press [Space] to start",
     },
     "inst_phase2": {
         "ko": "[{block_num} / {total_blocks} 블록]\n\n"
               "이번 단계에서, 협력하는 팀워크가 보여요.\n"
-              "숨겨진 수행하는 능력을 예상하면서 만점인 동물 두 마리를 찾아볼까요?\n\n"
+              "숨겨진 수행하는 능력을 예상하면서 만점인 동물 두 마리를 찾아볼까요?{forced_note}\n\n"
               "[Space] 키를 눌러 시작",
         "en": "[Block {block_num} / {total_blocks}]\n\n"
               "In this phase, you can see how well the animals cooperate.\n"
-              "Guess their hidden individual performance and find the two animals with a perfect score.\n\n"
+              "Guess their hidden individual performance and find the two animals with a perfect score.{forced_note}\n\n"
               "Press [Space] to start",
+    },
+    # Inserted into inst_phase1/2 as {forced_note} only when FIRST_CHOICE_MODE == 'forced'
+    "inst_forced_note": {
+        "ko": "\n첫 번째 동물은 미리 정해져 있어요. 나머지 세 마리 중에서 짝꿍을 골라 주세요.",
+        "en": "\nThe first animal is assigned for you. Choose its partner from the other three.",
     },
     "inst_break": {
         "ko": "잠시 휴식 시간입니다.\n\n준비가 되면 실험자가 실험을 재개합니다.",

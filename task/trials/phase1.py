@@ -2,7 +2,7 @@
 
 from psychopy import event, core
 
-from config.settings import MAX_RESPONSE_TIME, DOMAIN_ONSET_DURATION
+from config.settings import MAX_RESPONSE_TIME, DOMAIN_ONSET_DURATION, FORCED_FIRST_DURATION
 from hardware.frame_marker import get_shared_marker
 from recording.frame_logger import FrameRecorder
 from task.keyboard import ArrowKeyboard
@@ -11,7 +11,7 @@ from hardware.events import (
     on_choice_lj, on_choice_neon,
     on_trial_end,
 )
-from task.trials.common import show_domain_onset as _show_domain_onset
+from task.trials.common import show_domain_onset as _show_domain_onset, show_forced_first, stamp_on_flip
 
 
 def _run_choice_loop(
@@ -79,14 +79,17 @@ def _run_choice_loop(
 
 
 def run_phase1_trial(win, global_clock, frame_log, factory, stim, domain, char_order,
-                     handle=None, neon_client=None):
+                     handle=None, neon_client=None, forced_first=None):
     """
     Run one Phase 1 trial.
 
-    factory : task.visuals.VisualObjectFactory
-    stim    : recording.stimuli_loader.StimulusSet (uses competence, char_code)
+    factory      : task.visuals.VisualObjectFactory
+    stim         : recording.stimuli_loader.StimulusSet (uses competence, char_code)
+    forced_first : animal name → forced mode (Choice 1 is assigned, rt1 = None);
+                   None → free mode
 
-    Returns dict {'choice1', 'choice2', 'rt1', 'rt2'} or None on timeout.
+    Returns dict {'choice1', 'choice2', 'rt1', 'rt2', 'forced_first_onset',
+    'choice2_onset'} or None on timeout.
     """
     trial_index = frame_log.get("trial_id", 0)
 
@@ -107,20 +110,30 @@ def run_phase1_trial(win, global_clock, frame_log, factory, stim, domain, char_o
         trial_index=trial_index,
         duration=DOMAIN_ONSET_DURATION,
     )
-    recorder.start_segment("CHOICE1")
+    onsets = {'forced_first_onset': None, 'choice2_onset': None}
 
     # ── Choice 1 ──────────────────────────────────────────────────────────────
-    keyboard.reset_colors()
-    choice1_idx, choice1_code, rt1 = _run_choice_loop(
-        win, factory, keyboard, recorder, char_list, stim.char_code, handle,
-        phase=1, slot=1, trial_index=trial_index,
-        confirm_wait=0.15,
-        show_hover_border=False,
-        neon_client=neon_client,
-    )
-    if choice1_code is None:
-        on_trial_end(neon_client, handle, 1, trial_index)
-        return None
+    if forced_first is None:
+        recorder.start_segment("CHOICE1")
+        keyboard.reset_colors()
+        choice1_idx, choice1_code, rt1 = _run_choice_loop(
+            win, factory, keyboard, recorder, char_list, stim.char_code, handle,
+            phase=1, slot=1, trial_index=trial_index,
+            confirm_wait=0.15,
+            show_hover_border=False,
+            neon_client=neon_client,
+        )
+        if choice1_code is None:
+            on_trial_end(neon_client, handle, 1, trial_index)
+            return None
+    else:
+        choice1_idx, choice1_code, rt1 = char_list.index(forced_first), stim.char_code[forced_first], None
+        show_forced_first(
+            win, factory, keyboard, recorder, handle,
+            phase=1, neon_client=neon_client, trial_index=trial_index,
+            forced_idx=choice1_idx, duration=FORCED_FIRST_DURATION,
+            global_clock=global_clock, onsets=onsets,
+        )
 
     for char_name in char_list:
         score = stim.competence[stim.char_code[char_name]][domain]
@@ -134,6 +147,7 @@ def run_phase1_trial(win, global_clock, frame_log, factory, stim, domain, char_o
     keyboard.set_excluded(choice1_idx)
     factory.show_border(char_list[choice1_idx])
 
+    stamp_on_flip(win, global_clock, onsets, 'choice2_onset')
     _, choice2_code, rt2 = _run_choice_loop(
         win, factory, keyboard, recorder, char_list, stim.char_code, handle,
         phase=1, slot=2, trial_index=trial_index,
@@ -146,4 +160,4 @@ def run_phase1_trial(win, global_clock, frame_log, factory, stim, domain, char_o
         return None
 
     on_trial_end(neon_client, handle, 1, trial_index)
-    return {'choice1': choice1_code, 'choice2': choice2_code, 'rt1': rt1, 'rt2': rt2}
+    return {'choice1': choice1_code, 'choice2': choice2_code, 'rt1': rt1, 'rt2': rt2, **onsets}

@@ -111,6 +111,32 @@ def callonflip_choice_onset(win, neon, lj_handle, phase: int, trial_index: int, 
     )
 
 
+# ── Forced first choice (FIRST_CHOICE_MODE='forced') ──────────────────────────
+
+def callonflip_forced_first_onset(win, neon, lj_handle, phase: int, trial_index: int) -> None:
+    """Register forced-first onset events for the next win.flip().
+
+    This is the frame on which the animals appear, so it carries the existing
+    choice-onset LJ code (P1 201 / P2 202) exactly as Choice 1 onset does in
+    free mode. No animal-encoded choice code is ever sent for the assignment —
+    it is not a participant response.
+    """
+    win.callOnFlip(send_trigger, lj_handle, _CHOICE_ONSET_TRIG[(phase, 1)])
+    neon.call_on_flip(
+        win,
+        section_start_events(trial_index, f"P{phase}_FORCED_FIRST"),
+        task_type="trial", phase=phase, trial_index=trial_index,
+    )
+
+
+def on_forced_first_end_neon(neon, phase: int, trial_index: int, animal: str) -> None:
+    """Close the forced-first section (Neon only, no LJ trigger)."""
+    neon.enqueue_events(
+        section_end_events(trial_index, f"P{phase}_FORCED_FIRST_{animal.upper()}_ASSIGNED"),
+        metadata={"task_type": "trial", "phase": phase, "trial_index": trial_index},
+    )
+
+
 # ── Choice response ───────────────────────────────────────────────────────────
 
 def on_choice_lj(lj_handle, phase: int, slot: int, animal: str) -> None:
