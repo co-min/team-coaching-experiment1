@@ -51,7 +51,6 @@ SCREEN_NUMBER    = 1
 MAX_RESPONSE_TIME     = 300.0    # seconds; None = unlimited
 FRAME_RATE            = 60       # Hz – recorded in session metadata
 DOMAIN_ONSET_DURATION = 0.7      # seconds domain image is shown before choices appear
-FORCED_FIRST_DURATION = 1.0      # forced mode: seconds the assigned first animal is shown before Choice 2
 FB_TIME               = 3.5      # feedback screen duration (seconds)
 
 # Gaussian ITI (seconds)

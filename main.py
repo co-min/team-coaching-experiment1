@@ -58,7 +58,6 @@ def main() -> None:
         neon_recording_id=ctx.neon_recording_id,
         first_choice_mode=S.FIRST_CHOICE_MODE,
         schedule_version=schedule_version,
-        forced_first_duration=S.FORCED_FIRST_DURATION if S.FIRST_CHOICE_MODE == 'forced' else None,
     )
 
     env = BlockEnv(

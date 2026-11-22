@@ -68,7 +68,6 @@ def save_session_metadata(
     neon_recording_id: Optional[str] = None,
     first_choice_mode: Optional[str] = None,
     schedule_version: Optional[str] = None,
-    forced_first_duration: Optional[float] = None,
 ) -> Path:
     """Save one-time session-level metadata (ground-truth win.size + slot AOIs)."""
     record: Dict[str, Any] = {
@@ -84,7 +83,6 @@ def save_session_metadata(
         "neon_recording_id": neon_recording_id,
         "first_choice_mode": first_choice_mode,
         "schedule_version":  schedule_version,
-        "forced_first_duration": forced_first_duration,
     }
     if slot_info:
         record["slot_coords"]    = {k: [int(x), int(y)] for k, (x, y) in slot_info['slot_coords'].items()}
@@ -188,7 +186,7 @@ def save_trial_metadata(save_dir: Path, record: Dict[str, Any]) -> Path:
 _FRAME_LOG_FIELDS = [
     "frame_idx",
     "phase",
-    "segment",        # "DOMAIN_ONSET" | "CHOICE1" | "FORCED_FIRST" | "CHOICE2" | "FEEDBACK" | "" — screen phase within trial
+    "segment",        # "DOMAIN_ONSET" | "CHOICE1" | "CHOICE2" | "FEEDBACK" | "" — screen phase within trial
     "trial_id",
     "stim_pair_id",
     "elapsed_time",

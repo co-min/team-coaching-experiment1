@@ -5,13 +5,13 @@ Trial flow
 ----------
 domain onset → Choice 1 → Choice 1 locked, remaining animals coloured by
 synergy with Choice 1 → Choice 2.
-Forced mode replaces the Choice 1 response with a fixed-duration display of the
-assigned (already locked) first animal.
+Forced mode skips the Choice 1 response: Choice 2 opens directly with the
+assigned first animal already locked and the synergy colours shown.
 """
 
 from psychopy import event, core
 
-from config.settings import MAX_RESPONSE_TIME, DOMAIN_ONSET_DURATION, FORCED_FIRST_DURATION
+from config.settings import MAX_RESPONSE_TIME, DOMAIN_ONSET_DURATION
 from hardware.frame_marker import get_shared_marker
 from recording.frame_logger import FrameRecorder
 from task.keyboard import ArrowKeyboard
@@ -20,7 +20,7 @@ from hardware.events import (
     on_choice_lj, on_choice_neon,
     on_trial_end,
 )
-from task.trials.common import show_domain_onset as _show_domain_onset, show_forced_first, stamp_on_flip
+from task.trials.common import show_domain_onset as _show_domain_onset, mark_forced_first, stamp_on_flip
 
 
 def _apply_synergy_colors(factory, char_list, pivot_idx, pivot_code, stim, also_hide_idx=None):
@@ -168,12 +168,6 @@ def run_phase2_trial(win, global_clock, frame_log, factory, stim, domain, char_o
             return None
     else:
         choice1_idx, choice1_code, rt1 = char_list.index(forced_first), stim.char_code[forced_first], None
-        show_forced_first(
-            win, factory, keyboard, recorder, handle,
-            phase=2, neon_client=neon_client, trial_index=trial_index,
-            forced_idx=choice1_idx, duration=FORCED_FIRST_DURATION,
-            global_clock=global_clock, onsets=onsets,
-        )
 
     # Lock Choice 1; seed synergy colours for Choice 2 resting state
     factory.set_animal_locked(char_list[choice1_idx], True)
@@ -183,7 +177,11 @@ def run_phase2_trial(win, global_clock, frame_log, factory, stim, domain, char_o
     recorder.start_segment("CHOICE2")
     keyboard.reset_colors()
     keyboard.set_excluded(choice1_idx)
-    stamp_on_flip(win, global_clock, onsets, 'choice2_onset')
+    onset_keys = ['choice2_onset']
+    if forced_first is not None:
+        mark_forced_first(win, handle, 2, neon_client, trial_index, forced_first)
+        onset_keys.append('forced_first_onset')
+    stamp_on_flip(win, global_clock, onsets, *onset_keys)
     _, choice2_code, rt2 = _run_choice_loop(
         win, factory, keyboard, recorder, char_list, stim,
         handle, phase=2, slot=2, trial_index=trial_index,

@@ -2,7 +2,7 @@
 
 from psychopy import event, core
 
-from config.settings import MAX_RESPONSE_TIME, DOMAIN_ONSET_DURATION, FORCED_FIRST_DURATION
+from config.settings import MAX_RESPONSE_TIME, DOMAIN_ONSET_DURATION
 from hardware.frame_marker import get_shared_marker
 from recording.frame_logger import FrameRecorder
 from task.keyboard import ArrowKeyboard
@@ -11,7 +11,7 @@ from hardware.events import (
     on_choice_lj, on_choice_neon,
     on_trial_end,
 )
-from task.trials.common import show_domain_onset as _show_domain_onset, show_forced_first, stamp_on_flip
+from task.trials.common import show_domain_onset as _show_domain_onset, mark_forced_first, stamp_on_flip
 
 
 def _run_choice_loop(
@@ -128,12 +128,6 @@ def run_phase1_trial(win, global_clock, frame_log, factory, stim, domain, char_o
             return None
     else:
         choice1_idx, choice1_code, rt1 = char_list.index(forced_first), stim.char_code[forced_first], None
-        show_forced_first(
-            win, factory, keyboard, recorder, handle,
-            phase=1, neon_client=neon_client, trial_index=trial_index,
-            forced_idx=choice1_idx, duration=FORCED_FIRST_DURATION,
-            global_clock=global_clock, onsets=onsets,
-        )
 
     for char_name in char_list:
         score = stim.competence[stim.char_code[char_name]][domain]
@@ -147,7 +141,11 @@ def run_phase1_trial(win, global_clock, frame_log, factory, stim, domain, char_o
     keyboard.set_excluded(choice1_idx)
     factory.show_border(char_list[choice1_idx])
 
-    stamp_on_flip(win, global_clock, onsets, 'choice2_onset')
+    onset_keys = ['choice2_onset']
+    if forced_first is not None:
+        mark_forced_first(win, handle, 1, neon_client, trial_index, forced_first)
+        onset_keys.append('forced_first_onset')
+    stamp_on_flip(win, global_clock, onsets, *onset_keys)
     _, choice2_code, rt2 = _run_choice_loop(
         win, factory, keyboard, recorder, char_list, stim.char_code, handle,
         phase=1, slot=2, trial_index=trial_index,

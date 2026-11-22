@@ -21,7 +21,7 @@ class FrameLog(TypedDict):
     phase:        str
     trial_id:     int
     stim_pair_id: str
-    segment:      str           # "DOMAIN_ONSET" | "CHOICE1" | "FORCED_FIRST" | "CHOICE2" | ""
+    segment:      str           # "DOMAIN_ONSET" | "CHOICE1" | "CHOICE2" | ""
     onset_time:   Optional[float]
     rows:         List[Dict[str, Any]]
     ttl_code:     Optional[int]

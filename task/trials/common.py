@@ -2,14 +2,12 @@
 
 from psychopy import event, core
 
-from hardware.events import (
-    callonflip_trial_start, callonflip_forced_first_onset, on_forced_first_end_neon,
-)
+from hardware.events import callonflip_trial_start, callonflip_forced_first_onset
 
 
-def stamp_on_flip(win, global_clock, onsets: dict, key: str) -> None:
-    """Store global_clock time of the next win.flip() in onsets[key]."""
-    win.callOnFlip(lambda: onsets.__setitem__(key, global_clock.getTime()))
+def stamp_on_flip(win, global_clock, onsets: dict, *keys: str) -> None:
+    """Store global_clock time of the next win.flip() in onsets[key] for each key."""
+    win.callOnFlip(lambda: onsets.update(dict.fromkeys(keys, global_clock.getTime())))
 
 
 def show_domain_onset(
@@ -38,43 +36,12 @@ def show_domain_onset(
     event.clearEvents()
 
 
-def show_forced_first(
-    win, factory, keyboard, recorder, handle,
-    phase: int,
-    neon_client, trial_index,
-    forced_idx: int,
-    duration,
-    global_clock, onsets: dict,
-):
-    """Forced mode: show all animals with the assigned first animal already locked.
+def mark_forced_first(win, handle, phase: int, neon_client, trial_index, animal: str) -> None:
+    """Forced mode: register the assignment events for the Choice 2 onset flip.
 
-    Replaces the Choice 1 response loop. The animal is locked (overlay + arrow
-    marked) from the first frame and keys are ignored; any key pressed during
-    the display is discarded so it cannot leak into Choice 2.
-    First flip: LJ choice-onset code + Neon FORCED_FIRST section, and
-    onsets['forced_first_onset'] (global clock).
+    There is no separate forced display — Choice 2 opens with the assigned
+    animal already locked and the hints shown, so the assignment and the
+    participant's own choice are distinguishable from the first frame.
+    The caller stamps forced_first_onset together with choice2_onset (same flip).
     """
-    animal     = factory.char_list[forced_idx]
-    phase_type = f'phase{phase}'
-    clock      = core.Clock()
-    _pending   = True
-
-    recorder.start_segment("FORCED_FIRST")
-    factory.set_animal_locked(animal, True)
-    keyboard.reset_colors()
-    keyboard.set_excluded(forced_idx)
-
-    while clock.getTime() < duration:
-        if event.getKeys(keyList=['escape']):
-            win.close()
-            core.quit()
-        factory.draw_base_scene(phase_type=phase_type)
-        keyboard.draw()
-        if _pending:
-            callonflip_forced_first_onset(win, neon_client, handle, phase, trial_index)
-            stamp_on_flip(win, global_clock, onsets, 'forced_first_onset')
-            _pending = False
-        recorder.flip_and_log(win)
-
-    on_forced_first_end_neon(neon_client, phase, trial_index, animal)
-    event.clearEvents()
+    callonflip_forced_first_onset(win, neon_client, handle, phase, trial_index, animal)

@@ -127,9 +127,6 @@ class TestForcedTrialFlow(TrialFlowBase):
         others = [i for i in range(4) if i != f_slot]
         target = others[1]
         plan = [
-            # try to change / re-confirm the first animal during the forced display
-            ('FORCED_FIRST', 5, [ARROWS[others[0]], 'space']),
-            ('FORCED_FIRST', 8, [ARROWS[f_slot], 'space']),
             # try to pick the forced animal again as Choice 2
             ('CHOICE2', 5, [ARROWS[f_slot], 'space']),
             ('CHOICE2', 15, [ARROWS[target]]),
@@ -146,23 +143,21 @@ class TestForcedTrialFlow(TrialFlowBase):
         self.assertEqual(result['choice2'], code[order[target]])
         # RT measured from Choice 2 screen (space on its 20th frame), not from forced onset
         self.assertGreater(result['rt2'], 15 * FRAME)
-        self.assertLess(result['rt2'], S.FORCED_FIRST_DURATION)
-        # onsets
-        gap = result['choice2_onset'] - result['forced_first_onset']
-        self.assertAlmostEqual(gap, S.FORCED_FIRST_DURATION, delta=3 * FRAME)
-        # segments: no participant Choice 1 phase
-        self.assertNotIn('CHOICE1', segments)
-        self.assertGreater(segments['FORCED_FIRST'], 0)
-        self.assertGreater(segments['CHOICE2'], 0)
-        # TTL: onset code at forced display, Choice 2 response code, never a Choice 1 code
+        # onsets: no separate forced display — assignment and Choice 2 share one flip
+        self.assertEqual(result['choice2_onset'], result['forced_first_onset'])
+        # segments: straight from domain onset to Choice 2
+        self.assertEqual(set(segments), {'DOMAIN_ONSET', 'CHOICE2'})
+        # TTL: onset code at Choice 2 onset, Choice 2 response code, never a Choice 1 code
         self.assertIn(onset_code, self.ttl)
         self.assertFalse(any(ch1_base <= c < ch1_base + 24 for c in self.ttl), self.ttl)
         self.assertEqual([c for c in self.ttl if ch2_base <= c < ch2_base + 24],
                          [ch2_base + ANIMAL_IDX[order[target]]])
         # Neon
         ph = 1 if runner is run_phase1_trial else 2
-        self.assertIn(f"TRIAL_{trial:03d}_P{ph}_FORCED_FIRST", self.neon.events)
-        self.assertIn(f"TRIAL_{trial:03d}_P{ph}_FORCED_FIRST_{forced.upper()}_ASSIGNED", self.neon.events)
+        assigned = f"TRIAL_{trial:03d}_P{ph}_FORCED_FIRST_{forced.upper()}_ASSIGNED"
+        self.assertIn(assigned, self.neon.events)
+        self.assertLess(self.neon.events.index(assigned),
+                        self.neon.events.index(f"TRIAL_{trial:03d}_P{ph}_CHOICE2"))
         self.assertFalse(any(f"P{ph}_CHOICE1" in e for e in self.neon.events), self.neon.events)
         return result
 
@@ -191,7 +186,6 @@ class TestFreeTrialFlow(TrialFlowBase):
         self.assertIsNotNone(result['rt1'])
         self.assertIsNone(result['forced_first_onset'])
         self.assertIsNotNone(result['choice2_onset'])
-        self.assertNotIn('FORCED_FIRST', segments)
         self.assertGreater(segments['CHOICE1'], 0)
         self.assertIn(ch1_base + ANIMAL_IDX[order[2]], self.ttl)
         self.assertIn(ch2_base + ANIMAL_IDX[order[3]], self.ttl)
@@ -212,12 +206,9 @@ class TestBlockIntegration(TrialFlowBase):
 
         def make(**kw):
             fl = real_make(**kw)
-            first = 'FORCED_FIRST' if mode == 'forced' else 'CHOICE1'
             plan = [('CHOICE2', 10, ['down', 'left', 'up', 'right']), ('CHOICE2', 12, ['space'])]
             if mode == 'free':
                 plan = [('CHOICE1', 5, ['up']), ('CHOICE1', 7, ['space'])] + plan
-            else:
-                plan = [('FORCED_FIRST', 5, ['up', 'space'])] + plan
             self.keys.arm(fl, plan)
             holder['fl'] = fl
             return fl
@@ -249,7 +240,7 @@ class TestBlockIntegration(TrialFlowBase):
             self.assertEqual(row['trig_choice1'], '')
             self.assertEqual(row['rt_choice1'], '')
             self.assertNotEqual(row['rt_choice2'], '')
-            self.assertLess(float(row['forced_first_onset']), float(row['second_choice_onset']))
+            self.assertEqual(row['forced_first_onset'], row['second_choice_onset'])
             self.assertEqual(row['selected_team'],
                              '+'.join(sorted([row['choice1_animal'], row['choice2_animal']])))
             self.assertEqual(row['schedule_version'], 'test-version')

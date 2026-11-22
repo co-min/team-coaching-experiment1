@@ -52,8 +52,9 @@ Dependency direction: `task → hardware, recording, config`; `hardware` and
 
 - `'free'`: participant picks both animals (original task).
 - `'forced'`: the first animal is assigned from
-  `stimuli/tables/forced_first_schedule.csv` and shown locked for
-  `FORCED_FIRST_DURATION` s. The participant then picks only the second animal.
+  `stimuli/tables/forced_first_schedule.csv`. Right after the domain onset,
+  the Choice 2 screen opens with the assigned animal already locked and the
+  hints shown, so the participant only picks the second animal.
 
 The CSV is fixed and identical for every subject. `main.py` validates it before
 opening the window: balance, domain order, animal groups. Any mismatch aborts
@@ -69,7 +70,9 @@ python -m unittest tests.test_trial_flow -v                   # trial-flow tests
 
 Forced-mode logging: `choice1_*` holds the assigned animal, and
 `trig_choice1` / `rt_choice1` are empty. No choice TTL is sent for the
-assignment. The forced display carries the usual choice-onset code (201/202).
+assignment. The Choice 2 onset frame carries the usual choice-onset code (201/202) and the
+Neon marker `TRIAL_xxx_Pn_FORCED_FIRST_{ANIMAL}_ASSIGNED`;
+`forced_first_onset` equals `second_choice_onset`.
 New `trials.csv` columns are appended after the original ones:
 `first_choice_mode, forced_first_animal, forced_first_code, forced_first_onset,
 second_choice_onset, selected_team, schedule_version`.
