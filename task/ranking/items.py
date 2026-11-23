@@ -1,14 +1,21 @@
 """
 items.py
 --------
-What gets ranked, and the ground truth it is scored against.
+순위를 매기는 "대상(item)"과, 참가자의 순위를 채점할 "정답(ground truth)"을 정의합니다.
 
-    RankItem    one animal or one pair, identified internally by role codes (A–D)
-    Attributes  competence + synergy for one block, with Performance(i, j, d)
-    Change      one hypothetical attribute change (counterfactual probe)
+    RankItem    순위를 매길 대상 하나: 동물 한 마리 또는 동물 두 마리로 된 팀(pair)
+    Change      가상 변화(counterfactual probe) 하나: "만약 ~가 바뀐다면?"
+    Attributes  한 블록의 숨은 속성값 (개인 능력 competence + 팀 시너지 synergy)
+    RankingSpec 순위 화면 하나를 로그에서 식별하는 정보
 
-Role codes never reach the screen — the view only uses RankItem.animals.
-Pure stdlib (no psychopy) so tests can import it without a window.
+세 가지 속성의 구분
+    competence  개인 능력.   C_i(d) = 동물 i 의 도메인 d 실력       (대상: 동물 1마리)
+    synergy     짝 시너지.   S(i,j) = 동물 i, j 가 함께할 때의 협력도 (대상: 팀)
+    performance 팀 점수.     S(i,j) × (C_i(d) + C_j(d))             (대상: 팀)
+
+내부에서는 동물을 역할 코드(A–D)로 다룹니다. 역할 코드는 화면에 절대
+나오지 않고, 화면(view)은 RankItem.animals(동물 이름)만 사용합니다.
+psychopy를 쓰지 않으므로(표준 라이브러리만 사용) 테스트에서 창 없이 import할 수 있습니다.
 """
 
 import csv
@@ -18,56 +25,90 @@ from typing import Dict, List, Mapping, Optional, Sequence, Tuple
 
 from config.paths import COMPETENCE_CSV
 
+# 역할 코드 두 개로 된 팀, 예: ('A', 'C')
 Pair = Tuple[str, str]
 
-# Ranking "attribute" → what the participant orders items by
+# 순위의 기준 속성 → 순위를 매길 대상의 종류
+#   synergy, performance 는 팀(pair) 단위, competence 는 동물(animal) 단위
 ATTRIBUTE_ITEM_KIND = {'synergy': 'pair', 'competence': 'animal', 'performance': 'pair'}
 
 
+# ── 순위를 매길 대상 ────────────────────────────────────────────────────────────
+
 @dataclass(frozen=True)
 class RankItem:
-    roles:   Tuple[str, ...]   # ('C',) or ('A', 'C'), sorted
-    animals: Tuple[str, ...]   # same order as roles
+    """순위를 매길 대상 하나 (동물 1마리 또는 팀 1개).
+
+    roles   : 역할 코드, 알파벳 순으로 정렬됨. 예: ('C',) 또는 ('A', 'C')
+    animals : roles 와 같은 순서의 동물 이름. 예: ('duck', 'panda')
+    """
+    roles:   Tuple[str, ...]
+    animals: Tuple[str, ...]
 
     @property
     def key(self) -> str:
-        """Role key used in logs, e.g. 'A+C'."""
+        """로그에 쓰는 역할 코드 이름. 예: 'A+C'"""
         return '+'.join(self.roles)
 
     @property
     def label(self) -> str:
-        """Animal label used in logs, e.g. 'duck+panda'."""
+        """로그에 쓰는 동물 이름. 예: 'duck+panda'"""
         return '+'.join(self.animals)
 
 
 def role_map(group: Sequence[str], char_code: Mapping[str, str]) -> Dict[str, str]:
-    """Role code → animal for one block's group."""
-    return {char_code[a]: a for a in group}
+    """한 블록의 동물들에 대해 {역할 코드: 동물 이름} 사전을 만듭니다.
+
+    group     : 이 블록에 나오는 동물 이름들
+    char_code : {동물 이름: 역할 코드} (자극 파일에서 읽은 값)
+    반환       : 예) {'A': 'duck', 'B': 'panda', ...}
+    """
+    roles = {}
+    for animal in group:
+        role = char_code[animal]
+        roles[role] = animal
+    return roles
 
 
 def animal_items(group: Sequence[str], char_code: Mapping[str, str]) -> List[RankItem]:
+    """동물 한 마리씩을 대상으로 하는 RankItem 목록 (역할 코드 순)."""
     roles = role_map(group, char_code)
-    return [RankItem((r,), (roles[r],)) for r in sorted(roles)]
+    items = []
+    for role in sorted(roles):
+        items.append(RankItem((role,), (roles[role],)))
+    return items
 
 
 def pair_items(group: Sequence[str], char_code: Mapping[str, str]) -> List[RankItem]:
+    """가능한 모든 두 마리 팀을 대상으로 하는 RankItem 목록.
+
+    4마리면 4C2 = 6팀. 순서는 (A,B), (A,C), (A,D), (B,C), ... 입니다.
+    """
     roles = role_map(group, char_code)
-    return [RankItem((a, b), (roles[a], roles[b])) for a, b in itertools.combinations(sorted(roles), 2)]
+    items = []
+    for first_role, second_role in itertools.combinations(sorted(roles), 2):
+        items.append(RankItem((first_role, second_role), (roles[first_role], roles[second_role])))
+    return items
 
 
 def items_for(attribute: str, group: Sequence[str], char_code: Mapping[str, str]) -> List[RankItem]:
-    builder = pair_items if ATTRIBUTE_ITEM_KIND[attribute] == 'pair' else animal_items
-    return builder(group, char_code)
+    """속성(attribute)에 맞는 대상 목록을 만듭니다 (팀 또는 동물)."""
+    if ATTRIBUTE_ITEM_KIND[attribute] == 'pair':
+        return pair_items(group, char_code)
+    return animal_items(group, char_code)
 
 
-# ── attributes / counterfactual changes ───────────────────────────────────────
+# ── 속성값과 가상 변화 ──────────────────────────────────────────────────────────
 
 @dataclass(frozen=True)
 class Change:
-    """Hypothetical change applied to the original attributes of one probe.
+    """한 번의 가상 변화(counterfactual probe). 항상 "원래" 속성값에 적용됩니다.
 
-    kind   : 'competence' (roles = (r,), domain required) or 'synergy' (roles = (r1, r2))
-    value  : the new attribute value (same scale as the stimulus tables)
+    kind   : 'competence' (roles = (r,) 한 명, domain 필수)
+             또는 'synergy' (roles = (r1, r2) 두 명)
+    roles  : 바뀌는 동물의 역할 코드. 생성 시 자동으로 정렬됩니다.
+    value  : 바뀐 뒤의 속성값 (자극 표와 같은 척도)
+    domain : competence 변화일 때 어느 도메인의 실력이 바뀌는지
     """
     kind:   str
     roles:  Tuple[str, ...]
@@ -75,37 +116,59 @@ class Change:
     domain: Optional[str] = None
 
     def __post_init__(self):
+        # synergy 표의 키가 정렬된 쌍이므로 roles 도 정렬해 둡니다.
+        # frozen dataclass 라서 일반 대입 대신 object.__setattr__ 를 씁니다.
         object.__setattr__(self, 'roles', tuple(sorted(self.roles)))
-        if self.kind == 'competence' and (len(self.roles) != 1 or self.domain is None):
-            raise ValueError(f"competence change needs one role and a domain: {self}")
-        if self.kind == 'synergy' and len(self.roles) != 2:
-            raise ValueError(f"synergy change needs two roles: {self}")
+
+        if self.kind == 'competence':
+            if len(self.roles) != 1 or self.domain is None:
+                raise ValueError(f"competence change needs one role and a domain: {self}")
+        if self.kind == 'synergy':
+            if len(self.roles) != 2:
+                raise ValueError(f"synergy change needs two roles: {self}")
         if self.kind not in ('competence', 'synergy'):
             raise ValueError(f"unknown change kind {self.kind!r}")
 
 
 @dataclass(frozen=True)
 class Attributes:
-    competence: Mapping[str, Mapping[str, float]]   # role → {domain: value}
-    synergy:    Mapping[Pair, float]                # sorted role pair → value
+    """한 블록의 숨은 속성값.
+
+    competence : {역할 코드: {도메인: 실력값}}   예) competence['A']['cooking'] = 8.5
+    synergy    : {정렬된 역할 쌍: 시너지값}       예) synergy[('B', 'C')] = 0.8
+    """
+    competence: Mapping[str, Mapping[str, float]]
+    synergy:    Mapping[Pair, float]
 
     def performance(self, roles: Sequence[str], domain: str) -> float:
-        """Performance(i, j, d) = Synergy(i, j) × (Competence(i, d) + Competence(j, d))."""
-        a, b = sorted(roles)
-        return self.synergy[(a, b)] * (self.competence[a][domain] + self.competence[b][domain])
+        """팀 점수 Performance(i, j, d) = Synergy(i, j) × (Competence(i, d) + Competence(j, d))."""
+        first_role, second_role = sorted(roles)
+        pair_synergy = self.synergy[(first_role, second_role)]
+        summed_competence = self.competence[first_role][domain] + self.competence[second_role][domain]
+        return pair_synergy * summed_competence
 
     def with_change(self, change: Change) -> 'Attributes':
-        """A new Attributes with *change* applied; self is never modified,
-        so every probe starts from the original attributes."""
-        competence = {r: dict(levels) for r, levels in self.competence.items()}
-        synergy = dict(self.synergy)
+        """change 를 적용한 "새" Attributes 를 돌려줍니다.
+
+        self 는 절대 바뀌지 않습니다 (사전을 복사한 뒤 복사본만 수정).
+        그래서 probe 가 여러 번 있어도 변화가 누적되지 않고,
+        각 probe 는 항상 원래 속성값에서 출발합니다.
+        """
+        competence_copy = {}
+        for role, values_by_domain in self.competence.items():
+            competence_copy[role] = dict(values_by_domain)
+        synergy_copy = dict(self.synergy)
+
         if change.kind == 'competence':
-            competence[change.roles[0]][change.domain] = change.value
+            changed_role = change.roles[0]
+            competence_copy[changed_role][change.domain] = change.value
         else:
-            synergy[change.roles] = change.value
-        return Attributes(competence, synergy)
+            synergy_copy[change.roles] = change.value
+
+        return Attributes(competence_copy, synergy_copy)
 
     def value(self, attribute: str, item: RankItem, domain: Optional[str]) -> float:
+        """대상(item) 하나의 정답 값을 속성 종류에 따라 돌려줍니다."""
         if attribute == 'synergy':
             return self.synergy[item.roles]
         if attribute == 'competence':
@@ -116,85 +179,149 @@ class Attributes:
 
 
 def load_attributes(synergy: Mapping[Pair, float], path=COMPETENCE_CSV) -> Attributes:
-    """Raw (unrounded) competence per role from the CSV + the loaded synergy table.
+    """CSV 의 원래(반올림하지 않은) competence 값과 synergy 표로 Attributes 를 만듭니다.
 
-    StimulusSet.competence holds int levels for the border colours; ground
-    truth needs the original values, so they are re-read here.
+    StimulusSet.competence 에는 테두리 색에 쓰려고 정수 단계로 바꾼 값이 들어 있습니다.
+    정답 계산에는 원래 값(예: 8.5)이 필요하므로 CSV 를 여기서 다시 읽습니다.
+
+    synergy : {정렬된 역할 쌍: 시너지값} (StimulusSet.synergy)
+    path    : competence CSV 경로
     """
     competence: Dict[str, Dict[str, float]] = {}
     with open(path, newline='', encoding='utf-8') as f:
         for row in csv.DictReader(f, skipinitialspace=True):
-            values = {k.strip(): v for k, v in row.items()}
+            # 열 이름 앞뒤 공백 제거
+            values = {}
+            for column, cell in row.items():
+                values[column.strip()] = cell
             role = values.pop('char_ani').strip()
-            # Every animal sharing a role has the same profile; the first row wins.
-            competence.setdefault(role, {
-                d: float(v) for d, v in values.items() if d not in ('id', 'animal', 'img_file')
-            })
+
+            # 나머지 열 중 id / animal / img_file 을 뺀 것이 도메인별 실력입니다.
+            values_by_domain = {}
+            for domain, cell in values.items():
+                if domain not in ('id', 'animal', 'img_file'):
+                    values_by_domain[domain] = float(cell)
+
+            # 같은 역할의 동물들은 프로필이 같으므로 처음 나온 행만 사용합니다.
+            if role not in competence:
+                competence[role] = values_by_domain
     return Attributes(competence, dict(synergy))
 
 
-# ── ground truth / agreement ──────────────────────────────────────────────────
+# ── 정답 값과 일치도 지표 ───────────────────────────────────────────────────────
 
 def true_values(attrs: Attributes, attribute: str, items: Sequence[RankItem],
                 domain: Optional[str]) -> Dict[str, float]:
-    """item key → value, in role order (independent of display order)."""
-    return {it.key: round(attrs.value(attribute, it, domain), 4) for it in sorted(items, key=lambda i: i.roles)}
+    """{item.key: 정답 값(소수 4자리 반올림)}.
+
+    화면에 보인 순서와 상관없이 항상 역할 코드 순서로 정렬해서 만듭니다.
+    """
+    items_in_role_order = sorted(items, key=lambda item: item.roles)
+    values = {}
+    for item in items_in_role_order:
+        values[item.key] = round(attrs.value(attribute, item, domain), 4)
+    return values
 
 
 def _average_ranks(values: Sequence[float]) -> List[float]:
-    """1 = largest; tied values share their mean rank."""
-    order = sorted(range(len(values)), key=lambda i: -values[i])
+    """값이 클수록 높은 순위(1위)를 줍니다. 같은 값끼리는 순위의 평균을 나눠 갖습니다.
+
+    예) [5, 3, 3, 1] → [1.0, 2.5, 2.5, 4.0]   (3 두 개가 2위·3위를 나눠 2.5위)
+    """
+    # 값이 큰 것부터의 인덱스 순서
+    order = sorted(range(len(values)), key=lambda index: -values[index])
     ranks = [0.0] * len(values)
-    i = 0
-    while i < len(order):
-        j = i
-        while j + 1 < len(order) and values[order[j + 1]] == values[order[i]]:
-            j += 1
-        for k in range(i, j + 1):
-            ranks[order[k]] = (i + j) / 2 + 1
-        i = j + 1
+
+    group_start = 0
+    while group_start < len(order):
+        # 같은 값이 이어지는 구간 [group_start, group_end] 을 찾습니다.
+        group_end = group_start
+        while (group_end + 1 < len(order)
+               and values[order[group_end + 1]] == values[order[group_start]]):
+            group_end += 1
+
+        # 구간 안의 모든 대상이 같은 평균 순위를 받습니다. (순위는 1부터 시작)
+        shared_rank = (group_start + group_end) / 2 + 1
+        for position in range(group_start, group_end + 1):
+            ranks[order[position]] = shared_rank
+
+        group_start = group_end + 1
     return ranks
 
 
 def spearman(ranking: Sequence[str], truth: Mapping[str, float]) -> Optional[float]:
-    """Spearman rho between a participant ranking (keys, best first) and true values.
+    """참가자 순위와 정답 값 사이의 Spearman 순위 상관(rho).
 
-    None if the ranking is incomplete or the truth has no variance.
+    ranking : 참가자가 매긴 순위, item key 목록 (1위가 맨 앞)
+    truth   : {item key: 정답 값}
+    반환     : -1 ~ 1 사이 값(소수 4자리). 아래 경우에는 None
+               - 순위가 미완성이거나 대상이 다를 때
+               - 정답 값이 모두 같아서(분산 0) 상관을 계산할 수 없을 때
+
+    계산 방법: 참가자 순위(1, 2, 3, ...)와 정답의 평균 순위 사이의 Pearson 상관.
     """
     if sorted(ranking) != sorted(truth):
         return None
-    given = [float(ranking.index(k) + 1) for k in truth]
-    true  = _average_ranks(list(truth.values()))
-    mg, mt = sum(given) / len(given), sum(true) / len(true)
-    cov = sum((g - mg) * (t - mt) for g, t in zip(given, true))
-    vg  = sum((g - mg) ** 2 for g in given)
-    vt  = sum((t - mt) ** 2 for t in true)
-    return round(cov / (vg * vt) ** 0.5, 4) if vg and vt else None
+
+    # truth 의 키 순서대로 두 순위 목록을 맞춰 놓습니다.
+    given_ranks = []
+    for key in truth:
+        given_ranks.append(float(ranking.index(key) + 1))
+    true_ranks = _average_ranks(list(truth.values()))
+
+    mean_given = sum(given_ranks) / len(given_ranks)
+    mean_true = sum(true_ranks) / len(true_ranks)
+
+    covariance = 0
+    variance_given = 0
+    variance_true = 0
+    for given, true in zip(given_ranks, true_ranks):
+        covariance += (given - mean_given) * (true - mean_true)
+        variance_given += (given - mean_given) ** 2
+        variance_true += (true - mean_true) ** 2
+
+    if not variance_given or not variance_true:
+        return None
+    return round(covariance / (variance_given * variance_true) ** 0.5, 4)
 
 
 def kendall_distance(a: Sequence[str], b: Sequence[str]) -> Optional[int]:
-    """Number of discordant item pairs between two complete rankings of the same items."""
+    """두 순위 사이의 Kendall 거리: 순서가 서로 뒤바뀐 대상 쌍의 개수.
+
+    0 이면 두 순위가 같고, 값이 클수록 많이 바뀐 것입니다.
+    예) ['A','B','C'] vs ['C','B','A'] → 3 (세 쌍 모두 뒤바뀜)
+    두 순위의 대상이 다르면(미완성 등) None.
+    """
     if sorted(a) != sorted(b):
         return None
-    pos = {k: i for i, k in enumerate(b)}
-    return sum(1 for i, j in itertools.combinations(range(len(a)), 2) if pos[a[i]] > pos[a[j]])
+
+    position_in_b = {}
+    for index, key in enumerate(b):
+        position_in_b[key] = index
+
+    discordant_pairs = 0
+    for i, j in itertools.combinations(range(len(a)), 2):
+        # a 에서는 a[i] 가 a[j] 보다 앞인데, b 에서는 뒤에 있으면 "뒤바뀐 쌍"
+        if position_in_b[a[i]] > position_in_b[a[j]]:
+            discordant_pairs += 1
+    return discordant_pairs
 
 
-# ── one ranking's definition ──────────────────────────────────────────────────
+# ── 순위 화면 하나의 정의 ───────────────────────────────────────────────────────
 
 @dataclass
 class RankingSpec:
-    """Everything that identifies one ranking screen in the logs."""
-    ranking_id:   str
+    """로그에서 순위 화면 하나를 식별하는 모든 정보."""
+    ranking_id:   str                   # 예: 'b0_p1_baseline'
     ranking_type: str                   # 'attribute' | 'performance' | 'counterfactual'
     attribute:    str                   # 'synergy' | 'competence' | 'performance'
     block_index:  int
     phase:        str
-    group:        Tuple[str, ...]       # the block's animal set
-    roles:        Dict[str, str]        # role → animal
+    group:        Tuple[str, ...]       # 이 블록의 동물들
+    roles:        Dict[str, str]        # 역할 코드 → 동물 이름
     domain:       Optional[str] = None
-    after_trial:  Optional[int] = None  # attribute rankings: 1-indexed learning trial
-    probe_id:     Optional[int] = None  # performance / counterfactual
+    after_trial:  Optional[int] = None  # attribute 순위: 몇 번째 학습 시행 뒤인지 (1부터)
+    probe_id:     Optional[int] = None  # performance / counterfactual 순위
     change:       Optional[Change] = None
-    baseline_id:  Optional[str] = None  # counterfactual → its baseline ranking
+    baseline_id:  Optional[str] = None  # counterfactual 순위 → 그 기준(baseline) 순위의 id
     extra:        Dict[str, object] = field(default_factory=dict)

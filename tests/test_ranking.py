@@ -19,15 +19,19 @@ from psychopy import core, visual
 
 from config import ranking as R
 from config import settings as S
+from recording.ranking_writers import EVENT_FIELDS, RANKING_FIELDS
 from recording.stimuli_loader import load_stimuli
 from task.ranking import flow
 from task.ranking.assessments import (
-    Probe, RankingEnv, change_level, run_attribute_ranking, run_counterfactual_probe,
+    Probe, RankingEnv, _shuffled, _starting_order_for_revision, change_level, run_attribute_ranking,
+    run_counterfactual_probe,
 )
 from task.ranking.inputs import ScriptedSource, action_map
 from task.ranking.items import (
-    Change, RankItem, animal_items, kendall_distance, load_attributes, pair_items, spearman, true_values,
+    Change, RankItem, RankingSpec, _average_ranks, animal_items, kendall_distance, load_attributes, pair_items,
+    spearman, true_values,
 )
+from task.ranking.record import build_ranking_record
 from task.ranking.state import RevisedRanking, SequentialRanking
 
 STIM = load_stimuli()
@@ -84,6 +88,59 @@ class TestItems(unittest.TestCase):
         self.assertIsNone(spearman(['A', 'B'], truth))
         self.assertEqual(kendall_distance(['A', 'B', 'C'], ['C', 'B', 'A']), 3)
         self.assertEqual(kendall_distance(['A', 'B', 'C'], ['A', 'B', 'C']), 0)
+
+    def test_agreement_metrics_with_ties(self):
+        self.assertEqual(_average_ranks([5.0, 3.0, 3.0, 1.0]), [1.0, 2.5, 2.5, 4.0])
+        self.assertIsNone(spearman(['A', 'B'], {'A': 1.0, 'B': 1.0}))          # no variance
+        self.assertEqual(spearman(['A', 'B', 'C'], {'A': 2.0, 'B': 2.0, 'C': 1.0}), 0.866)
+        self.assertIsNone(kendall_distance(['A', 'B'], ['A', 'C']))
+
+
+class TestRegression(unittest.TestCase):
+    """Behaviour pinned during the readability refactor."""
+
+    def _result(self, status='complete', initial=()):
+        items = pair_items(GROUP0, STIM.char_code)
+        spec = RankingSpec('b0_p1_revised', 'counterfactual', 'performance', 0, 'phase_1', tuple(GROUP0),
+                           {STIM.char_code[a]: a for a in GROUP0}, domain='cooking', probe_id=1,
+                           change=Change('competence', ('C',), 8.5, domain='cooking'))
+        events = [{'event_idx': 0, 'event': 'onset', 'key': None, 'rt': 0.0},
+                  {'event_idx': 1, 'event': 'move', 'key': 'down', 'rt': 0.25}]
+        return flow.RankingResult(spec=spec, display_order=items, initial=list(initial), final=items[::-1],
+                                  status=status, onset_global=1.0, end_rt=0.5, events=events)
+
+    def test_record_schema_matches_writer_columns(self):
+        record, events = build_ranking_record(self._result(), ATTRS, 'T01', 'S', 'high')
+        self.assertEqual(list(record), RANKING_FIELDS)
+        self.assertEqual(list(events[0])[:6], EVENT_FIELDS[:6])
+        self.assertEqual((record['confirm_global'], record['first_key_rt'], record['n_moves']), (1.5, 0.25, 1))
+        self.assertIsNone(record['changed'])                    # no initial ranking
+        timed_out, _ = build_ranking_record(self._result('timeout', initial=self._result().final), ATTRS, 'T01')
+        self.assertEqual((timed_out['confirm_rt'], timed_out['spearman_true'], timed_out['changed']),
+                         (None, None, False))
+
+    def test_timed_out_baseline_is_completed_in_display_order(self):
+        items = _items(4)
+        baseline = flow.RankingResult(spec=None, display_order=items, initial=[], final=[items[2]],
+                                      status='timeout')
+        self.assertEqual(_starting_order_for_revision(baseline), [items[2], items[0], items[1], items[3]])
+
+    def test_display_order_is_reproducible(self):
+        env = RankingEnv(None, None, None, STIM, ATTRS, 'T01', Path('.'))
+        spec = RankingSpec('b0_p1_baseline', 'performance', 'performance', 0, 'phase_1', tuple(GROUP0),
+                           {}, domain='cooking')
+        self.assertEqual(_shuffled(env, spec), _shuffled(env, spec))
+        other = RankingEnv(None, None, None, STIM, ATTRS, 'T02', Path('.'))
+        self.assertEqual(sorted(_shuffled(other, spec), key=lambda i: i.roles),
+                         pair_items(GROUP0, STIM.char_code))
+
+    def test_outcome_extras_go_to_detail(self):
+        items = _items(2)
+        fields = flow._fields({'event': 'move', 'item': items[0], 'from_pos': 2, 'to_pos': 1,
+                               'displaced': items[1], 'relocated': True})
+        self.assertEqual(fields, {'item': items[0], 'from_pos': 2, 'to_pos': 1,
+                                  'detail': 'displaced=B;relocated=True'})
+        self.assertIsNone(flow._fields({'event': 'select', 'item': items[0], 'rank_pos': 1})['detail'])
 
 
 class TestSequentialState(unittest.TestCase):
