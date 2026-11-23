@@ -3,15 +3,16 @@ items.py
 --------
 순위를 매기는 "대상(item)"과, 참가자의 순위를 채점할 "정답(ground truth)"을 정의합니다.
 
-    RankItem    순위를 매길 대상 하나: 동물 한 마리 또는 동물 두 마리로 된 팀(pair)
+    RankItem    순위를 매길 대상 하나: 동물 두 마리로 된 팀(pair)
     Change      가상 변화(counterfactual probe) 하나: "만약 ~가 바뀐다면?"
     Attributes  한 블록의 숨은 속성값 (개인 능력 competence + 팀 시너지 synergy)
     RankingSpec 순위 화면 하나를 로그에서 식별하는 정보
 
-세 가지 속성의 구분
-    competence  개인 능력.   C_i(d) = 동물 i 의 도메인 d 실력       (대상: 동물 1마리)
-    synergy     짝 시너지.   S(i,j) = 동물 i, j 가 함께할 때의 협력도 (대상: 팀)
-    performance 팀 점수.     S(i,j) × (C_i(d) + C_j(d))             (대상: 팀)
+순위의 기준은 항상 팀 점수(performance) 입니다.
+    competence  개인 능력.   C_i(d) = 동물 i 의 도메인 d 실력
+    synergy     짝 시너지.   S(i,j) = 동물 i, j 가 함께할 때의 협력도
+    performance 팀 점수.     S(i,j) × (C_i(d) + C_j(d))
+competence / synergy 는 가상 변화(Change)로만 바뀌고, 그 자체를 순위로 묻지는 않습니다.
 
 내부에서는 동물을 역할 코드(A–D)로 다룹니다. 역할 코드는 화면에 절대
 나오지 않고, 화면(view)은 RankItem.animals(동물 이름)만 사용합니다.
@@ -28,18 +29,14 @@ from config.paths import COMPETENCE_CSV
 # 역할 코드 두 개로 된 팀, 예: ('A', 'C')
 Pair = Tuple[str, str]
 
-# 순위의 기준 속성 → 순위를 매길 대상의 종류
-#   synergy, performance 는 팀(pair) 단위, competence 는 동물(animal) 단위
-ATTRIBUTE_ITEM_KIND = {'synergy': 'pair', 'competence': 'animal', 'performance': 'pair'}
-
 
 # ── 순위를 매길 대상 ────────────────────────────────────────────────────────────
 
 @dataclass(frozen=True)
 class RankItem:
-    """순위를 매길 대상 하나 (동물 1마리 또는 팀 1개).
+    """순위를 매길 대상 하나 (팀 1개).
 
-    roles   : 역할 코드, 알파벳 순으로 정렬됨. 예: ('C',) 또는 ('A', 'C')
+    roles   : 역할 코드, 알파벳 순으로 정렬됨. 예: ('A', 'C')
     animals : roles 와 같은 순서의 동물 이름. 예: ('duck', 'panda')
     """
     roles:   Tuple[str, ...]
@@ -70,15 +67,6 @@ def role_map(group: Sequence[str], char_code: Mapping[str, str]) -> Dict[str, st
     return roles
 
 
-def animal_items(group: Sequence[str], char_code: Mapping[str, str]) -> List[RankItem]:
-    """동물 한 마리씩을 대상으로 하는 RankItem 목록 (역할 코드 순)."""
-    roles = role_map(group, char_code)
-    items = []
-    for role in sorted(roles):
-        items.append(RankItem((role,), (roles[role],)))
-    return items
-
-
 def pair_items(group: Sequence[str], char_code: Mapping[str, str]) -> List[RankItem]:
     """가능한 모든 두 마리 팀을 대상으로 하는 RankItem 목록.
 
@@ -89,13 +77,6 @@ def pair_items(group: Sequence[str], char_code: Mapping[str, str]) -> List[RankI
     for first_role, second_role in itertools.combinations(sorted(roles), 2):
         items.append(RankItem((first_role, second_role), (roles[first_role], roles[second_role])))
     return items
-
-
-def items_for(attribute: str, group: Sequence[str], char_code: Mapping[str, str]) -> List[RankItem]:
-    """속성(attribute)에 맞는 대상 목록을 만듭니다 (팀 또는 동물)."""
-    if ATTRIBUTE_ITEM_KIND[attribute] == 'pair':
-        return pair_items(group, char_code)
-    return animal_items(group, char_code)
 
 
 # ── 속성값과 가상 변화 ──────────────────────────────────────────────────────────
@@ -167,16 +148,6 @@ class Attributes:
 
         return Attributes(competence_copy, synergy_copy)
 
-    def value(self, attribute: str, item: RankItem, domain: Optional[str]) -> float:
-        """대상(item) 하나의 정답 값을 속성 종류에 따라 돌려줍니다."""
-        if attribute == 'synergy':
-            return self.synergy[item.roles]
-        if attribute == 'competence':
-            return self.competence[item.roles[0]][domain]
-        if attribute == 'performance':
-            return self.performance(item.roles, domain)
-        raise ValueError(f"unknown attribute {attribute!r}")
-
 
 def load_attributes(synergy: Mapping[Pair, float], path=COMPETENCE_CSV) -> Attributes:
     """CSV 의 원래(반올림하지 않은) competence 값과 synergy 표로 Attributes 를 만듭니다.
@@ -210,16 +181,15 @@ def load_attributes(synergy: Mapping[Pair, float], path=COMPETENCE_CSV) -> Attri
 
 # ── 정답 값과 일치도 지표 ───────────────────────────────────────────────────────
 
-def true_values(attrs: Attributes, attribute: str, items: Sequence[RankItem],
-                domain: Optional[str]) -> Dict[str, float]:
-    """{item.key: 정답 값(소수 4자리 반올림)}.
+def true_values(attrs: Attributes, items: Sequence[RankItem], domain: str) -> Dict[str, float]:
+    """{item.key: 정답 팀 점수(소수 4자리 반올림)}.
 
     화면에 보인 순서와 상관없이 항상 역할 코드 순서로 정렬해서 만듭니다.
     """
     items_in_role_order = sorted(items, key=lambda item: item.roles)
     values = {}
     for item in items_in_role_order:
-        values[item.key] = round(attrs.value(attribute, item, domain), 4)
+        values[item.key] = round(attrs.performance(item.roles, domain), 4)
     return values
 
 
@@ -313,15 +283,13 @@ def kendall_distance(a: Sequence[str], b: Sequence[str]) -> Optional[int]:
 class RankingSpec:
     """로그에서 순위 화면 하나를 식별하는 모든 정보."""
     ranking_id:   str                   # 예: 'b0_p1_baseline'
-    ranking_type: str                   # 'attribute' | 'performance' | 'counterfactual'
-    attribute:    str                   # 'synergy' | 'competence' | 'performance'
+    ranking_type: str                   # 'performance'(기준) | 'counterfactual'(수정)
     block_index:  int
     phase:        str
     group:        Tuple[str, ...]       # 이 블록의 동물들
     roles:        Dict[str, str]        # 역할 코드 → 동물 이름
     domain:       Optional[str] = None
-    after_trial:  Optional[int] = None  # attribute 순위: 몇 번째 학습 시행 뒤인지 (1부터)
-    probe_id:     Optional[int] = None  # performance / counterfactual 순위
+    probe_id:     Optional[int] = None
     change:       Optional[Change] = None
     baseline_id:  Optional[str] = None  # counterfactual 순위 → 그 기준(baseline) 순위의 id
     extra:        Dict[str, object] = field(default_factory=dict)

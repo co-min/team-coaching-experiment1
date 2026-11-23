@@ -19,9 +19,9 @@ from typing import Any, Dict, List
 MAX_ITEMS = 6
 
 RANKING_FIELDS = [
-    "subject_id", "session_id", "ranking_id", "ranking_type", "attribute", "item_kind", "n_items",
+    "subject_id", "session_id", "ranking_id", "ranking_type", "n_items",
     "block_index", "phase", "block_type", "animal_set", "role_map",
-    "domain", "after_trial", "probe_id", "baseline_id",
+    "domain", "probe_id", "baseline_id",
     "change_kind", "change_roles", "change_animals", "change_domain", "change_value", "change_level",
     "change_onset", "change_rt",
     "status", "key_backend", "time_limit",

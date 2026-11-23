@@ -8,24 +8,12 @@ from config.strings import _lang
 
 _STRINGS: dict[str, dict[str, str]] = {
     # ── intro screens ────────────────────────────────────────────────────────
-    "rank_intro_attribute": {
-        "ko": "잠시 멈추고, 지금까지 알게 된 것을 순위로 알려 주세요.\n\n[{key}] 키를 눌러 시작",
-        "en": "Let's pause. Show what you have learned so far by ranking.\n\nPress [{key}] to start",
-    },
     "rank_intro_performance": {
         "ko": "이번 블록의 게임이 끝났어요.\n이제 팀 점수를 예상해서 순위를 매겨 주세요.\n\n[{key}] 키를 눌러 시작",
         "en": "The games in this block are over.\nNow rank the teams by the score you expect.\n\nPress [{key}] to start",
     },
 
     # ── prompts (top of the ranking screen) ──────────────────────────────────
-    "rank_prompt_synergy": {
-        "ko": "두 동물이 얼마나 잘 협력하는지(팀워크) 순위를 매겨 주세요.\n팀워크가 가장 좋은 팀부터 고르세요.",
-        "en": "Rank the teams by how well the two animals cooperate (teamwork).\nStart with the best team.",
-    },
-    "rank_prompt_competence": {
-        "ko": "{domain} 실력 순위를 매겨 주세요.\n{domain} 실력이 가장 좋은 동물부터 고르세요.",
-        "en": "Rank the animals by their {domain} skill.\nStart with the most skilled animal.",
-    },
     "rank_prompt_performance": {
         "ko": "{domain} 점수 순위를 매겨 주세요.\n점수가 가장 높을 팀부터 고르세요.",
         "en": "Rank the teams by their {domain} score.\nStart with the highest-scoring team.",

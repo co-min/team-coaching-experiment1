@@ -3,7 +3,7 @@ flow.py
 -------
 순위 화면 하나를 실행하고 RankingResult(최종 상태 + 이벤트 로그)를 돌려줍니다.
 
-    run_sequential_ranking   기준(baseline) 순위 / 속성 순위: 1위부터 차례로 고르기
+    run_sequential_ranking   기준(baseline) 순위: 1위부터 차례로 고르기
     show_change_screen       가상 변화 안내 화면
     run_revised_ranking      수정(counterfactual) 순위: 이전 순위에서 출발해 고치기
 
@@ -246,13 +246,6 @@ def _run_screen(win, global_clock, source, draw: Callable[[bool], None],
     return {'status': status, 'onset': onsets['onset'], 'end_rt': end_rt, 'rows': log.rows}
 
 
-def _item_kind(items: Sequence[RankItem]) -> str:
-    """대상이 팀(역할 2개)이면 'pair', 동물 한 마리면 'animal'."""
-    if len(items[0].roles) == 2:
-        return 'pair'
-    return 'animal'
-
-
 # ── 화면별 실행 함수 ──────────────────────────────────────────────────────────
 
 def run_sequential_ranking(win, global_clock, source, spec: RankingSpec, options: Sequence[RankItem],
@@ -270,7 +263,7 @@ def run_sequential_ranking(win, global_clock, source, spec: RankingSpec, options
         confirm = 모두 고른 뒤에만 제출
     """
     state = SequentialRanking(options)
-    view = RankingView(win, len(options), _item_kind(options), spec.group, spec.domain, prompt, mode='sequential')
+    view = RankingView(win, len(options), spec.group, spec.domain, prompt, mode='sequential')
 
     def handle(action, _rt):
         if action == 'up':
@@ -311,8 +304,7 @@ def run_revised_ranking(win, global_clock, source, spec: RankingSpec, initial: S
         confirm = 아무것도 집고 있지 않을 때만 제출
     """
     state = RevisedRanking(initial)
-    view = RankingView(win, len(initial), _item_kind(initial), spec.group, spec.domain, prompt,
-                       mode='revised', change=change)
+    view = RankingView(win, len(initial), spec.group, spec.domain, prompt, mode='revised', change=change)
 
     def handle(action, _rt):
         if action == 'up':

@@ -1,9 +1,9 @@
 """
 ranking.py
 ----------
-Constants for the ranking assessments (latent-attribute, performance,
-counterfactual). Kept apart from settings.py until the ranking flow is
-integrated into the block loop.
+Constants for the ranking assessments (performance baseline, counterfactual
+revision). Kept apart from settings.py until the ranking flow is integrated
+into the block loop.
 """
 
 # ─── Input ───────────────────────────────────────────────────────────────────
@@ -36,9 +36,6 @@ KEY_DISPLAY = {
 # ─── Timing ──────────────────────────────────────────────────────────────────
 RANKING_MAX_TIME   = None   # seconds per ranking screen; None = no deadline (to be decided)
 CONFIRM_FEEDBACK_S = 0.5    # confirmed ranking stays on screen this long (no input)
-
-# ─── Schedule ────────────────────────────────────────────────────────────────
-ATTRIBUTE_RANK_AFTER_TRIALS = (7, 15)   # 1-indexed learning trials
 
 # ─── Colours ─────────────────────────────────────────────────────────────────
 CURSOR_COLOR    = '#FFD54F'

@@ -4,7 +4,7 @@ record.py
 RankingResult → recording/ranking_writers.py 가 쓰는 평평한(flat) 사전.
 
 정답(true_values, spearman)은 여기서 계산합니다.
-    - baseline / attribute 순위 : 원래 속성값 기준
+    - baseline(기준) 순위       : 원래 속성값 기준
     - counterfactual(수정) 순위 : 원래 속성값에 가상 변화를 적용한 값 기준
 
 주의: 출력 열의 순서는 사전에 넣는 순서 그대로입니다 (JSON 파일).
@@ -19,9 +19,7 @@ from config import ranking as R
 from recording.ranking_writers import MAX_ITEMS
 from task.forced_first import BLOCK_TYPE
 from task.ranking.flow import COMPLETE, RankingResult
-from task.ranking.items import (
-    ATTRIBUTE_ITEM_KIND, Attributes, RankingSpec, kendall_distance, spearman, true_values,
-)
+from task.ranking.items import Attributes, RankingSpec, kendall_distance, spearman, true_values
 
 
 # ── 작은 도우미 ───────────────────────────────────────────────────────────────
@@ -48,7 +46,7 @@ def _count(events, *names) -> int:
 # ── 기록의 각 부분 ────────────────────────────────────────────────────────────
 
 def _identity_fields(result: RankingResult, subject_id: str, session_id: Optional[str]) -> Dict[str, Any]:
-    """참가자·세션과, 이 순위가 무엇인지 (블록, 속성, 대상, 도메인 등)."""
+    """참가자·세션과, 이 순위가 무엇인지 (블록, 대상, 도메인 등)."""
     spec = result.spec
     role_map_parts = []
     for role, animal in sorted(spec.roles.items()):
@@ -59,8 +57,6 @@ def _identity_fields(result: RankingResult, subject_id: str, session_id: Optiona
         "session_id":   session_id,
         "ranking_id":   spec.ranking_id,
         "ranking_type": spec.ranking_type,
-        "attribute":    spec.attribute,
-        "item_kind":    ATTRIBUTE_ITEM_KIND[spec.attribute],
         "n_items":      len(result.display_order),
         "block_index":  spec.block_index,
         "phase":        spec.phase,
@@ -68,7 +64,6 @@ def _identity_fields(result: RankingResult, subject_id: str, session_id: Optiona
         "animal_set":   ','.join(spec.group),
         "role_map":     ';'.join(role_map_parts),
         "domain":       spec.domain,
-        "after_trial":  spec.after_trial,
         "probe_id":     spec.probe_id,
         "baseline_id":  spec.baseline_id,
     }
@@ -229,7 +224,7 @@ def _ground_truth(result: RankingResult, attrs: Attributes) -> Dict[str, float]:
         truth_attrs = attrs.with_change(spec.change)
     else:
         truth_attrs = attrs
-    return true_values(truth_attrs, spec.attribute, result.display_order, spec.domain)
+    return true_values(truth_attrs, result.display_order, spec.domain)
 
 
 # ── 진입점 ────────────────────────────────────────────────────────────────────

@@ -86,8 +86,7 @@ class RankingView:
     """순위 화면 하나의 모든 시각 자극.
 
     win       : PsychoPy 창
-    n_items   : 대상 수 (= 줄 수)
-    item_kind : 'pair'(카드에 동물 2마리) 또는 'animal'(1마리)
+    n_items   : 대상(팀) 수 (= 줄 수)
     animals   : 이 블록의 동물들 (이미지를 미리 불러 둠)
     domain    : 왼쪽 위 아이콘으로 보여 줄 도메인 (없으면 None)
     prompt    : 맨 위 안내 문장
@@ -95,8 +94,7 @@ class RankingView:
     change    : revised 화면 오른쪽에 보여 줄 가상 변화
     """
 
-    def __init__(self, win, n_items: int, item_kind: str, animals: Sequence[str],
-                 domain: Optional[str], prompt: str, mode: str,
+    def __init__(self, win, n_items: int, animals: Sequence[str], domain: Optional[str], prompt: str, mode: str,
                  change: Optional[ChangeDisplay] = None, key_map=R.RANKING_KEYS):
         self.win = win
         self.n = n_items
@@ -106,12 +104,12 @@ class RankingView:
         self.W, self.H = W, H
         self._keys = key_names(key_map)
 
-        self._compute_layout(n_items, item_kind, mode)
+        self._compute_layout(n_items, mode)
         self._create_stimuli(win, animals, domain, prompt, change)
 
     # ── 배치 계산 ────────────────────────────────────────────────────────────
 
-    def _compute_layout(self, n_items: int, item_kind: str, mode: str) -> None:
+    def _compute_layout(self, n_items: int, mode: str) -> None:
         """줄 위치, 카드·이미지 크기, 두 열의 x 위치를 계산해 self 에 저장합니다."""
         W, H = self.W, self.H
 
@@ -126,15 +124,11 @@ class RankingView:
         for row in range(n_items):
             self.row_y.append(top - row * self.spacing)
 
-        # 동물 이미지 크기와 카드 크기
+        # 동물 이미지 크기와 카드 크기 (카드 하나 = 이미지 두 장)
         self.img = int(min(H * 0.085, self.spacing * 0.78))
         gap = int(self.img * 0.35)
-        self._pair_dx = (self.img + gap) / 2          # 팀 카드에서 두 이미지가 중앙에서 떨어진 거리
-        if item_kind == 'pair':
-            images_width = 2 * self.img + gap
-        else:
-            images_width = self.img
-        self.card_w = images_width + 24
+        self._pair_dx = (self.img + gap) / 2          # 두 이미지가 카드 중앙에서 떨어진 거리
+        self.card_w = 2 * self.img + gap + 24
         self.card_h = self.img + 14
 
         # 왼쪽 열(나의 순위)과 오른쪽 열(선택지 또는 가상 변화)의 x 위치
@@ -208,20 +202,15 @@ class RankingView:
     # ── 그리기 기본 도구 ──────────────────────────────────────────────────────
 
     def _draw_card(self, item: RankItem, pos, fill=R.CARD_COLOR) -> None:
-        """대상 카드 하나 (배경 + 동물 이미지, 팀이면 가운데 '+')."""
+        """팀 카드 하나 (배경 + 동물 이미지 두 장, 가운데 '+')."""
         self.card.fillColor = fill
         self.card.pos = pos
         self.card.draw()
 
         x, y = pos
-        if len(item.animals) == 1:
-            x_offsets = [0]
-        else:
-            x_offsets = [-self._pair_dx, self._pair_dx]
-            self.plus.pos = (x, y)
-            self.plus.draw()
-
-        for animal, dx in zip(item.animals, x_offsets):
+        self.plus.pos = (x, y)
+        self.plus.draw()
+        for animal, dx in zip(item.animals, (-self._pair_dx, self._pair_dx)):
             image = self.images[animal]
             image.pos = (x + dx, y)
             image.draw()

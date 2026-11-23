@@ -23,13 +23,12 @@ from recording.ranking_writers import EVENT_FIELDS, RANKING_FIELDS
 from recording.stimuli_loader import load_stimuli
 from task.ranking import flow
 from task.ranking.assessments import (
-    Probe, RankingEnv, _shuffled, _starting_order_for_revision, change_level, run_attribute_ranking,
-    run_counterfactual_probe,
+    Probe, RankingEnv, _shuffled, _starting_order_for_revision, change_level, run_counterfactual_probe,
 )
 from task.ranking.inputs import ScriptedSource, action_map
 from task.ranking.items import (
-    Change, RankItem, RankingSpec, _average_ranks, animal_items, kendall_distance, load_attributes, pair_items,
-    spearman, true_values,
+    Change, RankItem, RankingSpec, _average_ranks, kendall_distance, load_attributes, pair_items, spearman,
+    true_values,
 )
 from task.ranking.record import build_ranking_record
 from task.ranking.state import RevisedRanking, SequentialRanking
@@ -46,9 +45,9 @@ def _items(n=4):
 class TestItems(unittest.TestCase):
     def test_items_use_block_animals(self):
         for g in STIM.animal_groups:
-            pairs, animals = pair_items(g, STIM.char_code), animal_items(g, STIM.char_code)
+            pairs = pair_items(g, STIM.char_code)
             self.assertEqual(len(pairs), 6)
-            self.assertEqual(sorted(a for it in animals for a in it.animals), sorted(g))
+            self.assertEqual(sorted({a for it in pairs for a in it.animals}), sorted(g))
             for it in pairs:
                 self.assertEqual([STIM.char_code[a] for a in it.animals], list(it.roles))
 
@@ -101,7 +100,7 @@ class TestRegression(unittest.TestCase):
 
     def _result(self, status='complete', initial=()):
         items = pair_items(GROUP0, STIM.char_code)
-        spec = RankingSpec('b0_p1_revised', 'counterfactual', 'performance', 0, 'phase_1', tuple(GROUP0),
+        spec = RankingSpec('b0_p1_revised', 'counterfactual', 0, 'phase_1', tuple(GROUP0),
                            {STIM.char_code[a]: a for a in GROUP0}, domain='cooking', probe_id=1,
                            change=Change('competence', ('C',), 8.5, domain='cooking'))
         events = [{'event_idx': 0, 'event': 'onset', 'key': None, 'rt': 0.0},
@@ -127,8 +126,7 @@ class TestRegression(unittest.TestCase):
 
     def test_display_order_is_reproducible(self):
         env = RankingEnv(None, None, None, STIM, ATTRS, 'T01', Path('.'))
-        spec = RankingSpec('b0_p1_baseline', 'performance', 'performance', 0, 'phase_1', tuple(GROUP0),
-                           {}, domain='cooking')
+        spec = RankingSpec('b0_p1_baseline', 'performance', 0, 'phase_1', tuple(GROUP0), {}, domain='cooking')
         self.assertEqual(_shuffled(env, spec), _shuffled(env, spec))
         other = RankingEnv(None, None, None, STIM, ATTRS, 'T02', Path('.'))
         self.assertEqual(sorted(_shuffled(other, spec), key=lambda i: i.roles),
@@ -250,18 +248,25 @@ class ScreenBase(unittest.TestCase):
             return list(csv.DictReader(f))
 
 
-class TestSequentialScreen(ScreenBase):
-    def test_attribute_ranking_saved(self):
+class TestBaselineScreen(ScreenBase):
+    """The sequential baseline ranking; the change screen is escaped so only the baseline runs."""
+    PROBE = Probe(1, 'cooking', Change('competence', ('C',), 8.5, domain='cooking'))
+
+    def run_baseline(self, *baseline_keys):
+        env = self.env(_script(*baseline_keys), _script('escape'))
+        results = run_counterfactual_probe(env, 0, 'phase_1', self.PROBE)
+        self.assertEqual(len(results), 1)
+        return results[0]
+
+    def test_baseline_ranking_saved(self):
         # 6 pairs: place slot 0, then the next available each time; one undo + re-place; confirm.
         keys = ['space', 'space', 'backspace', 'space', 'x', 'return', 'space', 'space', 'space', 'space',
                 'return']
-        env = self.env(_script(*keys))
-        res = run_attribute_ranking(env, 0, 'phase_1', after_trial=7)
+        res = self.run_baseline(*keys)
         self.assertEqual(res.status, 'complete')
 
         rec = self.rows('rankings.csv')[0]
-        self.assertEqual(rec['ranking_type'], 'attribute')
-        self.assertEqual(rec['attribute'], 'synergy')
+        self.assertEqual((rec['ranking_type'], rec['domain'], rec['probe_id']), ('performance', 'cooking', '1'))
         self.assertEqual(rec['animal_set'], ','.join(GROUP0))
         self.assertEqual(rec['n_items'], '6')
         # placing top-to-bottom reproduces the display order
@@ -284,20 +289,10 @@ class TestSequentialScreen(ScreenBase):
             self.assertAlmostEqual(float(e['t_global']), onset + t, places=4)
         selects = [e for e in ev if e['event'] == 'select']
         self.assertEqual([e['rank_pos'] for e in selects], ['1', '2', '2', '3', '4', '5', '6'])
-        self.assertTrue((self.tmp / 'rankings' / 'b0_attr_t07.json').exists())
-
-    def test_competence_ranking_needs_domain(self):
-        env = self.env(_script('space', 'space', 'space', 'space', 'return'))
-        with self.assertRaises(ValueError):
-            run_attribute_ranking(env, 1, 'phase_2', after_trial=7)
-        res = run_attribute_ranking(env, 1, 'phase_2', after_trial=7, domain='tennis')
-        self.assertEqual(res.status, 'complete')
-        rec = self.rows('rankings.csv')[0]
-        self.assertEqual((rec['attribute'], rec['domain'], rec['n_items']), ('competence', 'tennis', '4'))
+        self.assertTrue((self.tmp / 'rankings' / 'b0_p1_baseline.json').exists())
 
     def test_abort_saves_partial(self):
-        env = self.env(_script('space', 'escape'))
-        res = run_attribute_ranking(env, 0, 'phase_1', after_trial=15)
+        res = self.run_baseline('space', 'escape')
         self.assertTrue(res.aborted)
         rec = self.rows('rankings.csv')[0]
         self.assertEqual(rec['status'], 'aborted')
@@ -306,7 +301,7 @@ class TestSequentialScreen(ScreenBase):
 
     def test_timeout(self):
         with mock.patch.object(R, 'RANKING_MAX_TIME', 0.3):
-            res = run_attribute_ranking(self.env(_script('space')), 0, 'phase_1', after_trial=7)
+            res = self.run_baseline('space')
         self.assertEqual(res.status, 'timeout')
         self.assertEqual(self.rows('rankings.csv')[0]['status'], 'timeout')
         self.assertEqual(self.rows('ranking_events.csv')[-1]['event'], 'timeout')
@@ -338,8 +333,8 @@ class TestCounterfactualScreen(ScreenBase):
 
         # ground truth: baseline vs counterfactual attributes, both from the originals
         items = pair_items(GROUP0, STIM.char_code)
-        base_truth = true_values(ATTRS, 'performance', items, 'cooking')
-        cf_truth = true_values(ATTRS.with_change(self.PROBE.change), 'performance', items, 'cooking')
+        base_truth = true_values(ATTRS, items, 'cooking')
+        cf_truth = true_values(ATTRS.with_change(self.PROBE.change), items, 'cooking')
         self.assertIn(f"A+C:{cf_truth['A+C']}", r['true_values'])
         self.assertIn(f"A+C:{base_truth['A+C']}", b['true_values'])
         self.assertEqual(r['true_order'].split('|')[0], 'A+C')
