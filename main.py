@@ -77,7 +77,7 @@ def main() -> None:
             instruction = t("inst_phase1") if phase == 'phase_1' else t("inst_phase2")
             forced_note = t("inst_forced_note") if S.FIRST_CHOICE_MODE == 'forced' else ""
             show_instructions(win, instruction.format(block_num=block_index + 1, total_blocks=n_blocks,
-                                                      forced_note=forced_note))
+                                                    forced_note=forced_note))
 
             cumulative['phase'] = 0
             for d in S.DOMAINS:
@@ -86,8 +86,8 @@ def main() -> None:
             run_block_trials(env, block_index, phase, schedule, cumulative)
 
         run_ending(win, ctx.subject_id, cumulative['total'],
-                   max_trial_score=stim.max_trial_score,
-                   elapsed_seconds=global_clock.getTime())
+                    max_trial_score=stim.max_trial_score,
+                    elapsed_seconds=global_clock.getTime())
     finally:
         ctx.neon_client.close(S.NEON_SHUTDOWN_FLUSH_TIMEOUT_S)
         save_neon_event_log(get_subject_dir(ctx.subject_id), ctx.neon_client.event_log)
