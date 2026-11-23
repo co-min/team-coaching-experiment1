@@ -8,6 +8,7 @@ screen 0 (~20 s) and drive the real screens with scripted key presses,
 then check what was written to disk.
 """
 
+import copy
 import csv
 import json
 import tempfile
@@ -23,7 +24,8 @@ from recording.ranking_writers import EVENT_FIELDS, RANKING_FIELDS
 from recording.stimuli_loader import load_stimuli
 from task.ranking import flow
 from task.ranking.assessments import (
-    Probe, RankingEnv, _shuffled, _starting_order_for_revision, change_level, run_counterfactual_probe,
+    Probe, ProbeCondition, RankingEnv, _shuffled, _starting_order_for_revision, change_level,
+    run_counterfactual_probe,
 )
 from task.ranking.inputs import ScriptedSource, action_map
 from task.ranking.items import (
@@ -31,6 +33,7 @@ from task.ranking.items import (
     true_values,
 )
 from task.ranking.record import build_ranking_record
+from task.ranking.schedule import ranking_domain, ranking_domain_problems, saved_ranking_problems
 from task.ranking.state import RevisedRanking, SequentialRanking
 
 STIM = load_stimuli()
@@ -223,6 +226,143 @@ def _script(*keys, t0=0.1, dt=0.05):
     return [(round(t0 + i * dt, 3), k) for i, k in enumerate(keys)]
 
 
+SCHEDULE = R.PERFORMANCE_RANKING_DOMAINS
+CONDITIONS = (ProbeCondition(1, 'competence', ('C',), 8.5), ProbeCondition(2, 'synergy', ('B', 'C'), 1.4))
+
+
+def _problems(schedule):
+    return ranking_domain_problems(schedule, S.BLOCK_PHASES, S.DOMAINS)
+
+
+def _saved_row(block_index, ranking_id, ranking_type, baseline_id='', change=None):
+    """One rankings.csv row as csv.DictReader returns it: every value a string, None as ''."""
+    change_kind = ''
+    change_domain = ''
+    if change is not None:
+        change_kind = change.kind
+        if change.domain is not None:
+            change_domain = change.domain
+    return {
+        'block_index':   str(block_index),
+        'phase':         S.BLOCK_PHASES[block_index],
+        'domain':        SCHEDULE[block_index],
+        'ranking_id':    ranking_id,
+        'ranking_type':  ranking_type,
+        'baseline_id':   baseline_id,
+        'change_kind':   change_kind,
+        'change_domain': change_domain,
+    }
+
+
+def _saved_rows():
+    """Rows for every block × CONDITIONS (baseline then revised), as the preview would save them."""
+    rows = []
+    for block_index in range(len(SCHEDULE)):
+        for condition in CONDITIONS:
+            probe = condition.for_domain(SCHEDULE[block_index])
+            baseline_id = f"b{block_index}_p{probe.probe_id}_baseline"
+            revised_id = f"b{block_index}_p{probe.probe_id}_revised"
+            rows.append(_saved_row(block_index, baseline_id, 'performance'))
+            rows.append(_saved_row(block_index, revised_id, 'counterfactual', baseline_id, probe.change))
+    return rows
+
+
+class TestRankingSchedule(unittest.TestCase):
+    def test_agreed_schedule(self):
+        self.assertEqual(SCHEDULE, ('cooking', 'repairing', 'tennis', 'cooking', 'repairing', 'tennis'))
+        self.assertEqual(_problems(SCHEDULE), [])
+        self.assertEqual([ranking_domain(b) for b in range(6)], list(SCHEDULE))
+        for domain in S.DOMAINS:
+            phases_of_domain = []
+            for block_index in range(len(SCHEDULE)):
+                if SCHEDULE[block_index] == domain:
+                    phases_of_domain.append(S.BLOCK_PHASES[block_index])
+            self.assertEqual(sorted(phases_of_domain), ['phase_1', 'phase_2'], domain)
+
+    def test_broken_schedules_fail(self):
+        cases = {
+            'old placeholder: one domain everywhere': ['cooking'] * 6,
+            'cooking twice in phase_1':  ['cooking', 'repairing', 'cooking', 'tennis', 'tennis', 'repairing'],
+            'back-to-back repeat':       ['cooking', 'cooking', 'repairing', 'repairing', 'tennis', 'tennis'],
+            'wrong length':              ['cooking', 'repairing', 'tennis'],
+            'unknown domain':            ['cooking', 'repairing', 'tennis', 'cooking', 'repairing', 'golf'],
+        }
+        for name, schedule in cases.items():
+            self.assertNotEqual(_problems(schedule), [], name)
+        self.assertTrue(any('phase_1' in p for p in _problems(cases['cooking twice in phase_1'])))
+        self.assertEqual(_problems(cases['back-to-back repeat']),
+                         ['blocks 0 and 1 both use cooking', 'blocks 2 and 3 both use repairing',
+                          'blocks 4 and 5 both use tennis'])
+
+
+class TestProbeBinding(unittest.TestCase):
+    def test_competence_change_uses_ranking_domain(self):
+        for d in S.DOMAINS:
+            probe = CONDITIONS[0].for_domain(d)
+            self.assertEqual((probe.domain, probe.change.domain), (d, d))
+            changed = ATTRS.with_change(probe.change)
+            self.assertEqual(changed.competence['C'][d], 8.5)
+            for other in set(S.DOMAINS) - {d}:
+                self.assertEqual(changed.competence['C'][other], ATTRS.competence['C'][other])
+
+    def test_synergy_change_has_no_domain(self):
+        probe = CONDITIONS[1].for_domain('tennis')
+        self.assertEqual((probe.domain, probe.change.domain), ('tennis', None))
+        self.assertEqual(ATTRS.with_change(probe.change).competence, ATTRS.competence)
+
+    def test_mismatched_competence_domain_rejected(self):
+        with self.assertRaises(ValueError):
+            Probe(1, 'tennis', Change('competence', ('C',), 8.5, domain='cooking'))
+
+    def test_no_carryover_across_blocks(self):
+        # every block's probes start from the original attributes
+        original_competence = copy.deepcopy(ATTRS.competence)
+        original_synergy = copy.deepcopy(ATTRS.synergy)
+        for domain in SCHEDULE:
+            for condition in CONDITIONS:
+                ATTRS.with_change(condition.for_domain(domain).change)
+        self.assertEqual(ATTRS.competence, original_competence)
+        self.assertEqual(ATTRS.synergy, original_synergy)
+        a = ATTRS.with_change(CONDITIONS[1].for_domain('cooking').change)
+        self.assertEqual(a.competence['C']['cooking'], 2.2)       # synergy probe does not see the competence one
+
+
+class TestSavedRankingCheck(unittest.TestCase):
+    def test_complete_schedule_passes(self):
+        self.assertEqual(saved_ranking_problems(_saved_rows(), SCHEDULE, S.BLOCK_PHASES), [])
+
+    def test_partial_run_checks_rows_only(self):
+        rows = [r for r in _saved_rows() if r['block_index'] in ('0', '1')]
+        self.assertEqual(saved_ranking_problems(rows, SCHEDULE, S.BLOCK_PHASES), [])
+
+    def test_violations_reported(self):
+        def problems(mutate):
+            rows = _saved_rows()
+            mutate(rows)
+            return saved_ranking_problems(rows, SCHEDULE, S.BLOCK_PHASES)
+
+        def wrong_block_domain(rows):
+            for r in rows:
+                if r['block_index'] == '3':
+                    r['domain'] = 'tennis'
+
+        def revised_other_domain(rows):
+            rows[1]['domain'] = 'tennis'
+
+        def competence_other_domain(rows):
+            rows[1]['change_domain'] = 'tennis'
+
+        def synergy_with_domain(rows):
+            rows[3]['change_domain'] = 'cooking'
+
+        def wrong_phase(rows):
+            rows[0]['phase'] = 'phase_2'
+
+        for mutate in (wrong_block_domain, revised_other_domain, competence_other_domain,
+                       synergy_with_domain, wrong_phase):
+            self.assertNotEqual(problems(mutate), [], mutate.__name__)
+
+
 class ScreenBase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -363,6 +503,27 @@ class TestCounterfactualScreen(ScreenBase):
         self.assertIn(f"A+C:{round(expected, 4)}", recs['b0_p2_revised']['true_values'])   # C not boosted
         with open(self.tmp / 'rankings' / 'b0_p2_revised.json', encoding='utf-8') as f:
             self.assertEqual(json.load(f)['record']['change_kind'], 'synergy')
+
+    def test_scheduled_blocks_saved_data(self):
+        """Blocks 1 and 2 with the scheduled domains, as the preview runs them; saved rows pass the check."""
+        blocks = (1, 2)
+        one_probe = [_script(*(['space'] * 6), 'return'), _script('space'), _script('return')]
+        env = self.env(*(one_probe * len(CONDITIONS) * len(blocks)))
+        for b in blocks:
+            for cond in CONDITIONS:
+                run_counterfactual_probe(env, b, S.BLOCK_PHASES[b], cond.for_domain(ranking_domain(b)))
+
+        rows = self.rows('rankings.csv')
+        self.assertEqual(len(rows), 2 * len(CONDITIONS) * len(blocks))
+        self.assertEqual(saved_ranking_problems(rows, SCHEDULE, S.BLOCK_PHASES), [])
+        recs = {r['ranking_id']: r for r in rows}
+        self.assertEqual({recs['b1_p1_baseline']['domain'], recs['b1_p1_revised']['domain']}, {'repairing'})
+        self.assertEqual(recs['b1_p1_revised']['change_domain'], 'repairing')
+        self.assertEqual((recs['b2_p2_revised']['domain'], recs['b2_p2_revised']['change_domain']), ('tennis', ''))
+        # truth for the tennis competence probe: only C's tennis skill changed
+        items = pair_items(STIM.animal_groups[2], STIM.char_code)
+        cf = true_values(ATTRS.with_change(CONDITIONS[0].for_domain('tennis').change), items, 'tennis')
+        self.assertIn(f"A+C:{cf['A+C']}", recs['b2_p1_revised']['true_values'])
 
 
 if __name__ == '__main__':

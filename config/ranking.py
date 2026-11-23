@@ -6,6 +6,15 @@ revision). Kept apart from settings.py until the ranking flow is integrated
 into the block loop.
 """
 
+# ─── Performance ranking domain schedule ─────────────────────────────────────
+# Domain of each block's performance ranking (baseline and revised), block 0 first.
+# Fixed for every participant. Each domain appears once in a competence-visible
+# (phase_1) block and once in a synergy-visible (phase_2) block, three blocks
+# apart. Checked by task.ranking.schedule.ranking_domain_problems.
+# Counterfactual probe conditions are defined separately and bound to these
+# domains at run time (task.ranking.assessments.ProbeCondition).
+PERFORMANCE_RANKING_DOMAINS = ('cooking', 'repairing', 'tennis', 'cooking', 'repairing', 'tennis')
+
 # ─── Input ───────────────────────────────────────────────────────────────────
 # Logical action → keys. Ranking screens only ever see actions, so an MRI
 # response box can be swapped in by editing this map (or replacing KeySource).

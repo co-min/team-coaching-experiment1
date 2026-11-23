@@ -22,7 +22,7 @@ probe 를 여러 번 해도 변화가 누적되지 않습니다.
 import random
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, List, Optional, Sequence
+from typing import Any, List, Optional, Sequence, Tuple
 
 from config.ranking_strings import rt
 from config.settings import COMPETENCE_COLOR
@@ -52,10 +52,42 @@ class RankingEnv:
 
 @dataclass(frozen=True)
 class Probe:
-    """가상 변화 probe 하나: 어느 도메인의 팀 점수를, 어떤 변화를 가정하고 다시 묻는지."""
+    """가상 변화 probe 하나: 어느 도메인의 팀 점수를, 어떤 변화를 가정하고 다시 묻는지.
+
+    기준 순위와 수정 순위는 모두 domain 으로 묻습니다.
+    competence 변화는 반드시 같은 도메인의 실력을 바꿔야 합니다.
+    """
     probe_id: int
     domain:   str
     change:   Change
+
+    def __post_init__(self):
+        if self.change.kind == 'competence' and self.change.domain != self.domain:
+            raise ValueError(f"competence change on {self.change.domain!r} "
+                             f"but the ranking domain is {self.domain!r}: {self}")
+
+
+@dataclass(frozen=True)
+class ProbeCondition:
+    """도메인이 정해지지 않은 가상 변화 조건. 도메인 스케줄과 따로 정의합니다.
+
+    for_domain(domain) 으로 그 블록의 순위 도메인에 묶어 Probe 를 만듭니다.
+        competence : 그 도메인의 실력을 value 로 바꿈
+        synergy    : 도메인과 상관없이 짝의 시너지를 value 로 바꿈 (효과는 그 도메인의 팀 점수로 평가)
+    """
+    probe_id: int
+    kind:     str
+    roles:    Tuple[str, ...]
+    value:    float
+
+    def for_domain(self, domain: str) -> Probe:
+        """이 조건을 순위 도메인 domain 에 묶은 Probe."""
+        if self.kind == 'competence':
+            change_domain = domain          # 순위 도메인의 실력을 바꿈
+        else:
+            change_domain = None            # synergy 는 도메인과 상관없음
+        change = Change(self.kind, self.roles, self.value, domain=change_domain)
+        return Probe(self.probe_id, domain, change)
 
 
 # ── 도우미 ────────────────────────────────────────────────────────────────────
