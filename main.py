@@ -58,35 +58,41 @@ def run_blocks(env: BlockEnv, block_schedules, cumulative: dict) -> None:
     block_id, never with presentation_pos.
     """
     order = block_order(env.counterbalance_group)
-    n_blocks = len(order)
-
     for presentation_pos, block_id in enumerate(order):
-        phase = S.BLOCK_PHASES[block_id]           # from the original block
-        schedule = block_schedules[block_id]       # from the original block
-        block_number = presentation_pos + 1        # what the participant sees: 1 … n_blocks
-
-        if block_number in S.BREAK_BEFORE_BLOCKS:
-            show_instructions(env.win, t("inst_break"), advance_key="t")
-        if phase == 'phase_1':
-            instruction = t("inst_phase1")
-        else:
-            instruction = t("inst_phase2")
-        if S.FIRST_CHOICE_MODE == 'forced':
-            forced_note = t("inst_forced_note")
-        else:
-            forced_note = ""
-        show_instructions(env.win, instruction.format(block_num=block_number, total_blocks=n_blocks,
-                                                      forced_note=forced_note))
-
-        cumulative['phase'] = 0
-        for d in S.DOMAINS:
-            cumulative[d] = 0
-
-        # Trials 1–7 → middle appraisal → trials 8–15 → end appraisal (all inside run_block_trials)
-        run_block_trials(env, block_id, phase, schedule, cumulative, presentation_pos=presentation_pos)
+        run_block(env, block_id, presentation_pos, len(order), block_schedules[block_id], cumulative)
         # Performance + counterfactual ranking go here, after the end appraisal
         # (task.ranking.assessments.run_block_rankings(..., block_id, presentation_pos)).
         # Not wired in yet: the probe conditions are still placeholders (tools/preview_ranking.py).
+
+
+def run_block(env: BlockEnv, block_id: int, presentation_pos: int, n_blocks: int,
+              schedule, cumulative: dict) -> None:
+    """One block: break / phase instruction → trials 1–7 → middle appraisal → trials 8–15 → end appraisal.
+
+    schedule must be block_schedules[block_id]. Also used by tools/test_single_block.py.
+    """
+    phase = S.BLOCK_PHASES[block_id]           # from the original block
+    block_number = presentation_pos + 1        # what the participant sees: 1 … n_blocks
+
+    if block_number in S.BREAK_BEFORE_BLOCKS:
+        show_instructions(env.win, t("inst_break"), advance_key="t")
+    if phase == 'phase_1':
+        instruction = t("inst_phase1")
+    else:
+        instruction = t("inst_phase2")
+    if S.FIRST_CHOICE_MODE == 'forced':
+        forced_note = t("inst_forced_note")
+    else:
+        forced_note = ""
+    show_instructions(env.win, instruction.format(block_num=block_number, total_blocks=n_blocks,
+                                                  forced_note=forced_note))
+
+    cumulative['phase'] = 0
+    for d in S.DOMAINS:
+        cumulative[d] = 0
+
+    # Trials 1–7 → middle appraisal → trials 8–15 → end appraisal (all inside run_block_trials)
+    run_block_trials(env, block_id, phase, schedule, cumulative, presentation_pos=presentation_pos)
 
 
 def main() -> None:
