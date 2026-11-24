@@ -2,12 +2,12 @@
 Team-managing task — entry point.
 
     session setup → blocks in the subject's counterbalance order → ending
-    each block: trials 1–7 → middle appraisal → trials 8–15 → end appraisal
+    each block: trials 1–7 → middle estimate → trials 8–15 → end estimate
 
 Block order: group A (odd subject ID) / B (even) from config.settings.BLOCK_ORDERS.
     presentation_pos (0–5) → block number on screen, BREAK_BEFORE_BLOCKS
     block_id         (0–5) → phase, animals, trials, forced first choices,
-                             appraisal type, ranking domain, probe order
+                             estimate type, ranking domain, probe order
 
 Task design, language, timing and hardware switches: config/settings.py
 """
@@ -59,14 +59,14 @@ def run_blocks(env: BlockEnv, block_schedules, cumulative: dict) -> None:
     order = block_order(env.counterbalance_group)
     for presentation_pos, block_id in enumerate(order):
         run_block(env, block_id, presentation_pos, len(order), block_schedules[block_id], cumulative)
-        # Performance + counterfactual ranking go here, after the end appraisal
+        # Performance + counterfactual ranking go here, after the end estimate
         # (task.ranking.assessments.run_block_rankings(..., block_id, presentation_pos)).
         # Not wired in yet: the probe conditions are still placeholders (tools/preview_ranking.py).
 
 
 def run_block(env: BlockEnv, block_id: int, presentation_pos: int, n_blocks: int,
               schedule, cumulative: dict) -> None:
-    """One block: break / phase instruction → trials 1–7 → middle appraisal → trials 8–15 → end appraisal.
+    """One block: break / phase instruction → trials 1–7 → middle estimate → trials 8–15 → end estimate.
 
     schedule must be block_schedules[block_id]. Also used by tools/test_single_block.py.
     """
@@ -90,7 +90,7 @@ def run_block(env: BlockEnv, block_id: int, presentation_pos: int, n_blocks: int
     for d in S.DOMAINS:
         cumulative[d] = 0
 
-    # Trials 1–7 → middle appraisal → trials 8–15 → end appraisal (all inside run_block_trials)
+    # Trials 1–7 → middle estimate → trials 8–15 → end estimate (all inside run_block_trials)
     run_block_trials(env, block_id, phase, schedule, cumulative, presentation_pos=presentation_pos)
 
 

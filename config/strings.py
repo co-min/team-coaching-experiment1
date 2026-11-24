@@ -67,38 +67,38 @@ _STRINGS: dict[str, dict[str, str]] = {
     "feedback_phase_score":  {"ko": "단계 점수: {cur}점", "en": "Phase score: {cur}"},
     "feedback_total_score":  {"ko": "총 점수: {score}점", "en": "Total score: {score}"},
 
-    # ── attribute appraisal (task/appraisal) ─────────────────────────────────
-    "appraisal_intro_synergy": {
+    # ── attribute estimate (task/estimate) ───────────────────────────────────
+    "estimate_intro_synergy": {
         "ko": "{checkpoint}\n\n지금까지의 게임을 떠올리며\n두 동물이 함께할 때의 팀워크가 어느 정도인지 평가해 주세요.\n\n"
               "{low} 낮음    {mid} 보통    {high} 높음\n고른 뒤 [{confirm}] 키로 확정해요.\n\n[{confirm}] 키를 눌러 시작",
         "en": "{checkpoint}\n\nThinking back on the games so far,\nrate the synergy of each pair of animals.\n\n"
               "{low} Low    {mid} Medium    {high} High\nThen press [{confirm}] to confirm.\n\nPress [{confirm}] to start",
     },
-    "appraisal_intro_competence": {
+    "estimate_intro_competence": {
         "ko": "{checkpoint}\n\n지금까지의 게임을 떠올리며\n각 동물 한 마리의 실력이 어느 정도인지 평가해 주세요.\n\n"
               "{low} 낮음    {mid} 보통    {high} 높음\n고른 뒤 [{confirm}] 키로 확정해요.\n\n[{confirm}] 키를 눌러 시작",
         "en": "{checkpoint}\n\nThinking back on the games so far,\nrate the competence of each animal on its own.\n\n"
               "{low} Low    {mid} Medium    {high} High\nThen press [{confirm}] to confirm.\n\nPress [{confirm}] to start",
     },
-    "appraisal_checkpoint_middle": {"ko": "중간 평가", "en": "Middle appraisal"},
-    "appraisal_checkpoint_end":    {"ko": "마지막 평가", "en": "End appraisal"},
-    "appraisal_title_synergy":     {"ko": "팀워크 평가", "en": "SYNERGY APPRAISAL"},
-    "appraisal_title_competence":  {"ko": "실력 평가", "en": "COMPETENCE APPRAISAL"},
-    "appraisal_counter_pair":      {"ko": "팀 {n} / {total}", "en": "Pair {n} / {total}"},
-    "appraisal_counter_animal":    {"ko": "동물 {n} / {total}", "en": "Animal {n} / {total}"},
-    "appraisal_question_synergy": {
+    "estimate_checkpoint_middle": {"ko": "중간 평가", "en": "Middle estimate"},
+    "estimate_checkpoint_end":    {"ko": "마지막 평가", "en": "End estimate"},
+    "estimate_title_synergy":     {"ko": "팀워크 평가", "en": "SYNERGY ESTIMATE"},
+    "estimate_title_competence":  {"ko": "실력 평가", "en": "COMPETENCE ESTIMATE"},
+    "estimate_counter_pair":      {"ko": "팀 {n} / {total}", "en": "Pair {n} / {total}"},
+    "estimate_counter_animal":    {"ko": "동물 {n} / {total}", "en": "Animal {n} / {total}"},
+    "estimate_question_synergy": {
         "ko": "이 두 동물의 팀워크는 어느 정도일까요?",
         "en": "How would you rate the synergy\nbetween these animals?",
     },
-    "appraisal_question_competence": {
+    "estimate_question_competence": {
         "ko": "이 동물의 {domain} 실력은 어느 정도일까요?",
         "en": "How would you rate this animal's\ncompetence in {domain}?",
     },
-    "appraisal_level_low":  {"ko": "낮음", "en": "LOW"},
-    "appraisal_level_mid":  {"ko": "보통", "en": "MEDIUM"},
-    "appraisal_level_high": {"ko": "높음", "en": "HIGH"},
-    "appraisal_hint_choose":  {"ko": "{low} {mid} {high} 키로 고르세요", "en": "Choose with {low} {mid} {high}"},
-    "appraisal_hint_confirm": {"ko": "[{confirm}] 확정", "en": "[{confirm}] Confirm"},
+    "estimate_level_low":  {"ko": "낮음", "en": "LOW"},
+    "estimate_level_mid":  {"ko": "보통", "en": "MEDIUM"},
+    "estimate_level_high": {"ko": "높음", "en": "HIGH"},
+    "estimate_hint_choose":  {"ko": "{low} {mid} {high} 키로 고르세요", "en": "Choose with {low} {mid} {high}"},
+    "estimate_hint_confirm": {"ko": "[{confirm}] 확정", "en": "[{confirm}] Confirm"},
 }
 
 

@@ -1,13 +1,13 @@
 """
-Attribute appraisal tests (task/appraisal).
+Attribute estimate tests (task/estimate).
 
-    python -m unittest tests.test_appraisal -v
+    python -m unittest tests.test_estimate -v
 
-The first classes need no window: checkpoints, appraisal type, questions,
-ground truth, order, the position of the appraisals in the block loop, and the
+The first classes need no window: checkpoints, estimate type, questions,
+ground truth, order, the position of the estimates in the block loop, and the
 LabJack codes / Neon labels.
 The Screen classes open a small PsychoPy window and answer with scripted keys;
-TestAppraisalEvents also checks which events go out on which screen flip.
+TestEstimateEvents also checks which events go out on which screen flip.
 """
 
 import csv
@@ -22,18 +22,18 @@ from psychopy import core, visual
 import recording.writers as writers
 import hardware.events as hw_events
 import hardware.labjack as labjack
-import task.appraisal.run as run_mod
+import task.estimate.run as run_mod
 import task.block as block_mod
-from config import appraisal as A
+from config import estimate as E
 from config import settings as S
 from config.paths import COMPETENCE_CSV, SYNERGY_CSV
-from recording.appraisal_writers import APPRAISAL_FIELDS
+from recording.estimate_writers import ESTIMATE_FIELDS
 from recording.stimuli_loader import load_stimuli
-from task.appraisal.items import (
-    appraisal_type_for_phase, build_appraisal_items, checkpoint_after_trial, competence_items, is_correct,
+from task.estimate.items import (
+    estimate_type_for_phase, build_estimate_items, checkpoint_after_trial, competence_items, is_correct,
     item_counter, ordered_items, synergy_items,
 )
-from task.appraisal.run import AppraisalEnv, run_appraisal
+from task.estimate.run import EstimateEnv, run_estimate
 from task.block import BlockEnv, run_block_trials
 from task.forced_first import attach_forced_first
 from task.ranking.inputs import ScriptedSource
@@ -42,8 +42,8 @@ from task.schedule import generate_block_schedules
 
 STIM = load_stimuli()
 ATTRS = load_attributes(STIM.synergy)
-SYNERGY_BLOCK = S.BLOCK_PHASES.index('phase_1')       # competence visible → synergy appraisal
-COMPETENCE_BLOCK = S.BLOCK_PHASES.index('phase_2')    # synergy visible → competence appraisal
+SYNERGY_BLOCK = S.BLOCK_PHASES.index('phase_1')       # competence visible → synergy estimate
+COMPETENCE_BLOCK = S.BLOCK_PHASES.index('phase_2')    # synergy visible → competence estimate
 
 
 def _read_csv(path):
@@ -87,12 +87,12 @@ class TestCheckpoints(unittest.TestCase):
         self.assertEqual(S.N_TRIALS_PER_BLOCK, 15)       # end = the last learning trial
 
     def test_type_follows_the_hidden_attribute_of_each_block(self):
-        self.assertEqual(appraisal_type_for_phase('phase_1'), 'synergy')
-        self.assertEqual(appraisal_type_for_phase('phase_2'), 'competence')
+        self.assertEqual(estimate_type_for_phase('phase_1'), 'synergy')
+        self.assertEqual(estimate_type_for_phase('phase_2'), 'competence')
         for phase in S.BLOCK_PHASES:
-            appraisal_type_for_phase(phase)                # every configured block has a type
+            estimate_type_for_phase(phase)                 # every configured block has a type
         with self.assertRaises(ValueError):
-            appraisal_type_for_phase('phase_3')
+            estimate_type_for_phase('phase_3')
 
 
 class TestSynergyItems(unittest.TestCase):
@@ -156,8 +156,8 @@ class TestCompetenceItems(unittest.TestCase):
 class TestOrder(unittest.TestCase):
     def test_reproducible_and_complete(self):
         group = STIM.animal_groups[0]
-        first = build_appraisal_items('synergy', group, STIM, ATTRS, seed='T01|b0_middle')
-        again = build_appraisal_items('synergy', group, STIM, ATTRS, seed='T01|b0_middle')
+        first = build_estimate_items('synergy', group, STIM, ATTRS, seed='T01|b0_middle')
+        again = build_estimate_items('synergy', group, STIM, ATTRS, seed='T01|b0_middle')
         self.assertEqual(first, again)
         self.assertEqual(len({item.pair_id for item in first}), 6)        # each pair exactly once
         for item in first:
@@ -165,13 +165,13 @@ class TestOrder(unittest.TestCase):
 
     def test_middle_and_end_ask_the_same_questions(self):
         group = STIM.animal_groups[1]
-        middle = build_appraisal_items('competence', group, STIM, ATTRS, seed='T01|b1_middle')
-        end = build_appraisal_items('competence', group, STIM, ATTRS, seed='T01|b1_end')
+        middle = build_estimate_items('competence', group, STIM, ATTRS, seed='T01|b1_middle')
+        end = build_estimate_items('competence', group, STIM, ATTRS, seed='T01|b1_end')
         self.assertEqual(sorted((i.animal_id, i.domain) for i in middle), sorted((i.animal_id, i.domain) for i in end))
 
     def test_competence_stays_grouped_by_domain(self):
         for seed in ('a', 'b', 'c', 'd'):
-            items = build_appraisal_items('competence', STIM.animal_groups[1], STIM, ATTRS, seed=seed)
+            items = build_estimate_items('competence', STIM.animal_groups[1], STIM, ATTRS, seed=seed)
             domain_runs = [items[0].domain]
             for item in items[1:]:
                 if item.domain != domain_runs[-1]:
@@ -192,7 +192,7 @@ class TestOrder(unittest.TestCase):
 
 
 class TestBlockFlowOrder(unittest.TestCase):
-    """run_block_trials with fake trials: where do the appraisals run?"""
+    """run_block_trials with fake trials: where do the estimates run?"""
 
     def _run_block(self, tmp, block_index):
         log = []
@@ -205,9 +205,9 @@ class TestBlockFlowOrder(unittest.TestCase):
             log.append(('trial', frame_log['trial_id'] + 1, forced_first))
             return None                                      # no response → no feedback screen
 
-        def fake_appraisal(env, block_i, phase, checkpoint, trial_after, presentation_pos=None):
+        def fake_estimate(env, block_i, phase, checkpoint, trial_after, presentation_pos=None):
             saved = _read_csv(Path(tmp) / 'sub-flow' / 'trials.csv')
-            log.append(('appraisal', checkpoint, trial_after, len(saved)))
+            log.append(('estimate', checkpoint, trial_after, len(saved)))
 
         env = BlockEnv(win=SimpleNamespace(size=(1000, 700)), global_clock=core.Clock(),
                        factory=SimpleNamespace(get_slot_info=lambda: {'slot_coords': {}, 'animal_size_px': 100}),
@@ -216,7 +216,7 @@ class TestBlockFlowOrder(unittest.TestCase):
         phase = S.BLOCK_PHASES[block_index]
         with mock.patch.object(writers, 'DATA_DIR', Path(tmp)), \
              mock.patch.dict(block_mod.TRIAL_RUNNERS, {phase: fake_trial}), \
-             mock.patch.object(block_mod, 'run_block_appraisal', fake_appraisal), \
+             mock.patch.object(block_mod, 'run_block_estimate', fake_estimate), \
              mock.patch.object(block_mod, 'run_gaussian_iti', lambda *a, **k: None), \
              mock.patch.object(block_mod, 'on_block_start', lambda *a, **k: None), \
              mock.patch.object(block_mod, 'save_experiment_summary', lambda *a: log.append(('block_end',))):
@@ -230,41 +230,41 @@ class TestBlockFlowOrder(unittest.TestCase):
         expected = []
         for n in range(1, 8):
             expected.append(('trial', n, schedule[n - 1]['forced_first']))
-        expected.append(('appraisal', 'middle', 7, 7))           # trial 7 already saved
+        expected.append(('estimate', 'middle', 7, 7))            # trial 7 already saved
         for n in range(8, 16):
             expected.append(('trial', n, schedule[n - 1]['forced_first']))
-        expected.append(('appraisal', 'end', 15, 15))
+        expected.append(('estimate', 'end', 15, 15))
         expected.append(('block_end',))                           # nothing else runs before main() continues
         self.assertEqual(log, expected)
 
-    def test_esc_in_the_appraisal_ends_the_session(self):
+    def test_esc_in_the_estimate_ends_the_session(self):
         env = SimpleNamespace(win=mock.Mock(), global_clock=None, stim=STIM, subject_id='x', session_id=None,
                               handle=None, neon_client=None, counterbalance_group=None)
-        with mock.patch.object(block_mod, 'make_appraisal_env', lambda *a, **k: None), \
-             mock.patch.object(block_mod, 'run_appraisal', lambda *a, **k: SimpleNamespace(aborted=True)), \
+        with mock.patch.object(block_mod, 'make_estimate_env', lambda *a, **k: None), \
+             mock.patch.object(block_mod, 'run_estimate', lambda *a, **k: SimpleNamespace(aborted=True)), \
              mock.patch.object(block_mod.core, 'quit') as quit_mock:
-            block_mod.run_block_appraisal(env, 0, 'phase_1', 'middle', 7)
+            block_mod.run_block_estimate(env, 0, 'phase_1', 'middle', 7)
         env.win.close.assert_called_once()
         quit_mock.assert_called_once()
 
 
-class TestAppraisalEventCodes(unittest.TestCase):
+class TestEstimateEventCodes(unittest.TestCase):
     """TTL codes and Neon labels, without a window (fake win runs callOnFlip callbacks on flip())."""
 
     def test_codes_follow_the_phase(self):
-        self.assertEqual(hw_events._APPRAISAL_START_TRIG,    {1: 151, 2: 152})
-        self.assertEqual(hw_events._APPRAISAL_QUESTION_TRIG, {1: 161, 2: 162})
-        self.assertEqual(hw_events._APPRAISAL_RESPONSE_TRIG, {1: 171, 2: 172})
-        self.assertEqual(hw_events._APPRAISAL_END_TRIG,      {1: 181, 2: 182})
+        self.assertEqual(hw_events._ESTIMATE_START_TRIG,    {1: 151, 2: 152})
+        self.assertEqual(hw_events._ESTIMATE_QUESTION_TRIG, {1: 161, 2: 162})
+        self.assertEqual(hw_events._ESTIMATE_RESPONSE_TRIG, {1: 171, 2: 172})
+        self.assertEqual(hw_events._ESTIMATE_END_TRIG,      {1: 181, 2: 182})
 
     def test_no_collision_with_existing_codes(self):
-        appraisal_codes = set()
+        estimate_codes = set()
         other_codes = set()
         for name in dir(labjack):
             if not name.startswith('TRIG_') or name == 'TRIG_RESET':
                 continue
-            if 'APPRAISAL' in name:
-                appraisal_codes.add(getattr(labjack, name))
+            if 'ESTIMATE' in name:
+                estimate_codes.add(getattr(labjack, name))
             else:
                 other_codes.add(getattr(labjack, name))
         # animal-encoded choice codes are base + 0..23
@@ -272,53 +272,53 @@ class TestAppraisalEventCodes(unittest.TestCase):
             for animal_index in labjack.ANIMAL_IDX.values():
                 other_codes.add(base + animal_index)
 
-        self.assertEqual(appraisal_codes, {151, 152, 161, 162, 171, 172, 181, 182})
-        self.assertEqual(appraisal_codes & other_codes, set())
-        for code in appraisal_codes | other_codes:
+        self.assertEqual(estimate_codes, {151, 152, 161, 162, 171, 172, 181, 182})
+        self.assertEqual(estimate_codes & other_codes, set())
+        for code in estimate_codes | other_codes:
             self.assertTrue(1 <= code <= 255, code)          # 8 EIO data lines
 
     def test_labels_name_block_checkpoint_question_and_response(self):
         ttl, neon = [], FakeNeon(lambda: (0, False))
         win = FakeWin()
         with mock.patch.object(hw_events, 'send_trigger', lambda handle, code, *a, **k: ttl.append(code)):
-            hw_events.callonflip_appraisal_start(win, neon, None, 2, 3, 'end')
-            hw_events.callonflip_appraisal_question(win, neon, None, 2, 3, 'end', 4)
+            hw_events.callonflip_estimate_start(win, neon, None, 2, 3, 'end')
+            hw_events.callonflip_estimate_question(win, neon, None, 2, 3, 'end', 4)
             self.assertEqual((ttl, neon.names()), ([], []))  # nothing before the flip
             win.flip()
-            hw_events.on_appraisal_confirm(neon, None, 2, 3, 'end', 4, 'mid')
-            hw_events.on_appraisal_no_response(neon, 2, 3, 'end', 5, 'timeout')
-            hw_events.on_appraisal_no_response(neon, 2, 3, 'end', 6, 'aborted')
-            hw_events.on_appraisal_end(neon, None, 2, 3, 'end', 'aborted')
+            hw_events.on_estimate_confirm(neon, None, 2, 3, 'end', 4, 'mid')
+            hw_events.on_estimate_no_response(neon, 2, 3, 'end', 5, 'timeout')
+            hw_events.on_estimate_no_response(neon, 2, 3, 'end', 6, 'aborted')
+            hw_events.on_estimate_end(neon, None, 2, 3, 'end', 'aborted')
         self.assertEqual(ttl, [152, 162, 172, 182])
         self.assertEqual(neon.names(), [
-            'P2_BLOCK_03_APPRAISAL_END_START',
-            'P2_BLOCK_03_APPRAISAL_END_Q04_ONSET',
-            'P2_BLOCK_03_APPRAISAL_END_Q04_MID_CONFIRM',
-            'P2_BLOCK_03_APPRAISAL_END_Q05_TIMEOUT',
-            'P2_BLOCK_03_APPRAISAL_END_Q06_ABORTED',
-            'P2_BLOCK_03_APPRAISAL_END_END_ABORTED',
+            'P2_BLOCK_03_ESTIMATE_END_START',
+            'P2_BLOCK_03_ESTIMATE_END_Q04_ONSET',
+            'P2_BLOCK_03_ESTIMATE_END_Q04_MID_CONFIRM',
+            'P2_BLOCK_03_ESTIMATE_END_Q05_TIMEOUT',
+            'P2_BLOCK_03_ESTIMATE_END_Q06_ABORTED',
+            'P2_BLOCK_03_ESTIMATE_END_END_ABORTED',
         ])
-        self.assertEqual([e['meta'].get('task_type') for e in neon.events], ['appraisal'] * 6)
+        self.assertEqual([e['meta'].get('task_type') for e in neon.events], ['estimate'] * 6)
         self.assertEqual([e['meta'].get('trial_index') for e in neon.events], [None, 4, 4, 5, 6, None])
 
-    def test_block_appraisal_passes_hardware_group_and_position(self):
+    def test_block_estimate_passes_hardware_group_and_position(self):
         seen = {}
 
         def fake_make_env(*args, **kwargs):
             seen['env_kwargs'] = kwargs
-            return 'appraisal_env'
+            return 'estimate_env'
 
-        def fake_run(appraisal_env, block_index, phase, checkpoint, trial_after, presentation_pos=None):
-            seen['run'] = (appraisal_env, block_index, phase, checkpoint, trial_after, presentation_pos)
+        def fake_run(estimate_env, block_index, phase, checkpoint, trial_after, presentation_pos=None):
+            seen['run'] = (estimate_env, block_index, phase, checkpoint, trial_after, presentation_pos)
             return SimpleNamespace(aborted=False)
 
         env = SimpleNamespace(win=None, global_clock=None, stim=STIM, subject_id='x', session_id='S',
                               handle='LJ', neon_client='NEON', counterbalance_group='B')
-        with mock.patch.object(block_mod, 'make_appraisal_env', fake_make_env), \
-             mock.patch.object(block_mod, 'run_appraisal', fake_run):
-            block_mod.run_block_appraisal(env, 5, 'phase_2', 'end', 15, presentation_pos=2)
+        with mock.patch.object(block_mod, 'make_estimate_env', fake_make_env), \
+             mock.patch.object(block_mod, 'run_estimate', fake_run):
+            block_mod.run_block_estimate(env, 5, 'phase_2', 'end', 15, presentation_pos=2)
         self.assertEqual(seen['env_kwargs'], {'lj_handle': 'LJ', 'neon': 'NEON', 'counterbalance_group': 'B'})
-        self.assertEqual(seen['run'], ('appraisal_env', 5, 'phase_2', 'end', 15, 2))
+        self.assertEqual(seen['run'], ('estimate_env', 5, 'phase_2', 'end', 15, 2))
 
 
 class FakeWin:
@@ -371,20 +371,20 @@ class ScreenBase(unittest.TestCase):
 
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp())
-        patcher = mock.patch.object(A, 'CONFIRM_FEEDBACK_S', 0.0)
+        patcher = mock.patch.object(E, 'CONFIRM_FEEDBACK_S', 0.0)
         patcher.start()
         self.addCleanup(patcher.stop)
 
-    def run_appraisal(self, block_index, scripts, checkpoint='middle', trial_after=7, subject_id='T01'):
-        env = AppraisalEnv(win=self.win, global_clock=core.Clock(),
-                           source=ScriptedSource(scripts, key_map=A.APPRAISAL_KEYS), stim=STIM, attrs=ATTRS,
+    def run_estimate(self, block_index, scripts, checkpoint='middle', trial_after=7, subject_id='T01'):
+        env = EstimateEnv(win=self.win, global_clock=core.Clock(),
+                           source=ScriptedSource(scripts, key_map=E.ESTIMATE_KEYS), stim=STIM, attrs=ATTRS,
                            subject_id=subject_id, subject_dir=self.tmp, session_id='S')
-        result = run_appraisal(env, block_index, S.BLOCK_PHASES[block_index], checkpoint, trial_after,
+        result = run_estimate(env, block_index, S.BLOCK_PHASES[block_index], checkpoint, trial_after,
                                show_intro=False)
         return result, self.rows()
 
     def rows(self):
-        path = self.tmp / 'appraisals.csv'
+        path = self.tmp / 'estimates.csv'
         if not path.exists():
             return []
         return _read_csv(path)
@@ -400,16 +400,16 @@ class TestSynergyScreen(ScreenBase):
             _script('left', 'x', 'space'),              # unmapped key ignored
             _script('down', 'space', t0=0.3),
         ]
-        result, rows = self.run_appraisal(SYNERGY_BLOCK, scripts)
+        result, rows = self.run_estimate(SYNERGY_BLOCK, scripts)
         self.assertFalse(result.aborted)
         self.assertEqual(len(rows), 6)
-        self.assertEqual(list(rows[0]), APPRAISAL_FIELDS)
+        self.assertEqual(list(rows[0]), ESTIMATE_FIELDS)
         self.assertEqual(sorted(row['pair_id'] for row in rows), ['A+B', 'A+C', 'A+D', 'B+C', 'B+D', 'C+D'])
 
         truth = _table_synergy()
         expected_responses = ['low', 'mid', 'high', 'high', 'low', 'mid']
         for position, (row, script) in enumerate(zip(rows, scripts)):
-            self.assertEqual(row['appraisal_type'], 'synergy')
+            self.assertEqual(row['estimate_type'], 'synergy')
             self.assertEqual((row['checkpoint'], row['trial_after'], row['block_idx']), ('middle', '7', str(SYNERGY_BLOCK)))
             self.assertEqual(row['presentation_order'], str(position + 1))
             self.assertEqual((row['domain'], row['animal_id'], row['animal_name']), ('', '', ''))
@@ -426,7 +426,7 @@ class TestSynergyScreen(ScreenBase):
 
     def test_abort_keeps_earlier_answers(self):
         scripts = [_script('left', 'space'), _script('down', 'space'), _script('right', 'escape')]
-        result, rows = self.run_appraisal(SYNERGY_BLOCK, scripts)
+        result, rows = self.run_estimate(SYNERGY_BLOCK, scripts)
         self.assertTrue(result.aborted)
         self.assertEqual([row['status'] for row in rows], ['complete', 'complete', 'aborted'])
         self.assertEqual((rows[2]['response'], rows[2]['response_rt'], rows[2]['correct']), ('', '', ''))
@@ -434,15 +434,15 @@ class TestSynergyScreen(ScreenBase):
 
     def test_timeout_is_saved_and_skipped(self):
         scripts = [[]] + [_script('down', 'space')] * 5
-        with mock.patch.object(A, 'APPRAISAL_MAX_TIME', 0.2):
-            result, rows = self.run_appraisal(SYNERGY_BLOCK, scripts)
+        with mock.patch.object(E, 'ESTIMATE_MAX_TIME', 0.2):
+            result, rows = self.run_estimate(SYNERGY_BLOCK, scripts)
         self.assertEqual([row['status'] for row in rows], ['timeout'] + ['complete'] * 5)
         self.assertEqual(rows[0]['response'], '')
 
 
 class TestCompetenceScreen(ScreenBase):
     def test_twelve_single_animal_questions_grouped_by_domain(self):
-        result, rows = self.run_appraisal(COMPETENCE_BLOCK, [_script('left', 'space')] * 12,
+        result, rows = self.run_estimate(COMPETENCE_BLOCK, [_script('left', 'space')] * 12,
                                           checkpoint='end', trial_after=15)
         truth = _table_competence()
         self.assertEqual(len(rows), 12)
@@ -451,7 +451,7 @@ class TestCompetenceScreen(ScreenBase):
             self.assertEqual(len(set(domains_in_order[start:start + 4])), 1)
         self.assertEqual(sorted(set(domains_in_order)), sorted(S.DOMAINS))
         for row in rows:
-            self.assertEqual(row['appraisal_type'], 'competence')
+            self.assertEqual(row['estimate_type'], 'competence')
             self.assertEqual((row['checkpoint'], row['trial_after']), ('end', '15'))
             self.assertEqual((row['pair_id'], row['pair_animals']), ('', ''))
             self.assertEqual(row['display_animals'], row['animal_name'])     # exactly one animal on screen
@@ -470,10 +470,10 @@ class TestCompetenceScreen(ScreenBase):
                 texts.add(stim.text)
                 return real_draw(stim, *args, **kwargs)
 
-            key = A.APPRAISAL_KEYS[answer][0]
-            with mock.patch.object(A, 'COMPETENCE_APPRAISAL_DOMAINS', ('cooking',)), \
+            key = E.ESTIMATE_KEYS[answer][0]
+            with mock.patch.object(E, 'COMPETENCE_ESTIMATE_DOMAINS', ('cooking',)), \
                  mock.patch.object(visual.TextStim, 'draw', recording_draw):
-                self.run_appraisal(COMPETENCE_BLOCK, [_script(key, 'space')] * 4, subject_id=f'same_{answer}')
+                self.run_estimate(COMPETENCE_BLOCK, [_script(key, 'space')] * 4, subject_id=f'same_{answer}')
             drawn[answer] = texts
 
         rows = self.rows()
@@ -487,8 +487,8 @@ class TestCompetenceScreen(ScreenBase):
             self.assertNotIn(row['true_attribute_value'], all_text)
 
 
-class TestAppraisalEvents(ScreenBase):
-    """LabJack codes and Neon labels during a real appraisal, and which flip each one goes out on."""
+class TestEstimateEvents(ScreenBase):
+    """LabJack codes and Neon labels during a real estimate, and which flip each one goes out on."""
 
     def setUp(self):
         super().setUp()
@@ -520,8 +520,8 @@ class TestAppraisalEvents(ScreenBase):
 
     def run_with_events(self, block_index, scripts, checkpoint='middle', show_intro=True,
                         presentation_pos=None, group=None):
-        env = AppraisalEnv(win=self.win, global_clock=core.Clock(),
-                           source=ScriptedSource(scripts, key_map=A.APPRAISAL_KEYS), stim=STIM, attrs=ATTRS,
+        env = EstimateEnv(win=self.win, global_clock=core.Clock(),
+                           source=ScriptedSource(scripts, key_map=E.ESTIMATE_KEYS), stim=STIM, attrs=ATTRS,
                            subject_id='EV', subject_dir=self.tmp, session_id='S', lj_handle='LJ', neon=self.neon,
                            counterbalance_group=group)
 
@@ -529,7 +529,7 @@ class TestAppraisalEvents(ScreenBase):
             win.flip()                                   # the intro screen appears; no key wait in tests
 
         with mock.patch.object(run_mod, 'show_instructions', one_frame_intro):
-            result = run_appraisal(env, block_index, S.BLOCK_PHASES[block_index], checkpoint, 7,
+            result = run_estimate(env, block_index, S.BLOCK_PHASES[block_index], checkpoint, 7,
                                    show_intro=show_intro, presentation_pos=presentation_pos)
         return result, self.rows()
 
@@ -545,7 +545,7 @@ class TestAppraisalEvents(ScreenBase):
         self.assertFalse(result.aborted)
 
         self.assertEqual(self.codes(), [151] + [161, 171] * 6 + [181])
-        prefix = 'P1_BLOCK_04_APPRAISAL_MIDDLE'
+        prefix = 'P1_BLOCK_04_ESTIMATE_MIDDLE'
         expected_names = [f'{prefix}_START']
         for number, response in enumerate(['low', 'mid', 'high', 'low', 'mid', 'high'], start=1):
             expected_names += [f'{prefix}_Q{number:02d}_ONSET', f'{prefix}_Q{number:02d}_{response.upper()}_CONFIRM']
@@ -579,29 +579,29 @@ class TestAppraisalEvents(ScreenBase):
     def test_competence_block_uses_phase_2_codes(self):
         block = 3
         self.assertEqual(S.BLOCK_PHASES[block], 'phase_2')
-        with mock.patch.object(A, 'COMPETENCE_APPRAISAL_DOMAINS', ('cooking',)):
+        with mock.patch.object(E, 'COMPETENCE_ESTIMATE_DOMAINS', ('cooking',)):
             result, rows = self.run_with_events(block, [_script('right', 'space')] * 4, checkpoint='end',
                                                 show_intro=False)
         self.assertEqual(self.codes(), [152] + [162, 172] * 4 + [182])
         # Without an intro, the start goes out on the first question's flip, before its onset.
         self.assertEqual(self.ttl[0]['flip'], self.ttl[1]['flip'])
-        self.assertEqual(self.neon.names()[:2], ['P2_BLOCK_03_APPRAISAL_END_START',
-                                                 'P2_BLOCK_03_APPRAISAL_END_Q01_ONSET'])
-        self.assertEqual(self.neon.names()[-1], 'P2_BLOCK_03_APPRAISAL_END_END_COMPLETE')
-        self.assertIn('P2_BLOCK_03_APPRAISAL_END_Q04_HIGH_CONFIRM', self.neon.names())
+        self.assertEqual(self.neon.names()[:2], ['P2_BLOCK_03_ESTIMATE_END_START',
+                                                 'P2_BLOCK_03_ESTIMATE_END_Q01_ONSET'])
+        self.assertEqual(self.neon.names()[-1], 'P2_BLOCK_03_ESTIMATE_END_END_COMPLETE')
+        self.assertIn('P2_BLOCK_03_ESTIMATE_END_Q04_HIGH_CONFIRM', self.neon.names())
         self.assertEqual({row['presentation_pos'] for row in rows}, {''})     # not run from the block loop
 
     def test_timeout_has_no_confirm_and_still_completes(self):
         scripts = [[]] + [_script('down', 'space')] * 5
-        with mock.patch.object(A, 'APPRAISAL_MAX_TIME', 0.2):
+        with mock.patch.object(E, 'ESTIMATE_MAX_TIME', 0.2):
             result, rows = self.run_with_events(0, scripts)
         self.assertFalse(result.aborted)
         self.assertEqual(self.codes(), [151, 161] + [161, 171] * 5 + [181])
         names = self.neon.names()
-        self.assertIn('P1_BLOCK_00_APPRAISAL_MIDDLE_Q01_TIMEOUT', names)
-        self.assertFalse(any(n.startswith('P1_BLOCK_00_APPRAISAL_MIDDLE_Q01_') and n.endswith('_CONFIRM')
+        self.assertIn('P1_BLOCK_00_ESTIMATE_MIDDLE_Q01_TIMEOUT', names)
+        self.assertFalse(any(n.startswith('P1_BLOCK_00_ESTIMATE_MIDDLE_Q01_') and n.endswith('_CONFIRM')
                              for n in names))
-        self.assertEqual(names[-1], 'P1_BLOCK_00_APPRAISAL_MIDDLE_END_COMPLETE')
+        self.assertEqual(names[-1], 'P1_BLOCK_00_ESTIMATE_MIDDLE_END_COMPLETE')
         self.assertEqual((rows[0]['status'], rows[0]['response']), ('timeout', ''))
 
     def test_esc_sends_aborted_and_end_then_stops(self):
@@ -609,8 +609,8 @@ class TestAppraisalEvents(ScreenBase):
         result, rows = self.run_with_events(0, scripts)
         self.assertTrue(result.aborted)
         self.assertEqual(self.codes(), [151, 161, 171, 161, 171, 161, 181])     # no confirm for Q03, no Q04
-        self.assertEqual(self.neon.names()[-2:], ['P1_BLOCK_00_APPRAISAL_MIDDLE_Q03_ABORTED',
-                                                  'P1_BLOCK_00_APPRAISAL_MIDDLE_END_ABORTED'])
+        self.assertEqual(self.neon.names()[-2:], ['P1_BLOCK_00_ESTIMATE_MIDDLE_Q03_ABORTED',
+                                                  'P1_BLOCK_00_ESTIMATE_MIDDLE_END_ABORTED'])
         self.assertEqual([row['status'] for row in rows], ['complete', 'complete', 'aborted'])
 
 

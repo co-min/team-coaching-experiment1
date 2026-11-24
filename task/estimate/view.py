@@ -1,15 +1,15 @@
 """
 view.py
 -------
-Draws the appraisal screen with PsychoPy. Holds no experiment state and makes no decisions:
+Draws the estimate screen with PsychoPy. Holds no experiment state and makes no decisions:
 run.py tells it what to show (set_question) and what is highlighted (draw).
 
-It is never given an AppraisalItem, only display text, animal names and a
+It is never given an EstimateItem, only display text, animal names and a
 domain, so it has no way to show a true value, a true level, or "correct".
 
 Layout (pix, origin = screen centre, all sizes proportional to win.size)
 
-                 SYNERGY APPRAISAL            ← title
+                 SYNERGY ESTIMATE             ← title
                     [domain image]            ← competence only
                       COOKING
                      Pair 1 / 6               ← counter
@@ -24,7 +24,7 @@ from typing import Dict, Optional, Sequence
 
 from psychopy import visual
 
-from config import appraisal as A
+from config import estimate as E
 from config import settings as S
 from config.paths import animal_image, domain_image
 from config.strings import domain_name, t
@@ -32,8 +32,8 @@ from recording.stimuli_loader import LEVELS
 from task.ranking.view import key_names
 
 
-class AppraisalView:
-    """All visual stimuli of the appraisal screen, created once (creating them every frame is slow).
+class EstimateView:
+    """All visual stimuli of the estimate screen, created once (creating them every frame is slow).
 
     win     : PsychoPy window
     animals : the block's animals (their images are preloaded)
@@ -43,7 +43,7 @@ class AppraisalView:
     Methods that change it: set_question (once per question). draw() only draws.
     """
 
-    def __init__(self, win, animals: Sequence[str], domains: Sequence[str], key_map=A.APPRAISAL_KEYS):
+    def __init__(self, win, animals: Sequence[str], domains: Sequence[str], key_map=E.ESTIMATE_KEYS):
         self.win = win
         W, H = (int(v) for v in win.size)
         self.W, self.H = W, H
@@ -61,7 +61,7 @@ class AppraisalView:
         self.domain_text = visual.TextStim(win, text='', font=S.FONT, height=text_height, color='white',
                                            pos=(0, H * 0.215), units='pix', bold=True)
         self.counter = visual.TextStim(win, text='', font=S.FONT, height=int(text_height * 0.9),
-                                       color=A.DIM_TEXT_COLOR, pos=(0, H * 0.16), units='pix')
+                                       color=E.DIM_TEXT_COLOR, pos=(0, H * 0.16), units='pix')
 
         # ── middle: animal image(s) ──
         self.animal_size = int(H * 0.20)
@@ -86,21 +86,21 @@ class AppraisalView:
         self.button_keys = {}
         for level, x in zip(LEVELS, (-W * 0.17, 0, W * 0.17)):
             self.buttons[level] = visual.Rect(win, width=button_w, height=button_h, pos=(x, button_y), units='pix',
-                                              fillColor=A.BUTTON_COLOR, lineColor=A.BUTTON_LINE, lineWidth=2)
-            self.button_labels[level] = visual.TextStim(win, text=t(f"appraisal_level_{level}"), font=S.FONT,
+                                              fillColor=E.BUTTON_COLOR, lineColor=E.BUTTON_LINE, lineWidth=2)
+            self.button_labels[level] = visual.TextStim(win, text=t(f"estimate_level_{level}"), font=S.FONT,
                                                         height=text_height, color='white', pos=(x, button_y),
                                                         units='pix', bold=True)
             self.button_keys[level] = visual.TextStim(win, text=self._keys[level], font=S.FONT,
-                                                      height=int(text_height * 0.9), color=A.DIM_TEXT_COLOR,
+                                                      height=int(text_height * 0.9), color=E.DIM_TEXT_COLOR,
                                                       pos=(x, button_y - button_h * 0.5 - text_height), units='pix')
 
         # ── bottom: how to answer, and the confirm key (dim until a response is highlighted) ──
         hint_y = -H * 0.5 + H * 0.055
         self.choose_hint = visual.TextStim(
-            win, text=t("appraisal_hint_choose", low=self._keys['low'], mid=self._keys['mid'], high=self._keys['high']),
-            font=S.FONT, height=int(text_height * 0.85), color=A.DIM_TEXT_COLOR, pos=(-W * 0.12, hint_y), units='pix')
-        self.confirm_hint = visual.TextStim(win, text=t("appraisal_hint_confirm", confirm=self._keys['confirm']),
-                                            font=S.FONT, height=int(text_height * 0.85), color=A.DIM_TEXT_COLOR,
+            win, text=t("estimate_hint_choose", low=self._keys['low'], mid=self._keys['mid'], high=self._keys['high']),
+            font=S.FONT, height=int(text_height * 0.85), color=E.DIM_TEXT_COLOR, pos=(-W * 0.12, hint_y), units='pix')
+        self.confirm_hint = visual.TextStim(win, text=t("estimate_hint_confirm", confirm=self._keys['confirm']),
+                                            font=S.FONT, height=int(text_height * 0.85), color=E.DIM_TEXT_COLOR,
                                             pos=(W * 0.12, hint_y), units='pix', bold=True)
 
         # What set_question chose to show
@@ -160,7 +160,7 @@ class AppraisalView:
         if not confirmed:
             self.choose_hint.draw()
             if selected is None:
-                self.confirm_hint.color = A.DIM_TEXT_COLOR
+                self.confirm_hint.color = E.DIM_TEXT_COLOR
             else:
                 self.confirm_hint.color = 'white'
             self.confirm_hint.draw()
@@ -171,18 +171,18 @@ class AppraisalView:
         label = self.button_labels[level]
 
         if level == selected and confirmed:
-            button.fillColor = A.SELECTED_COLOR
-            button.lineColor = A.SELECTED_COLOR
+            button.fillColor = E.SELECTED_COLOR
+            button.lineColor = E.SELECTED_COLOR
             button.lineWidth = 6
             label.color = S.BACKGROUND_COLOR
         elif level == selected:
-            button.fillColor = A.BUTTON_COLOR
-            button.lineColor = A.SELECTED_COLOR
+            button.fillColor = E.BUTTON_COLOR
+            button.lineColor = E.SELECTED_COLOR
             button.lineWidth = 6
-            label.color = A.SELECTED_COLOR
+            label.color = E.SELECTED_COLOR
         else:
-            button.fillColor = A.BUTTON_COLOR
-            button.lineColor = A.BUTTON_LINE
+            button.fillColor = E.BUTTON_COLOR
+            button.lineColor = E.BUTTON_LINE
             button.lineWidth = 2
             label.color = 'white'
 

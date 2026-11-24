@@ -13,7 +13,7 @@ Blocks run in the subject's counterbalance order (config/settings.py BLOCK_ORDER
 group A = odd subject ID, group B = even), restricted to --blocks.
 presentation_pos is the block's position in that full order.
 
-The latent-attribute appraisal (High / Medium / Low, after trials 7 / 15) is a
+The latent-attribute estimate (High / Medium / Low, after trials 7 / 15) is a
 separate module still to be written and is not run here.
 
 Usage (from the project root)

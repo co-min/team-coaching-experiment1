@@ -168,7 +168,7 @@ def change_level(stim: StimulusSet, change: Change) -> tuple:
     competence : 학습 과제의 테두리 색 규칙 (stim.competence_level / stim.comp_color)
     synergy    : synergy 표의 값들을 크기순으로 정렬했을 때의 위치 (stim.synergy_level)
                  표에 없는 값이면 ValueError (화면에 보여 줄 색이 없기 때문).
-    단계 규칙은 recording/stimuli_loader.py 한 곳에만 있고, 속성 평가(task/appraisal)도 같은 규칙을 씁니다.
+    단계 규칙은 recording/stimuli_loader.py 한 곳에만 있고, 속성 평가(task/estimate)도 같은 규칙을 씁니다.
     """
     if change.kind == 'competence':
         return stim.competence_level(change.value), stim.comp_color(change.value)

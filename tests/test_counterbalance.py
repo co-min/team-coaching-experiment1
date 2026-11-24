@@ -4,11 +4,11 @@ Block-order counterbalancing tests.
     python -m unittest tests.test_counterbalance -v
 
 No window is opened. The session tests run the real main.run_blocks and
-task.block.run_block_trials with fake trial and appraisal screens, then read
+task.block.run_block_trials with fake trial and estimate screens, then read
 what was written to a temporary data folder.
 
 Two numbers describe a block (see main.py):
-    block_id         original block (phase, animals, trials, forced first choices, appraisal, ranking)
+    block_id         original block (phase, animals, trials, forced first choices, estimate, ranking)
     presentation_pos where the subject sees it (block number on screen, breaks)
 """
 
@@ -31,7 +31,7 @@ from config.paths import FORCED_FIRST_CSV, ROOT_DIR
 from config.ranking import PERFORMANCE_RANKING_DOMAINS, PROBE_ORDERS
 from config.strings import t
 from recording.stimuli_loader import load_stimuli
-from task.appraisal.items import appraisal_type_for_phase
+from task.estimate.items import estimate_type_for_phase
 from task.block import BlockEnv
 from task.forced_first import attach_forced_first, read_schedule_csv
 from task.ranking.schedule import probe_order, ranking_domain
@@ -61,7 +61,7 @@ class TestAgreedOrders(unittest.TestCase):
 
     def test_phases_alternate_and_each_group_starts_as_agreed(self):
         for group in ('A', 'B'):
-            hidden = [appraisal_type_for_phase(S.BLOCK_PHASES[b]) for b in block_order(group)]
+            hidden = [estimate_type_for_phase(S.BLOCK_PHASES[b]) for b in block_order(group)]
             for position in range(1, len(hidden)):
                 self.assertNotEqual(hidden[position], hidden[position - 1], (group, position))
             if group == 'A':
@@ -108,20 +108,20 @@ class TestForcedFirstFileUnchanged(unittest.TestCase):
 # ── a whole (fake) session ────────────────────────────────────────────────────
 
 class TestSessionInPresentationOrder(unittest.TestCase):
-    """main.run_blocks → run_block_trials → trials.csv / appraisal calls / instruction screens."""
+    """main.run_blocks → run_block_trials → trials.csv / estimate calls / instruction screens."""
 
     def _run_session(self, tmp, group):
         schedules = generate_block_schedules(STIM.animal_groups)
         attach_forced_first(schedules, STIM.animal_groups, STIM.char_code)
-        log = {'screens': [], 'trials': [], 'appraisals': []}
+        log = {'screens': [], 'trials': [], 'estimates': []}
 
         def fake_trial(win, clock, frame_log, factory, stim, domain, char_order, handle,
                        neon_client=None, forced_first=None):
             log['trials'].append((domain, tuple(char_order), forced_first))
             return None                                      # no response → no feedback screen
 
-        def fake_run_appraisal(env, block_id, phase, checkpoint, trial_after, presentation_pos=None):
-            log['appraisals'].append((block_id, phase, checkpoint, trial_after, presentation_pos,
+        def fake_run_estimate(env, block_id, phase, checkpoint, trial_after, presentation_pos=None):
+            log['estimates'].append((block_id, phase, checkpoint, trial_after, presentation_pos,
                                       env.counterbalance_group, env.lj_handle, env.neon))
             return SimpleNamespace(aborted=False)
 
@@ -135,9 +135,9 @@ class TestSessionInPresentationOrder(unittest.TestCase):
         cumulative = {'total': 0, 'phase': 0, **{d: 0 for d in S.DOMAINS}}
         with mock.patch.object(writers, 'DATA_DIR', Path(tmp)), \
              mock.patch.dict(block_mod.TRIAL_RUNNERS, {'phase_1': fake_trial, 'phase_2': fake_trial}), \
-             mock.patch.object(block_mod, 'make_appraisal_env',
+             mock.patch.object(block_mod, 'make_estimate_env',
                                lambda *a, **k: SimpleNamespace(**k)), \
-             mock.patch.object(block_mod, 'run_appraisal', fake_run_appraisal), \
+             mock.patch.object(block_mod, 'run_estimate', fake_run_estimate), \
              mock.patch.object(block_mod, 'run_gaussian_iti', lambda *a, **k: None), \
              mock.patch.object(block_mod, 'on_block_start', lambda *a, **k: None), \
              mock.patch.object(main_mod, 'show_instructions', fake_show_instructions):
@@ -180,14 +180,14 @@ class TestSessionInPresentationOrder(unittest.TestCase):
                                                 trial_info['forced_first']))
                 self.assertEqual(log['trials'], expected_trials)
 
-                # appraisals: type from the original block's phase, position for the log, hardware passed on
-                expected_appraisals = []
+                # estimates: type from the original block's phase, position for the log, hardware passed on
+                expected_estimates = []
                 for position, block_id in enumerate(order):
                     phase = S.BLOCK_PHASES[block_id]
-                    expected_appraisals.append((block_id, phase, 'middle', 7, position, group, 'LJ', 'neon'))
-                    expected_appraisals.append((block_id, phase, 'end', 15, position, group, 'LJ', 'neon'))
-                got = [a[:7] + (a[7].name,) for a in log['appraisals']]
-                self.assertEqual(got, expected_appraisals)
+                    expected_estimates.append((block_id, phase, 'middle', 7, position, group, 'LJ', 'neon'))
+                    expected_estimates.append((block_id, phase, 'end', 15, position, group, 'LJ', 'neon'))
+                got = [a[:7] + (a[7].name,) for a in log['estimates']]
+                self.assertEqual(got, expected_estimates)
 
                 # screens: block number = position + 1, breaks before shown blocks 3 and 5
                 expected_screens = []

@@ -46,7 +46,7 @@ EVENT_FIELDS = [
 
 def append_csv(path: Path, fields: List[str], rows: List[Dict[str, Any]]) -> None:
     """Append rows to a CSV, writing the header first if the file is new.
-    Also used by recording/appraisal_writers.py."""
+    Also used by recording/estimate_writers.py."""
     write_header = not path.exists()
     with open(path, "a", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=fields, extrasaction="ignore")

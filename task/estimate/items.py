@@ -1,16 +1,16 @@
 """
 items.py
 --------
-What the attribute appraisal asks, in which order, and the true answer to each question.
+What the attribute estimate asks, in which order, and the true answer to each question.
 No PsychoPy here, so the tests can import it without opening a window.
 
     checkpoint_after_trial    'middle' / 'end' / None for a learning-trial number
-    appraisal_type_for_phase  which attribute a block asks about (always the hidden one)
-    AppraisalItem             one question: a pair (synergy) or one animal in one domain (competence)
+    estimate_type_for_phase   which attribute a block asks about (always the hidden one)
+    EstimateItem              one question: a pair (synergy) or one animal in one domain (competence)
     synergy_items             the 6 pairs of a block's 4 animals
     competence_items          each animal on its own, for each configured domain
     ordered_items             reproducible random presentation order
-    build_appraisal_items     all of the above for one block and checkpoint
+    build_estimate_items      all of the above for one block and checkpoint
     is_correct                response vs true level
 
 The two attributes are different kinds of things, so they are asked differently:
@@ -30,7 +30,7 @@ import random
 from dataclasses import dataclass, replace
 from typing import Dict, List, Mapping, Optional, Sequence, Tuple
 
-from config.appraisal import APPRAISAL_CHECKPOINTS, COMPETENCE_APPRAISAL_DOMAINS
+from config.estimate import ESTIMATE_CHECKPOINTS, COMPETENCE_ESTIMATE_DOMAINS
 from recording.stimuli_loader import StimulusSet
 from task.forced_first import BLOCK_TYPE
 from task.ranking.items import Attributes, pair_items, role_map
@@ -41,7 +41,7 @@ SYNERGY, COMPETENCE = 'synergy', 'competence'
 # ── when and what ─────────────────────────────────────────────────────────────
 
 def checkpoint_after_trial(trial_number: int,
-                           checkpoints: Mapping[int, str] = APPRAISAL_CHECKPOINTS) -> Optional[str]:
+                           checkpoints: Mapping[int, str] = ESTIMATE_CHECKPOINTS) -> Optional[str]:
     """Checkpoint name to run after learning trial `trial_number` (1-based), or None.
 
     With the default config: 7 → 'middle', 15 → 'end', anything else → None.
@@ -49,8 +49,8 @@ def checkpoint_after_trial(trial_number: int,
     return checkpoints.get(trial_number)
 
 
-def appraisal_type_for_phase(phase: str) -> str:
-    """The attribute to appraise in a block = the one that block hides.
+def estimate_type_for_phase(phase: str) -> str:
+    """The attribute to estimate in a block = the one that block hides.
 
     phase_1 shows competence (coloured borders) → synergy is hidden → 'synergy'
     phase_2 shows synergy (coloured blocks)     → competence is hidden → 'competence'
@@ -62,21 +62,21 @@ def appraisal_type_for_phase(phase: str) -> str:
     elif block_type == 'synergy_visible':
         return COMPETENCE
     else:
-        raise ValueError(f"no appraisal defined for phase {phase!r}")
+        raise ValueError(f"no estimate defined for phase {phase!r}")
 
 
-def appraisal_id(block_index: int, checkpoint: str) -> str:
-    """Name of one appraisal in the output, e.g. 'b0_middle'. Also part of the order seed."""
+def estimate_id(block_index: int, checkpoint: str) -> str:
+    """Name of one estimate in the output, e.g. 'b0_middle'. Also part of the order seed."""
     return f"b{block_index}_{checkpoint}"
 
 
 # ── one question ──────────────────────────────────────────────────────────────
 
 @dataclass(frozen=True)
-class AppraisalItem:
-    """One appraisal question. Frozen (cannot be changed after it is made).
+class EstimateItem:
+    """One estimate question. Frozen (cannot be changed after it is made).
 
-    appraisal_type  : 'synergy' or 'competence'
+    estimate_type   : 'synergy' or 'competence'
     roles           : sorted role codes. ('A', 'C') for a pair, ('B',) for one animal
     animals         : animal names, same order as roles
     domain          : competence only. None for synergy, which is domain-independent
@@ -87,7 +87,7 @@ class AppraisalItem:
     The screen code never receives this object, only display_animals and domain,
     so it cannot show the true value or level by accident.
     """
-    appraisal_type:  str
+    estimate_type:   str
     roles:           Tuple[str, ...]
     animals:         Tuple[str, ...]
     domain:          Optional[str]
@@ -98,25 +98,25 @@ class AppraisalItem:
     @property
     def pair_id(self) -> Optional[str]:
         """'A+C' for a synergy question, None for a competence question."""
-        if self.appraisal_type == SYNERGY:
+        if self.estimate_type == SYNERGY:
             return '+'.join(self.roles)
         return None
 
     @property
     def animal_id(self) -> Optional[str]:
         """'B' for a competence question, None for a synergy question."""
-        if self.appraisal_type == COMPETENCE:
+        if self.estimate_type == COMPETENCE:
             return self.roles[0]
         return None
 
 
-def synergy_items(group: Sequence[str], stim: StimulusSet, attrs: Attributes) -> List[AppraisalItem]:
+def synergy_items(group: Sequence[str], stim: StimulusSet, attrs: Attributes) -> List[EstimateItem]:
     """All 6 pairs of the block's 4 animals (AB, AC, AD, BC, BD, CD), in role order."""
     items = []
     for pair in pair_items(group, stim.char_code):
         value = attrs.synergy[pair.roles]
-        items.append(AppraisalItem(
-            appraisal_type=SYNERGY,
+        items.append(EstimateItem(
+            estimate_type=SYNERGY,
             roles=pair.roles,
             animals=pair.animals,
             domain=None,
@@ -127,7 +127,7 @@ def synergy_items(group: Sequence[str], stim: StimulusSet, attrs: Attributes) ->
 
 
 def competence_items(group: Sequence[str], stim: StimulusSet, attrs: Attributes,
-                     domains: Sequence[str] = COMPETENCE_APPRAISAL_DOMAINS) -> List[AppraisalItem]:
+                     domains: Sequence[str] = COMPETENCE_ESTIMATE_DOMAINS) -> List[EstimateItem]:
     """Each animal on its own, for each domain in `domains` (4 animals × 3 domains = 12).
 
     Grouped by domain, in role order within a domain.
@@ -137,10 +137,10 @@ def competence_items(group: Sequence[str], stim: StimulusSet, attrs: Attributes,
     for domain in domains:
         for role in sorted(roles):
             if domain not in attrs.competence[role]:
-                raise ValueError(f"competence appraisal domain {domain!r} is not in the competence table")
+                raise ValueError(f"competence estimate domain {domain!r} is not in the competence table")
             value = attrs.competence[role][domain]
-            items.append(AppraisalItem(
-                appraisal_type=COMPETENCE,
+            items.append(EstimateItem(
+                estimate_type=COMPETENCE,
                 roles=(role,),
                 animals=(roles[role],),
                 domain=domain,
@@ -152,7 +152,7 @@ def competence_items(group: Sequence[str], stim: StimulusSet, attrs: Attributes,
 
 # ── presentation order ────────────────────────────────────────────────────────
 
-def ordered_items(items: Sequence[AppraisalItem], seed: str) -> List[AppraisalItem]:
+def ordered_items(items: Sequence[EstimateItem], seed: str) -> List[EstimateItem]:
     """Reproducible random presentation order. Every item appears exactly once.
 
     seed : any string; the same seed always gives the same order.
@@ -166,7 +166,7 @@ def ordered_items(items: Sequence[AppraisalItem], seed: str) -> List[AppraisalIt
     """
     rng = random.Random(seed)
 
-    if all(item.appraisal_type == SYNERGY for item in items):
+    if all(item.estimate_type == SYNERGY for item in items):
         shuffled = list(items)
         rng.shuffle(shuffled)
         result = []
@@ -176,7 +176,7 @@ def ordered_items(items: Sequence[AppraisalItem], seed: str) -> List[AppraisalIt
             result.append(replace(item, display_animals=tuple(left_to_right)))
         return result
 
-    if all(item.appraisal_type == COMPETENCE for item in items):
+    if all(item.estimate_type == COMPETENCE for item in items):
         # Domains in the order they first appear, then shuffled.
         domain_order = []
         for item in items:
@@ -192,23 +192,23 @@ def ordered_items(items: Sequence[AppraisalItem], seed: str) -> List[AppraisalIt
                 result.append(replace(item, display_animals=item.animals))
         return result
 
-    raise ValueError("one appraisal must contain only synergy or only competence questions")
+    raise ValueError("one estimate must contain only synergy or only competence questions")
 
 
-def build_appraisal_items(appraisal_type: str, group: Sequence[str], stim: StimulusSet, attrs: Attributes,
-                          seed: str, domains: Sequence[str] = COMPETENCE_APPRAISAL_DOMAINS
-                          ) -> List[AppraisalItem]:
-    """The questions of one appraisal, in presentation order.
+def build_estimate_items(estimate_type: str, group: Sequence[str], stim: StimulusSet, attrs: Attributes,
+                          seed: str, domains: Sequence[str] = COMPETENCE_ESTIMATE_DOMAINS
+                          ) -> List[EstimateItem]:
+    """The questions of one estimate, in presentation order.
 
     Middle and end of a block ask the same questions (same function, same inputs);
     only the order differs, because the seed includes the checkpoint name.
     """
-    if appraisal_type == SYNERGY:
+    if estimate_type == SYNERGY:
         items = synergy_items(group, stim, attrs)
-    elif appraisal_type == COMPETENCE:
+    elif estimate_type == COMPETENCE:
         items = competence_items(group, stim, attrs, domains)
     else:
-        raise ValueError(f"unknown appraisal type {appraisal_type!r}")
+        raise ValueError(f"unknown estimate type {estimate_type!r}")
     return ordered_items(items, seed)
 
 
@@ -221,15 +221,15 @@ def is_correct(response: Optional[str], true_level: Optional[str]) -> Optional[b
     return response == true_level
 
 
-def item_counter(items: Sequence[AppraisalItem], position: int) -> Dict[str, int]:
+def item_counter(items: Sequence[EstimateItem], position: int) -> Dict[str, int]:
     """Progress numbers shown on screen for items[position] (0-based).
 
-    synergy    : 'Pair n / 6' over the whole appraisal
+    synergy    : 'Pair n / 6' over the whole estimate
     competence : 'Animal n / 4' within the current domain
     Returns {'n': ..., 'total': ...}.
     """
     item = items[position]
-    if item.appraisal_type == SYNERGY:
+    if item.estimate_type == SYNERGY:
         return {'n': position + 1, 'total': len(items)}
 
     same_domain = [index for index, other in enumerate(items) if other.domain == item.domain]

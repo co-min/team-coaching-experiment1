@@ -1,13 +1,13 @@
 """
 Single-block test run of the full Experiment 1 block flow (real trials, real tables).
 
-    phase instruction → trials 1–7 (forced first choice) → middle appraisal
-    → trials 8–15 → end appraisal
+    phase instruction → trials 1–7 (forced first choice) → middle estimate
+    → trials 8–15 → end estimate
     → baseline performance ranking → probe 1 → "change no longer applies" → probe 2
     → end (no other blocks, no ending screen)
 
 The block itself is main.run_block, the same function the experiment loops over, so
-the phase, animals, trial schedule, forced first choices, appraisal type, ranking
+the phase, animals, trial schedule, forced first choices, estimate type, ranking
 domain and probe order all come from the chosen original block ID (0–5).
 
 Test-only differences from main.py
@@ -16,7 +16,7 @@ Test-only differences from main.py
     - windowed; LabJack and Neon off unless --labjack / --neon
     - no subject dialog: --subject (default 'test')
     - output: data/test_single_block/block{N}_{session}/sub-{id}/  (never data/sub-{id}/)
-    - the ranking runs after the end appraisal, which main.py does not do yet
+    - the ranking runs after the end estimate, which main.py does not do yet
 
 PROBE CONDITIONS ARE PLACEHOLDERS. The real counterfactual probe conditions are not
 decided (see tools/analyze_counterfactuals.py for the candidates). The probes reuse
@@ -29,7 +29,7 @@ Usage (from the project root)
     python -m tools.test_single_block --block 1 --eng
     python -m tools.test_single_block --block 3 --subject pilot01 --labjack --neon
 
-After the run, the saved trials, appraisals and rankings are checked against the schedules.
+After the run, the saved trials, estimates and rankings are checked against the schedules.
 """
 
 import argparse
@@ -40,7 +40,7 @@ from datetime import datetime
 from psychopy import core
 
 from config import settings as S
-from config.appraisal import APPRAISAL_CHECKPOINTS
+from config.estimate import ESTIMATE_CHECKPOINTS
 from config.paths import DATA_DIR
 
 TEST_DATA_DIR = DATA_DIR / "test_single_block"
@@ -130,8 +130,8 @@ def _read_csv(path) -> list:
 
 
 def saved_block_problems(subject_dir, block_id: int, schedule) -> list:
-    """Problems in the saved trials.csv / appraisals.csv for one completed block (empty = passed)."""
-    from task.appraisal.items import appraisal_type_for_phase
+    """Problems in the saved trials.csv / estimates.csv for one completed block (empty = passed)."""
+    from task.estimate.items import estimate_type_for_phase
     from task.forced_first import forced_first_for
 
     phase = S.BLOCK_PHASES[block_id]
@@ -150,38 +150,38 @@ def saved_block_problems(subject_dir, block_id: int, schedule) -> list:
         if row['forced_first_animal'] != expected_first:
             problems.append(f"{label}: forced first {row['forced_first_animal']!r}, schedule says {expected_first!r}")
 
-    appraisals = _read_csv(subject_dir / "appraisals.csv")
-    expected_type = appraisal_type_for_phase(phase)
-    for trial_after, checkpoint in APPRAISAL_CHECKPOINTS.items():
-        rows = [r for r in appraisals if r['checkpoint'] == checkpoint]
+    estimates = _read_csv(subject_dir / "estimates.csv")
+    expected_type = estimate_type_for_phase(phase)
+    for trial_after, checkpoint in ESTIMATE_CHECKPOINTS.items():
+        rows = [r for r in estimates if r['checkpoint'] == checkpoint]
         if not rows:
-            problems.append(f"no {checkpoint} appraisal rows")
+            problems.append(f"no {checkpoint} estimate rows")
             continue
         for row in rows:
-            if row['trial_after'] != str(trial_after) or row['appraisal_type'] != expected_type \
+            if row['trial_after'] != str(trial_after) or row['estimate_type'] != expected_type \
                     or row['block_idx'] != str(block_id):
-                problems.append(f"{row['appraisal_id']} #{row['presentation_order']}: after trial "
-                                f"{row['trial_after']}, {row['appraisal_type']}, block {row['block_idx']}; "
+                problems.append(f"{row['estimate_id']} #{row['presentation_order']}: after trial "
+                                f"{row['trial_after']}, {row['estimate_type']}, block {row['block_idx']}; "
                                 f"expected {trial_after}, {expected_type}, block {block_id}")
                 break
     return problems
 
 
 def _print_results(subject_dir, block_id: int, schedule) -> None:
-    from tools.preview_appraisal import _print_summary as print_appraisals
+    from tools.preview_estimate import _print_summary as print_estimates
     from tools.preview_ranking import _print_summary as print_rankings
 
     print(f"\nTest output: {subject_dir}")
-    print_appraisals(subject_dir)
+    print_estimates(subject_dir)
     print_rankings(subject_dir)        # includes the saved-ranking schedule check
 
     problems = saved_block_problems(subject_dir, block_id, schedule)
     if problems:
-        print("\nTrial / appraisal check FAILED (expected if the run was aborted):")
+        print("\nTrial / estimate check FAILED (expected if the run was aborted):")
         for problem in problems:
             print("  " + problem)
     else:
-        print("\nTrial / appraisal check passed")
+        print("\nTrial / estimate check passed")
 
 
 # ── entry point ───────────────────────────────────────────────────────────────
@@ -260,7 +260,7 @@ def main() -> None:
 
     try:
         on_task_start(neon_client, handle)
-        # Trials 1–15 with the middle (after 7) and end (after 15) appraisals.
+        # Trials 1–15 with the middle (after 7) and end (after 15) estimates.
         experiment.run_block(env, block_id, 0, 1, schedule, cumulative)
         show_instructions(win, rt("rank_intro_performance", key=key_names()['select']), advance_key='space')
         run_block_rankings(ranking_env, block_id, 0, conditions)

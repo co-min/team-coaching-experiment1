@@ -16,7 +16,7 @@ BLOCK_PHASES       = ['phase_1', 'phase_2'] * 3     # one animal group per block
 # Block presentation order per counterbalance group (original block IDs).
 # Group A = odd subject IDs, group B = even (task.schedule.counterbalance_group).
 # Only the order changes: each original block keeps its phase, animals, trial
-# schedule, forced first choices, appraisal type, ranking domain and probe order.
+# schedule, forced first choices, estimate type, ranking domain and probe order.
 # The position in this list (presentation_pos, 0-based) decides the block number
 # shown to the participant and BREAK_BEFORE_BLOCKS.
 #   A: synergy-hidden first     cooking, repairing, tennis, cooking, repairing, tennis

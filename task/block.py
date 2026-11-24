@@ -1,9 +1,9 @@
 """Block-level trial orchestration — schedule execution, scoring, I/O, and the
-attribute appraisals between trials (after trial 7 and after the last trial).
+attribute estimates between trials (after trial 7 and after the last trial).
 
 Two numbers describe a block; keep them apart:
     block_index      original block ID (0–5). Decides the phase, animals, trial
-                     schedule, forced first choices, appraisal type, and every
+                     schedule, forced first choices, estimate type, and every
                      label / folder name that says "block".
     presentation_pos where this subject sees the block (0-based, from
                      config.settings.BLOCK_ORDERS). Only logged here; main.py
@@ -25,8 +25,8 @@ from recording.writers import (
     build_trial_record, build_trial_save_dir, save_trial_metadata,
     save_frame_log, append_trial_row, append_frame_rows, get_subject_dir,
 )
-from task.appraisal.items import checkpoint_after_trial
-from task.appraisal.run import make_appraisal_env, run_appraisal
+from task.estimate.items import checkpoint_after_trial
+from task.estimate.run import make_estimate_env, run_estimate
 from task.forced_first import forced_first_for
 from task.screens.feedback import run_feedback
 from task.screens.iti import run_gaussian_iti
@@ -51,7 +51,7 @@ class BlockEnv:
     handle:       Any
     neon_client:  Any
     schedule_version: Optional[str] = None   # forced-first CSV version (forced mode)
-    session_id:   Optional[str] = None        # written to appraisals.csv
+    session_id:   Optional[str] = None        # written to estimates.csv
     counterbalance_group: Optional[str] = None   # 'A' | 'B' (task.schedule.counterbalance_group)
 
 
@@ -96,20 +96,20 @@ def _score_and_feedback(env: BlockEnv, result, phase, domain, char_order,
     return score
 
 
-def run_block_appraisal(env: BlockEnv, block_index: int, phase: str, checkpoint: str, trial_after: int,
+def run_block_estimate(env: BlockEnv, block_index: int, phase: str, checkpoint: str, trial_after: int,
                         presentation_pos: Optional[int] = None) -> None:
-    """Middle / end attribute appraisal (task/appraisal). Answers go to data/sub-{id}/appraisals.csv.
+    """Middle / end attribute estimate (task/estimate). Answers go to data/sub-{id}/estimates.csv.
 
     LabJack / Neon events are sent through env.handle / env.neon_client.
-    Esc during the appraisal ends the session, the same as Esc during a trial:
+    Esc during the estimate ends the session, the same as Esc during a trial:
     core.quit() raises SystemExit, so main()'s finally block still flushes Neon
-    and closes the LabJack (the appraisal-end event is already queued by then).
+    and closes the LabJack (the estimate-end event is already queued by then).
     """
-    appraisal_env = make_appraisal_env(env.win, env.global_clock, env.stim, env.subject_id,
+    estimate_env = make_estimate_env(env.win, env.global_clock, env.stim, env.subject_id,
                                        get_subject_dir(env.subject_id), env.session_id,
                                        lj_handle=env.handle, neon=env.neon_client,
                                        counterbalance_group=env.counterbalance_group)
-    result = run_appraisal(appraisal_env, block_index, phase, checkpoint, trial_after,
+    result = run_estimate(estimate_env, block_index, phase, checkpoint, trial_after,
                            presentation_pos=presentation_pos)
     if result.aborted:
         env.win.close()
@@ -130,8 +130,8 @@ def run_block_trials(env: BlockEnv, block_index: int, phase: str,
                               [, 'forced_first': str]}  (see task/forced_first.py)
     cumulative     : {'total', 'phase', <domain>...} running scores (mutated)
     File I/O is offloaded to a background thread during the following ITI.
-    After the trials listed in config.appraisal.APPRAISAL_CHECKPOINTS (7 and the
-    last one) the attribute appraisal runs before the next ITI; the end appraisal
+    After the trials listed in config.estimate.ESTIMATE_CHECKPOINTS (7 and the
+    last one) the attribute estimate runs before the next ITI; the end estimate
     is therefore the last thing a block does before returning to main().
     """
     trial_runner = TRIAL_RUNNERS[phase]
@@ -189,13 +189,13 @@ def run_block_trials(env: BlockEnv, block_index: int, phase: str,
         )
         save_thread.start()
 
-        # Attribute appraisal after trial 7 (middle) and after the last trial (end).
+        # Attribute estimate after trial 7 (middle) and after the last trial (end).
         trial_number = trial_index + 1
         checkpoint = checkpoint_after_trial(trial_number)
         if checkpoint is not None:
-            save_thread.join()      # this trial is on disk before the appraisal starts
+            save_thread.join()      # this trial is on disk before the estimate starts
             save_thread = None
-            run_block_appraisal(env, block_index, phase, checkpoint, trial_number,
+            run_block_estimate(env, block_index, phase, checkpoint, trial_number,
                                 presentation_pos=presentation_pos)
 
     if save_thread:

@@ -19,7 +19,7 @@ Pair = Tuple[str, str]
 
 # Attribute level names, lowest first. Index 0/1/2 = COMPETENCE_COLOR level 1/2/3
 # = the three synergy values in ascending order. Shared by the ranking probes
-# and the attribute appraisal so both use the same category definitions.
+# and the attribute estimate so both use the same category definitions.
 LEVELS = ('low', 'mid', 'high')
 
 
