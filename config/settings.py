@@ -20,12 +20,12 @@ BLOCK_PHASES       = ['phase_1', 'phase_2'] * 3     # one animal group per block
 # The position in this list (presentation_pos, 0-based) decides the block number
 # shown to the participant and BREAK_BEFORE_BLOCKS.
 #   A: synergy-hidden first     cooking, repairing, tennis, cooking, repairing, tennis
-#   B: competence-hidden first  repairing, cooking, tennis, repairing, cooking, tennis
-# Both alternate phase_1 / phase_2 and never repeat a ranking domain back to back.
+#   B: competence-hidden first  repairing, cooking, cooking, tennis, tennis, repairing
+# Both alternate phase_1 / phase_2. A ranking domain may repeat back to back (B does).
 # Checked at startup by task.schedule.block_order_problems / presentation_order_problems.
 BLOCK_ORDERS = {
     'A': (0, 1, 2, 3, 4, 5),
-    'B': (1, 0, 5, 4, 3, 2),
+    'B': (1, 0, 3, 2, 5, 4),
 }
 
 # Competence level → border colour (low ≤3 / middle ≤6 / high)

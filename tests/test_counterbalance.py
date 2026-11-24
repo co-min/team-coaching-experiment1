@@ -38,7 +38,7 @@ from task.ranking.schedule import probe_order, ranking_domain
 from task.schedule import block_order, block_order_problems, generate_block_schedules, presentation_order_problems
 
 STIM = load_stimuli()
-AGREED = {'A': (0, 1, 2, 3, 4, 5), 'B': (1, 0, 5, 4, 3, 2)}
+AGREED = {'A': (0, 1, 2, 3, 4, 5), 'B': (1, 0, 3, 2, 5, 4)}
 
 
 def _read_csv(path):
@@ -69,27 +69,20 @@ class TestAgreedOrders(unittest.TestCase):
             else:
                 self.assertEqual(hidden[0], 'competence')    # B starts competence-hidden (phase_2)
 
-    def test_no_ranking_domain_twice_in_a_row(self):
-        for group in ('A', 'B'):
-            domains = [PERFORMANCE_RANKING_DOMAINS[b] for b in block_order(group)]
-            for position in range(1, len(domains)):
-                self.assertNotEqual(domains[position], domains[position - 1], (group, position, domains))
+    def test_ranking_domain_may_repeat(self):
+        domains = [PERFORMANCE_RANKING_DOMAINS[b] for b in block_order('B')]
+        self.assertEqual(domains, ['repairing', 'cooking', 'cooking', 'tennis', 'tennis', 'repairing'])
 
     def test_startup_check_accepts_the_config(self):
-        self.assertEqual(presentation_order_problems(S.BLOCK_ORDERS, S.BLOCK_PHASES, PERFORMANCE_RANKING_DOMAINS), [])
+        self.assertEqual(presentation_order_problems(S.BLOCK_ORDERS, S.BLOCK_PHASES), [])
         main_mod._check_block_orders()                        # does not raise
 
     def test_startup_check_rejects_broken_orders(self):
-        old_b = {'B': (1, 0, 3, 2, 5, 4)}                     # repairing → cooking → cooking ...
-        problems = presentation_order_problems(old_b, S.BLOCK_PHASES, PERFORMANCE_RANKING_DOMAINS)
-        self.assertEqual(len(problems), 2)
-        self.assertTrue(all('both rank' in p for p in problems), problems)
-
         same_phase = {'A': (0, 2, 1, 3, 4, 5)}                # phase_1, phase_1, ...
-        problems = presentation_order_problems(same_phase, S.BLOCK_PHASES, PERFORMANCE_RANKING_DOMAINS)
+        problems = presentation_order_problems(same_phase, S.BLOCK_PHASES)
         self.assertTrue(any('both phase_1' in p for p in problems), problems)
 
-        with mock.patch.object(S, 'BLOCK_ORDERS', old_b):
+        with mock.patch.object(S, 'BLOCK_ORDERS', same_phase):
             with self.assertRaises(SystemExit):
                 main_mod._check_block_orders()
         with mock.patch.object(S, 'BLOCK_ORDERS', {'A': (0, 1, 2, 3, 4, 4)}):
@@ -224,7 +217,7 @@ class TestSessionInPresentationOrder(unittest.TestCase):
                                                  counterbalance_group='B', block_order=list(block_order('B')))
             with open(path, encoding='utf-8') as f:
                 record = json.load(f)
-        self.assertEqual((record['counterbalance_group'], record['block_order']), ('B', [1, 0, 5, 4, 3, 2]))
+        self.assertEqual((record['counterbalance_group'], record['block_order']), ('B', [1, 0, 3, 2, 5, 4]))
 
 
 class TestSessionCloses(unittest.TestCase):
@@ -248,7 +241,7 @@ class TestSessionCloses(unittest.TestCase):
         neon.close.assert_called_once()
         save_log.assert_called_once()
         close_lj.assert_called_once_with('LJ')
-        self.assertEqual(save_meta.call_args.kwargs['block_order'], [1, 0, 5, 4, 3, 2])
+        self.assertEqual(save_meta.call_args.kwargs['block_order'], [1, 0, 3, 2, 5, 4])
         self.assertEqual(save_meta.call_args.kwargs['counterbalance_group'], 'B')
 
 

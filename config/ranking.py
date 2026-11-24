@@ -72,3 +72,6 @@ CONFIRMED_COLOR = '#4CAF50'
 CARD_COLOR      = '#3a3a3a'
 SLOT_COLOR      = '#555555'
 DIM_TEXT_COLOR  = '#9e9e9e'
+
+# 선택하는 color 변경하기 
+    # gray or black

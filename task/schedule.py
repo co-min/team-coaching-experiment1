@@ -65,17 +65,15 @@ def block_order_problems(orders: Mapping[str, Sequence[int]], n_blocks: int) -> 
     return problems
 
 
-def presentation_order_problems(orders: Mapping[str, Sequence[int]], phases: Sequence[str],
-                                ranking_domains: Sequence[str]) -> List[str]:
+def presentation_order_problems(orders: Mapping[str, Sequence[int]], phases: Sequence[str]) -> List[str]:
     """What the participant actually sees, block after block, for every group. Empty list = valid.
 
-    orders          : S.BLOCK_ORDERS (original block IDs in presentation order)
-    phases          : S.BLOCK_PHASES (phase of each original block)
-    ranking_domains : config.ranking.PERFORMANCE_RANKING_DOMAINS (domain of each original block)
+    orders : S.BLOCK_ORDERS (original block IDs in presentation order)
+    phases : S.BLOCK_PHASES (phase of each original block)
 
-    Rules, checked between each pair of neighbouring presented blocks:
-        1. the phase changes (synergy-hidden and competence-hidden blocks alternate)
-        2. the ranking domain changes (no domain twice in a row)
+    Rule, checked between each pair of neighbouring presented blocks: the phase
+    changes (synergy-hidden and competence-hidden blocks alternate). The ranking
+    domain may repeat.
     Run block_order_problems first: this check assumes every ID is a valid block.
     """
     problems = []
@@ -86,8 +84,4 @@ def presentation_order_problems(orders: Mapping[str, Sequence[int]], phases: Seq
             if phases[current_block] == phases[previous_block]:
                 problems.append(f"group {group}: positions {position - 1} and {position} "
                                 f"(blocks {previous_block}, {current_block}) are both {phases[current_block]}")
-            if ranking_domains[current_block] == ranking_domains[previous_block]:
-                problems.append(f"group {group}: positions {position - 1} and {position} "
-                                f"(blocks {previous_block}, {current_block}) both rank "
-                                f"{ranking_domains[current_block]}")
     return problems

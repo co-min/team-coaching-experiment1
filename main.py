@@ -15,7 +15,6 @@ Task design, language, timing and hardware switches: config/settings.py
 from psychopy import core
 
 from config import settings as S
-from config.ranking import PERFORMANCE_RANKING_DOMAINS
 from config.strings import t
 from hardware.events import on_task_start
 from hardware.frame_marker import init_marker
@@ -46,7 +45,7 @@ def _check_block_orders() -> None:
     """Stop before the window opens if a group's block order breaks a counterbalancing rule."""
     problems = block_order_problems(S.BLOCK_ORDERS, len(S.BLOCK_PHASES))
     if not problems:   # the next check needs valid block IDs
-        problems = presentation_order_problems(S.BLOCK_ORDERS, S.BLOCK_PHASES, PERFORMANCE_RANKING_DOMAINS)
+        problems = presentation_order_problems(S.BLOCK_ORDERS, S.BLOCK_PHASES)
     if problems:
         raise SystemExit("Block order check failed:\n  " + "\n  ".join(problems))
 

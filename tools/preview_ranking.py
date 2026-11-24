@@ -81,7 +81,7 @@ def _check_schedule(block_indices, group):
     problems += probe_order_problems(PROBE_ORDERS, S.BLOCK_PHASES, PERFORMANCE_RANKING_DOMAINS)
     order_problems = block_order_problems(S.BLOCK_ORDERS, n_blocks)
     if not order_problems:   # the presentation check needs valid block IDs (same as main.py)
-        order_problems = presentation_order_problems(S.BLOCK_ORDERS, S.BLOCK_PHASES, PERFORMANCE_RANKING_DOMAINS)
+        order_problems = presentation_order_problems(S.BLOCK_ORDERS, S.BLOCK_PHASES)
     problems += order_problems
 
     for block_index in block_indices:
