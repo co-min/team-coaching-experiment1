@@ -8,7 +8,8 @@ No PsychoPy here, so the tests can import it without opening a window.
     estimate_type_for_phase   which attribute a block asks about (always the hidden one)
     EstimateItem              one question: a pair (synergy) or one animal in one domain (competence)
     synergy_items             the 6 pairs of a block's 4 animals
-    competence_items          each animal on its own, for each configured domain
+    competence_domains        role → domain asked in one block (config COMPETENCE_ESTIMATE_MAP)
+    competence_items          each animal on its own, in its one assigned domain
     ordered_items             reproducible random presentation order
     build_estimate_items      all of the above for one block and checkpoint
     is_correct                response vs true level
@@ -30,7 +31,7 @@ import random
 from dataclasses import dataclass, replace
 from typing import Dict, List, Mapping, Optional, Sequence, Tuple
 
-from config.estimate import ESTIMATE_CHECKPOINTS, COMPETENCE_ESTIMATE_DOMAINS
+from config.estimate import ESTIMATE_CHECKPOINTS, COMPETENCE_ESTIMATE_MAP
 from recording.stimuli_loader import StimulusSet
 from task.forced_first import BLOCK_TYPE
 from task.ranking.items import Attributes, pair_items, role_map
@@ -126,27 +127,39 @@ def synergy_items(group: Sequence[str], stim: StimulusSet, attrs: Attributes) ->
     return items
 
 
-def competence_items(group: Sequence[str], stim: StimulusSet, attrs: Attributes,
-                     domains: Sequence[str] = COMPETENCE_ESTIMATE_DOMAINS) -> List[EstimateItem]:
-    """Each animal on its own, for each domain in `domains` (4 animals × 3 domains = 12).
+def competence_domains(block_index: int,
+                       domain_map: Mapping[int, Mapping[str, str]] = COMPETENCE_ESTIMATE_MAP
+                       ) -> Mapping[str, str]:
+    """{role: domain} for the ORIGINAL block ID `block_index` (not its presentation position)."""
+    if block_index not in domain_map:
+        raise ValueError(f"no competence estimate domains configured for block {block_index}")
+    return domain_map[block_index]
 
-    Grouped by domain, in role order within a domain.
+
+def competence_items(group: Sequence[str], stim: StimulusSet, attrs: Attributes,
+                     domain_by_role: Mapping[str, str]) -> List[EstimateItem]:
+    """Each animal on its own, in the one domain `domain_by_role` gives it (4 questions).
+
+    In role order.
     """
     roles = role_map(group, stim.char_code)
+    if set(domain_by_role) != set(roles):
+        raise ValueError(f"competence estimate domains given for roles {sorted(domain_by_role)}, "
+                         f"block has {sorted(roles)}")
     items = []
-    for domain in domains:
-        for role in sorted(roles):
-            if domain not in attrs.competence[role]:
-                raise ValueError(f"competence estimate domain {domain!r} is not in the competence table")
-            value = attrs.competence[role][domain]
-            items.append(EstimateItem(
-                estimate_type=COMPETENCE,
-                roles=(role,),
-                animals=(roles[role],),
-                domain=domain,
-                true_value=value,
-                true_level=stim.competence_level(value),
-            ))
+    for role in sorted(roles):
+        domain = domain_by_role[role]
+        if domain not in attrs.competence[role]:
+            raise ValueError(f"competence estimate domain {domain!r} is not in the competence table")
+        value = attrs.competence[role][domain]
+        items.append(EstimateItem(
+            estimate_type=COMPETENCE,
+            roles=(role,),
+            animals=(roles[role],),
+            domain=domain,
+            true_value=value,
+            true_level=stim.competence_level(value),
+        ))
     return items
 
 
@@ -161,8 +174,7 @@ def ordered_items(items: Sequence[EstimateItem], seed: str) -> List[EstimateItem
 
     synergy    : the 6 pairs are shuffled, and so is which animal of each pair is on the left
                  (so position on screen carries no information).
-    competence : questions stay grouped by domain (as requested: 4 animals per domain).
-                 The order of the domains and the animals within each domain are shuffled.
+    competence : the 4 animals are shuffled (each has its own domain, so there are no domain groups).
     """
     rng = random.Random(seed)
 
@@ -177,36 +189,27 @@ def ordered_items(items: Sequence[EstimateItem], seed: str) -> List[EstimateItem
         return result
 
     if all(item.estimate_type == COMPETENCE for item in items):
-        # Domains in the order they first appear, then shuffled.
-        domain_order = []
-        for item in items:
-            if item.domain not in domain_order:
-                domain_order.append(item.domain)
-        rng.shuffle(domain_order)
-
-        result = []
-        for domain in domain_order:
-            items_in_domain = [item for item in items if item.domain == domain]
-            rng.shuffle(items_in_domain)
-            for item in items_in_domain:
-                result.append(replace(item, display_animals=item.animals))
-        return result
+        shuffled = list(items)
+        rng.shuffle(shuffled)
+        return [replace(item, display_animals=item.animals) for item in shuffled]
 
     raise ValueError("one estimate must contain only synergy or only competence questions")
 
 
-def build_estimate_items(estimate_type: str, group: Sequence[str], stim: StimulusSet, attrs: Attributes,
-                          seed: str, domains: Sequence[str] = COMPETENCE_ESTIMATE_DOMAINS
+def build_estimate_items(estimate_type: str, block_index: int, stim: StimulusSet, attrs: Attributes,
+                          seed: str, domain_map: Mapping[int, Mapping[str, str]] = COMPETENCE_ESTIMATE_MAP
                           ) -> List[EstimateItem]:
     """The questions of one estimate, in presentation order.
 
+    block_index : ORIGINAL block ID; picks the block's animals and (competence) their domains.
     Middle and end of a block ask the same questions (same function, same inputs);
     only the order differs, because the seed includes the checkpoint name.
     """
+    group = stim.animal_groups[block_index]
     if estimate_type == SYNERGY:
         items = synergy_items(group, stim, attrs)
     elif estimate_type == COMPETENCE:
-        items = competence_items(group, stim, attrs, domains)
+        items = competence_items(group, stim, attrs, competence_domains(block_index, domain_map))
     else:
         raise ValueError(f"unknown estimate type {estimate_type!r}")
     return ordered_items(items, seed)
@@ -224,13 +227,8 @@ def is_correct(response: Optional[str], true_level: Optional[str]) -> Optional[b
 def item_counter(items: Sequence[EstimateItem], position: int) -> Dict[str, int]:
     """Progress numbers shown on screen for items[position] (0-based).
 
-    synergy    : 'Pair n / 6' over the whole estimate
-    competence : 'Animal n / 4' within the current domain
+    synergy    : 'Pair n / 6'
+    competence : 'Animal n / 4'
     Returns {'n': ..., 'total': ...}.
     """
-    item = items[position]
-    if item.estimate_type == SYNERGY:
-        return {'n': position + 1, 'total': len(items)}
-
-    same_domain = [index for index, other in enumerate(items) if other.domain == item.domain]
-    return {'n': same_domain.index(position) + 1, 'total': len(same_domain)}
+    return {'n': position + 1, 'total': len(items)}

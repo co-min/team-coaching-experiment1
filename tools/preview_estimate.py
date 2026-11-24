@@ -3,7 +3,7 @@ Standalone preview of the attribute estimate (no learning trials, no hardware).
 
 The estimate type comes from the block's phase (config/settings.py BLOCK_PHASES):
     phase_1 (competence visible) → Synergy estimate:    6 pairs
-    phase_2 (synergy visible)    → Competence estimate: 4 animals × COMPETENCE_ESTIMATE_DOMAINS
+    phase_2 (synergy visible)    → Competence estimate: 4 animals, one domain each (COMPETENCE_ESTIMATE_MAP)
 so the default --blocks 0,1 shows one of each.
 
 For each requested block, each requested checkpoint runs in order (middle, then end).

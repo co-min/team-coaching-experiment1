@@ -316,8 +316,8 @@ def run_estimate(env: EstimateEnv, block_index: int, phase: str, checkpoint: str
     group = env.stim.animal_groups[block_index]
     this_id = estimate_id(block_index, checkpoint)
     # Seeded by subject and estimate: reproducible, and different at middle and end.
-    items = build_estimate_items(estimate_type, group, env.stim, env.attrs, seed=f"{env.subject_id}|{this_id}",
-                                  domains=E.COMPETENCE_ESTIMATE_DOMAINS)
+    items = build_estimate_items(estimate_type, block_index, env.stim, env.attrs, seed=f"{env.subject_id}|{this_id}",
+                                  domain_map=E.COMPETENCE_ESTIMATE_MAP)
 
     phase_number = PHASE_INT[phase]
     view = EstimateView(env.win, group, S.DOMAINS)

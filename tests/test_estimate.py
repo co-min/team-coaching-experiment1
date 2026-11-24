@@ -12,6 +12,7 @@ TestEstimateEvents also checks which events go out on which screen flip.
 
 import csv
 import tempfile
+from collections import Counter
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
@@ -30,8 +31,8 @@ from config.paths import COMPETENCE_CSV, SYNERGY_CSV
 from recording.estimate_writers import ESTIMATE_FIELDS
 from recording.stimuli_loader import load_stimuli
 from task.estimate.items import (
-    estimate_type_for_phase, build_estimate_items, checkpoint_after_trial, competence_items, is_correct,
-    item_counter, ordered_items, synergy_items,
+    estimate_type_for_phase, build_estimate_items, checkpoint_after_trial, competence_domains, competence_items,
+    is_correct, item_counter, ordered_items, synergy_items,
 )
 from task.estimate.run import EstimateEnv, run_estimate
 from task.block import BlockEnv, run_block_trials
@@ -44,6 +45,7 @@ STIM = load_stimuli()
 ATTRS = load_attributes(STIM.synergy)
 SYNERGY_BLOCK = S.BLOCK_PHASES.index('phase_1')       # competence visible → synergy estimate
 COMPETENCE_BLOCK = S.BLOCK_PHASES.index('phase_2')    # synergy visible → competence estimate
+COMPETENCE_BLOCKS = [b for b, phase in enumerate(S.BLOCK_PHASES) if phase == 'phase_2']
 
 
 def _read_csv(path):
@@ -114,32 +116,37 @@ class TestSynergyItems(unittest.TestCase):
 
 
 class TestCompetenceItems(unittest.TestCase):
-    def test_one_animal_per_question_in_every_domain(self):
+    def test_one_animal_in_one_domain_per_question(self):
         truth = _table_competence()
-        group = STIM.animal_groups[COMPETENCE_BLOCK]
-        items = competence_items(group, STIM, ATTRS)
-        self.assertEqual(len(items), 12)                   # 4 animals × 3 domains
-        self.assertEqual({(item.animal_id, item.domain) for item in items},
-                         {(role, d) for role in 'ABCD' for d in S.DOMAINS})
-        for item in items:
-            self.assertEqual(len(item.animals), 1)        # never a pair
-            self.assertIsNone(item.pair_id)
-            self.assertIn(item.animals[0], group)
-            self.assertEqual(item.true_value, truth[(item.animal_id, item.domain)])   # decimals kept
-        a_cooking = [item for item in items if item.animal_id == 'A' and item.domain == 'cooking'][0]
-        self.assertEqual(a_cooking.true_value, 8.5)        # not the integer 8 of StimulusSet.competence
+        for block in COMPETENCE_BLOCKS:
+            group = STIM.animal_groups[block]
+            items = competence_items(group, STIM, ATTRS, competence_domains(block))
+            self.assertEqual(len(items), 4)                    # 4 animals × 1 domain
+            self.assertEqual({item.animal_id: item.domain for item in items}, E.COMPETENCE_ESTIMATE_MAP[block])
+            for item in items:
+                self.assertEqual(len(item.animals), 1)        # never a pair
+                self.assertIsNone(item.pair_id)
+                self.assertIn(item.animals[0], group)
+                self.assertEqual(item.true_value, truth[(item.animal_id, item.domain)])   # decimals kept
+        a_cooking = competence_items(STIM.animal_groups[1], STIM, ATTRS, competence_domains(1))[0]
+        self.assertEqual((a_cooking.animal_id, a_cooking.domain, a_cooking.true_value), ('A', 'cooking', 8.5))
 
     def test_competence_is_domain_specific(self):
-        items = competence_items(STIM.animal_groups[1], STIM, ATTRS)
-        a_values = {item.domain: (item.true_value, item.true_level) for item in items if item.animal_id == 'A'}
+        a_values = {}
+        for block in COMPETENCE_BLOCKS:
+            items = build_estimate_items('competence', block, STIM, ATTRS, seed='x')
+            a_item = [item for item in items if item.animal_id == 'A'][0]
+            a_values[a_item.domain] = (a_item.true_value, a_item.true_level)
         self.assertEqual(a_values, {'cooking': (8.5, 'high'), 'repairing': (4.6, 'mid'), 'tennis': (1.9, 'low')})
 
-    def test_domains_are_configurable(self):
-        items = competence_items(STIM.animal_groups[1], STIM, ATTRS, domains=('tennis',))
-        self.assertEqual(len(items), 4)
-        self.assertEqual({item.domain for item in items}, {'tennis'})
+    def test_bad_domains_rejected(self):
+        group = STIM.animal_groups[1]
         with self.assertRaises(ValueError):
-            competence_items(STIM.animal_groups[1], STIM, ATTRS, domains=('swimming',))
+            competence_items(group, STIM, ATTRS, {'A': 'swimming', 'B': 'tennis', 'C': 'tennis', 'D': 'tennis'})
+        with self.assertRaises(ValueError):
+            competence_items(group, STIM, ATTRS, {'A': 'tennis', 'B': 'tennis', 'C': 'tennis'})   # D missing
+        with self.assertRaises(ValueError):
+            competence_domains(SYNERGY_BLOCK)                 # no competence estimate there
 
     def test_level_cut_offs_match_the_border_colours(self):
         # Design table: Low 1.0–3.0, Middle 3.5–6.0, High 6.5–9.0
@@ -153,35 +160,111 @@ class TestCompetenceItems(unittest.TestCase):
             self.assertEqual(STIM.comp_color(score), colour)
 
 
+class TestCompetenceCounterbalance(unittest.TestCase):
+    """config.estimate.COMPETENCE_ESTIMATE_MAP: which domain each animal is asked about."""
+
+    MAP = E.COMPETENCE_ESTIMATE_MAP
+
+    def test_matches_the_design_table(self):
+        self.assertEqual(self.MAP, {
+            1: {'A': 'cooking',   'B': 'tennis',    'C': 'repairing', 'D': 'cooking'},
+            3: {'A': 'repairing', 'B': 'cooking',   'C': 'tennis',    'D': 'repairing'},
+            5: {'A': 'tennis',    'B': 'repairing', 'C': 'cooking',   'D': 'tennis'},
+        })
+
+    def test_keyed_by_the_competence_hidden_blocks(self):
+        self.assertEqual(sorted(self.MAP), COMPETENCE_BLOCKS)
+        for block in self.MAP:
+            self.assertEqual(estimate_type_for_phase(S.BLOCK_PHASES[block]), 'competence')
+
+    def test_one_domain_per_animal_and_all_domains_in_every_block(self):
+        for block, domain_by_role in self.MAP.items():
+            self.assertEqual(sorted(domain_by_role), ['A', 'B', 'C', 'D'])        # each animal exactly once
+            self.assertEqual(sorted(set(domain_by_role.values())), sorted(S.DOMAINS))
+
+    def test_each_animal_gets_each_domain_once_across_blocks(self):
+        for role in 'ABCD':
+            self.assertEqual(sorted(self.MAP[block][role] for block in self.MAP), sorted(S.DOMAINS))
+
+    def test_each_domain_four_times_in_total(self):
+        counts = Counter(domain for domain_by_role in self.MAP.values() for domain in domain_by_role.values())
+        self.assertEqual(counts, {domain: 4 for domain in S.DOMAINS})
+
+    def _true_levels(self, block):
+        """{role: 'low' / 'mid' / 'high'} of the asked domain, read straight from competence_d3.csv."""
+        table = _table_competence()
+        return {role: STIM.competence_level(table[(role, domain)]) for role, domain in self.MAP[block].items()}
+
+    def test_true_level_distribution_per_block(self):
+        self.assertEqual({block: Counter(self._true_levels(block).values()) for block in self.MAP}, {
+            1: {'high': 2, 'mid': 1, 'low': 1},
+            3: {'high': 1, 'mid': 2, 'low': 1},
+            5: {'high': 1, 'mid': 1, 'low': 2},
+        })
+
+    def test_all_three_levels_in_every_block(self):
+        for block in self.MAP:
+            self.assertEqual(set(self._true_levels(block).values()), {'low', 'mid', 'high'}, block)
+
+    def test_each_level_four_times_in_total(self):
+        counts = Counter(level for block in self.MAP for level in self._true_levels(block).values())
+        self.assertEqual(counts, {'low': 4, 'mid': 4, 'high': 4})
+
+    def test_items_carry_the_table_levels(self):
+        """The levels the estimate scores against are the ones the design counts on, at both checkpoints."""
+        for block in self.MAP:
+            for checkpoint in ('middle', 'end'):
+                items = build_estimate_items('competence', block, STIM, ATTRS, seed=f'T01|b{block}_{checkpoint}')
+                self.assertEqual({item.animal_id: item.true_level for item in items}, self._true_levels(block))
+
+    def test_same_animal_domain_pairs_under_both_block_orders(self):
+        """The mapping follows the original block ID, whatever position the block is shown at."""
+        for group, order in S.BLOCK_ORDERS.items():
+            shown = []
+            for position, block in enumerate(order):
+                if S.BLOCK_PHASES[block] != 'phase_2':
+                    continue
+                shown.append(block)
+                for checkpoint in ('middle', 'end'):
+                    items = build_estimate_items('competence', block, STIM, ATTRS,
+                                                 seed=f"T0{position}|b{block}_{checkpoint}")
+                    self.assertEqual({item.animal_id: item.domain for item in items}, self.MAP[block], (group, block))
+                    self.assertEqual({item.animals[0] for item in items}, set(STIM.animal_groups[block]))
+            self.assertEqual(sorted(shown), COMPETENCE_BLOCKS, group)
+
+
 class TestOrder(unittest.TestCase):
     def test_reproducible_and_complete(self):
-        group = STIM.animal_groups[0]
-        first = build_estimate_items('synergy', group, STIM, ATTRS, seed='T01|b0_middle')
-        again = build_estimate_items('synergy', group, STIM, ATTRS, seed='T01|b0_middle')
+        first = build_estimate_items('synergy', 0, STIM, ATTRS, seed='T01|b0_middle')
+        again = build_estimate_items('synergy', 0, STIM, ATTRS, seed='T01|b0_middle')
         self.assertEqual(first, again)
         self.assertEqual(len({item.pair_id for item in first}), 6)        # each pair exactly once
         for item in first:
             self.assertEqual(sorted(item.display_animals), sorted(item.animals))
 
     def test_middle_and_end_ask_the_same_questions(self):
-        group = STIM.animal_groups[1]
-        middle = build_estimate_items('competence', group, STIM, ATTRS, seed='T01|b1_middle')
-        end = build_estimate_items('competence', group, STIM, ATTRS, seed='T01|b1_end')
-        self.assertEqual(sorted((i.animal_id, i.domain) for i in middle), sorted((i.animal_id, i.domain) for i in end))
+        for block in COMPETENCE_BLOCKS:
+            middle = build_estimate_items('competence', block, STIM, ATTRS, seed=f'T01|b{block}_middle')
+            end = build_estimate_items('competence', block, STIM, ATTRS, seed=f'T01|b{block}_end')
+            self.assertEqual(len(middle), 4)
+            self.assertEqual(len(end), 4)
+            self.assertEqual(sorted((i.animal_id, i.domain, i.true_value) for i in middle),
+                             sorted((i.animal_id, i.domain, i.true_value) for i in end))
 
-    def test_competence_stays_grouped_by_domain(self):
-        for seed in ('a', 'b', 'c', 'd'):
-            items = build_estimate_items('competence', STIM.animal_groups[1], STIM, ATTRS, seed=seed)
-            domain_runs = [items[0].domain]
-            for item in items[1:]:
-                if item.domain != domain_runs[-1]:
-                    domain_runs.append(item.domain)
-            self.assertEqual(sorted(domain_runs), sorted(S.DOMAINS))      # each domain is one run of 4
-            self.assertEqual([item_counter(items, p)['n'] for p in range(12)], [1, 2, 3, 4] * 3)
+    def test_competence_order_shuffled_and_reproducible(self):
+        orders = set()
+        for seed in ('a', 'b', 'c', 'd', 'e', 'f'):
+            items = build_estimate_items('competence', COMPETENCE_BLOCK, STIM, ATTRS, seed=seed)
+            self.assertEqual(items, build_estimate_items('competence', COMPETENCE_BLOCK, STIM, ATTRS, seed=seed))
+            self.assertEqual(sorted(item.animal_id for item in items), ['A', 'B', 'C', 'D'])
+            self.assertEqual([item_counter(items, p) for p in range(4)],
+                             [{'n': n, 'total': 4} for n in (1, 2, 3, 4)])
+            orders.add(tuple(item.animal_id for item in items))
+        self.assertGreater(len(orders), 1)
 
     def test_mixed_types_rejected(self):
         mixed = synergy_items(STIM.animal_groups[0], STIM, ATTRS)[:1] + \
-                competence_items(STIM.animal_groups[0], STIM, ATTRS)[:1]
+                competence_items(STIM.animal_groups[1], STIM, ATTRS, competence_domains(1))[:1]
         with self.assertRaises(ValueError):
             ordered_items(mixed, seed='x')
 
@@ -441,23 +524,30 @@ class TestSynergyScreen(ScreenBase):
 
 
 class TestCompetenceScreen(ScreenBase):
-    def test_twelve_single_animal_questions_grouped_by_domain(self):
-        result, rows = self.run_estimate(COMPETENCE_BLOCK, [_script('left', 'space')] * 12,
-                                          checkpoint='end', trial_after=15)
+    def test_four_single_animal_questions_one_domain_each(self):
         truth = _table_competence()
-        self.assertEqual(len(rows), 12)
-        domains_in_order = [row['domain'] for row in rows]
-        for start in (0, 4, 8):
-            self.assertEqual(len(set(domains_in_order[start:start + 4])), 1)
-        self.assertEqual(sorted(set(domains_in_order)), sorted(S.DOMAINS))
+        for block in COMPETENCE_BLOCKS:
+            for checkpoint, trial_after in (('middle', 7), ('end', 15)):
+                self.run_estimate(block, [_script('left', 'space')] * 4, checkpoint=checkpoint,
+                                  trial_after=trial_after)
+        rows = self.rows()
+        self.assertEqual(len(rows), 4 * 2 * len(COMPETENCE_BLOCKS))
         for row in rows:
             self.assertEqual(row['estimate_type'], 'competence')
-            self.assertEqual((row['checkpoint'], row['trial_after']), ('end', '15'))
+            self.assertEqual(row['n_items'], '4')
+            self.assertEqual(row['domain'], E.COMPETENCE_ESTIMATE_MAP[int(row['block_idx'])][row['animal_id']])
             self.assertEqual((row['pair_id'], row['pair_animals']), ('', ''))
             self.assertEqual(row['display_animals'], row['animal_name'])     # exactly one animal on screen
             self.assertEqual(float(row['true_attribute_value']), truth[(row['animal_id'], row['domain'])])
             self.assertEqual(row['response'], 'low')
             self.assertEqual(row['correct'], str(row['true_attribute_level'] == 'low'))
+        # Middle and end of a block: same animal–domain pairs
+        for block in COMPETENCE_BLOCKS:
+            pairs = {checkpoint: sorted((row['animal_id'], row['domain']) for row in rows
+                                        if row['block_idx'] == str(block) and row['checkpoint'] == checkpoint)
+                     for checkpoint in ('middle', 'end')}
+            self.assertEqual(len(pairs['middle']), 4)
+            self.assertEqual(pairs['middle'], pairs['end'])
 
     def test_screen_is_the_same_for_right_and_wrong_answers(self):
         """No feedback: what is drawn never depends on the true answer."""
@@ -471,14 +561,13 @@ class TestCompetenceScreen(ScreenBase):
                 return real_draw(stim, *args, **kwargs)
 
             key = E.ESTIMATE_KEYS[answer][0]
-            with mock.patch.object(E, 'COMPETENCE_ESTIMATE_DOMAINS', ('cooking',)), \
-                 mock.patch.object(visual.TextStim, 'draw', recording_draw):
-                self.run_estimate(COMPETENCE_BLOCK, [_script(key, 'space')] * 4, subject_id=f'same_{answer}')
+            with mock.patch.object(visual.TextStim, 'draw', recording_draw):
+                self.run_estimate(3, [_script(key, 'space')] * 4, subject_id=f'same_{answer}')
             drawn[answer] = texts
 
         rows = self.rows()
         self.assertEqual(len(rows), 8)
-        # Each run has right and wrong answers (cooking levels are high, mid, low, high) ...
+        # Right and wrong answers (block 3 levels are A mid, B low, C low, D low) ...
         self.assertEqual({row['correct'] for row in rows}, {'True', 'False'})
         # ... yet both runs draw exactly the same text, and no true value appears anywhere.
         self.assertEqual(drawn['low'], drawn['high'])
@@ -579,9 +668,8 @@ class TestEstimateEvents(ScreenBase):
     def test_competence_block_uses_phase_2_codes(self):
         block = 3
         self.assertEqual(S.BLOCK_PHASES[block], 'phase_2')
-        with mock.patch.object(E, 'COMPETENCE_ESTIMATE_DOMAINS', ('cooking',)):
-            result, rows = self.run_with_events(block, [_script('right', 'space')] * 4, checkpoint='end',
-                                                show_intro=False)
+        result, rows = self.run_with_events(block, [_script('right', 'space')] * 4, checkpoint='end',
+                                            show_intro=False)
         self.assertEqual(self.codes(), [152] + [162, 172] * 4 + [182])
         # Without an intro, the start goes out on the first question's flip, before its onset.
         self.assertEqual(self.ttl[0]['flip'], self.ttl[1]['flip'])
