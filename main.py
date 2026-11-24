@@ -1,8 +1,13 @@
 """
 Team-managing task — entry point.
 
-    session setup → blocks (phase_1 / phase_2 alternating) → ending
+    session setup → blocks in the subject's counterbalance order → ending
     each block: trials 1–7 → middle appraisal → trials 8–15 → end appraisal
+
+Block order: group A (odd subject ID) / B (even) from config.settings.BLOCK_ORDERS.
+    presentation_pos (0–5) → block number on screen, BREAK_BEFORE_BLOCKS
+    block_id         (0–5) → phase, animals, trials, forced first choices,
+                             appraisal type, ranking domain, probe order
 
 Task design, language, timing and hardware switches: config/settings.py
 """
@@ -10,6 +15,7 @@ Task design, language, timing and hardware switches: config/settings.py
 from psychopy import core
 
 from config import settings as S
+from config.ranking import PERFORMANCE_RANKING_DOMAINS
 from config.strings import t
 from hardware.events import on_task_start
 from hardware.frame_marker import init_marker
@@ -19,7 +25,7 @@ from recording.stimuli_loader import load_stimuli
 from recording.writers import get_subject_dir, save_session_metadata
 from task.block import BlockEnv, run_block_trials
 from task.forced_first import attach_forced_first
-from task.schedule import generate_block_schedules
+from task.schedule import block_order, block_order_problems, generate_block_schedules, presentation_order_problems
 from task.screens.ending import run_ending
 from task.screens.instructions import show_instructions
 from task.session import start_session
@@ -36,10 +42,58 @@ def _build_schedules(stim):
     raise ValueError(f"FIRST_CHOICE_MODE must be 'free' or 'forced', got {S.FIRST_CHOICE_MODE!r}")
 
 
+def _check_block_orders() -> None:
+    """Stop before the window opens if a group's block order breaks a counterbalancing rule."""
+    problems = block_order_problems(S.BLOCK_ORDERS, len(S.BLOCK_PHASES))
+    if not problems:   # the next check needs valid block IDs
+        problems = presentation_order_problems(S.BLOCK_ORDERS, S.BLOCK_PHASES, PERFORMANCE_RANKING_DOMAINS)
+    if problems:
+        raise SystemExit("Block order check failed:\n  " + "\n  ".join(problems))
+
+
+def run_blocks(env: BlockEnv, block_schedules, cumulative: dict) -> None:
+    """Run every block in this subject's counterbalance order.
+
+    block_schedules is indexed by the ORIGINAL block ID, so it is looked up with
+    block_id, never with presentation_pos.
+    """
+    order = block_order(env.counterbalance_group)
+    n_blocks = len(order)
+
+    for presentation_pos, block_id in enumerate(order):
+        phase = S.BLOCK_PHASES[block_id]           # from the original block
+        schedule = block_schedules[block_id]       # from the original block
+        block_number = presentation_pos + 1        # what the participant sees: 1 … n_blocks
+
+        if block_number in S.BREAK_BEFORE_BLOCKS:
+            show_instructions(env.win, t("inst_break"), advance_key="t")
+        if phase == 'phase_1':
+            instruction = t("inst_phase1")
+        else:
+            instruction = t("inst_phase2")
+        if S.FIRST_CHOICE_MODE == 'forced':
+            forced_note = t("inst_forced_note")
+        else:
+            forced_note = ""
+        show_instructions(env.win, instruction.format(block_num=block_number, total_blocks=n_blocks,
+                                                      forced_note=forced_note))
+
+        cumulative['phase'] = 0
+        for d in S.DOMAINS:
+            cumulative[d] = 0
+
+        # Trials 1–7 → middle appraisal → trials 8–15 → end appraisal (all inside run_block_trials)
+        run_block_trials(env, block_id, phase, schedule, cumulative, presentation_pos=presentation_pos)
+        # Performance + counterfactual ranking go here, after the end appraisal
+        # (task.ranking.assessments.run_block_rankings(..., block_id, presentation_pos)).
+        # Not wired in yet: the probe conditions are still placeholders (tools/preview_ranking.py).
+
+
 def main() -> None:
     stim = load_stimuli()
-    # Before opening the window: an invalid forced-first CSV aborts here.
+    # Before opening the window: an invalid forced-first CSV or block order aborts here.
     block_schedules, schedule_version = _build_schedules(stim)
+    _check_block_orders()
 
     ctx = start_session()
     win = ctx.win
@@ -59,37 +113,21 @@ def main() -> None:
         neon_recording_id=ctx.neon_recording_id,
         first_choice_mode=S.FIRST_CHOICE_MODE,
         schedule_version=schedule_version,
+        counterbalance_group=ctx.counterbalance_group,
+        block_order=list(block_order(ctx.counterbalance_group)),
     )
 
     env = BlockEnv(
         win=win, global_clock=global_clock, factory=factory, stim=stim,
         subject_id=ctx.subject_id, handle=ctx.handle, neon_client=ctx.neon_client,
         schedule_version=schedule_version, session_id=ctx.session_id,
+        counterbalance_group=ctx.counterbalance_group,
     )
     cumulative = {'total': 0, 'phase': 0, **{d: 0 for d in S.DOMAINS}}
-    n_blocks = len(S.BLOCK_PHASES)
 
     try:
         on_task_start(ctx.neon_client, ctx.handle)
-
-        for block_index, (phase, schedule) in enumerate(zip(S.BLOCK_PHASES, block_schedules)):
-            if (block_index + 1) in S.BREAK_BEFORE_BLOCKS:
-                show_instructions(win, t("inst_break"), advance_key="t")
-            instruction = t("inst_phase1") if phase == 'phase_1' else t("inst_phase2")
-            forced_note = t("inst_forced_note") if S.FIRST_CHOICE_MODE == 'forced' else ""
-            show_instructions(win, instruction.format(block_num=block_index + 1, total_blocks=n_blocks,
-                                                    forced_note=forced_note))
-
-            cumulative['phase'] = 0
-            for d in S.DOMAINS:
-                cumulative[d] = 0
-
-            # Trials 1–7 → middle appraisal → trials 8–15 → end appraisal (all inside run_block_trials)
-            run_block_trials(env, block_index, phase, schedule, cumulative)
-            # Performance + counterfactual ranking go here, after the end appraisal
-            # (task.ranking.assessments.run_block_rankings). Not wired in yet: the
-            # probe conditions are still placeholders (tools/preview_ranking.py).
-
+        run_blocks(env, block_schedules, cumulative)
         run_ending(win, ctx.subject_id, cumulative['total'],
                     max_trial_score=stim.max_trial_score,
                     elapsed_seconds=global_clock.getTime())

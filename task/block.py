@@ -1,5 +1,14 @@
 """Block-level trial orchestration — schedule execution, scoring, I/O, and the
-attribute appraisals between trials (after trial 7 and after the last trial)."""
+attribute appraisals between trials (after trial 7 and after the last trial).
+
+Two numbers describe a block; keep them apart:
+    block_index      original block ID (0–5). Decides the phase, animals, trial
+                     schedule, forced first choices, appraisal type, and every
+                     label / folder name that says "block".
+    presentation_pos where this subject sees the block (0-based, from
+                     config.settings.BLOCK_ORDERS). Only logged here; main.py
+                     uses it for the block number on screen and the breaks.
+"""
 
 import threading
 from dataclasses import dataclass
@@ -43,6 +52,7 @@ class BlockEnv:
     neon_client:  Any
     schedule_version: Optional[str] = None   # forced-first CSV version (forced mode)
     session_id:   Optional[str] = None        # written to appraisals.csv
+    counterbalance_group: Optional[str] = None   # 'A' | 'B' (task.schedule.counterbalance_group)
 
 
 # ── helpers ───────────────────────────────────────────────────────────────────
@@ -87,14 +97,21 @@ def _score_and_feedback(env: BlockEnv, result, phase, domain, char_order,
     return score
 
 
-def run_block_appraisal(env: BlockEnv, block_index: int, phase: str, checkpoint: str, trial_after: int) -> None:
+def run_block_appraisal(env: BlockEnv, block_index: int, phase: str, checkpoint: str, trial_after: int,
+                        presentation_pos: Optional[int] = None) -> None:
     """Middle / end attribute appraisal (task/appraisal). Answers go to data/sub-{id}/appraisals.csv.
 
-    Esc during the appraisal ends the session, the same as Esc during a trial.
+    LabJack / Neon events are sent through env.handle / env.neon_client.
+    Esc during the appraisal ends the session, the same as Esc during a trial:
+    core.quit() raises SystemExit, so main()'s finally block still flushes Neon
+    and closes the LabJack (the appraisal-end event is already queued by then).
     """
     appraisal_env = make_appraisal_env(env.win, env.global_clock, env.stim, env.subject_id,
-                                       get_subject_dir(env.subject_id), env.session_id)
-    result = run_appraisal(appraisal_env, block_index, phase, checkpoint, trial_after)
+                                       get_subject_dir(env.subject_id), env.session_id,
+                                       lj_handle=env.handle, neon=env.neon_client,
+                                       counterbalance_group=env.counterbalance_group)
+    result = run_appraisal(appraisal_env, block_index, phase, checkpoint, trial_after,
+                           presentation_pos=presentation_pos)
     if result.aborted:
         env.win.close()
         core.quit()
@@ -103,10 +120,13 @@ def run_block_appraisal(env: BlockEnv, block_index: int, phase: str, checkpoint:
 # ── entry point ───────────────────────────────────────────────────────────────
 
 def run_block_trials(env: BlockEnv, block_index: int, phase: str,
-                     block_schedule: List[dict], cumulative: dict) -> None:
+                     block_schedule: List[dict], cumulative: dict,
+                     presentation_pos: Optional[int] = None) -> None:
     """
     Run all trials for one block.
 
+    block_index      : original block ID (phase and block_schedule must be this block's)
+    presentation_pos : this block's position for this subject (0-based), for the log
     block_schedule : list of {'domain': str, 'char_order': list[str]
                               [, 'forced_first': str]}  (see task/forced_first.py)
     cumulative     : {'total', 'phase', <domain>...} running scores (mutated)
@@ -158,6 +178,8 @@ def run_block_trials(env: BlockEnv, block_index: int, phase: str,
             first_choice_mode='forced' if forced_first is not None else 'free',
             forced_first_animal=forced_first,
             schedule_version=env.schedule_version,
+            presentation_pos=presentation_pos,
+            counterbalance_group=env.counterbalance_group,
         )
         save_dir = build_trial_save_dir(env.subject_id, block_index, phase, domain, stim_pair_id)
         save_trial_metadata(save_dir, record)
@@ -175,7 +197,8 @@ def run_block_trials(env: BlockEnv, block_index: int, phase: str,
         if checkpoint is not None:
             save_thread.join()      # this trial is on disk before the appraisal starts
             save_thread = None
-            run_block_appraisal(env, block_index, phase, checkpoint, trial_number)
+            run_block_appraisal(env, block_index, phase, checkpoint, trial_number,
+                                presentation_pos=presentation_pos)
 
     if save_thread:
         save_thread.join()

@@ -74,12 +74,15 @@ def _check_schedule(block_indices, group):
     does not exist; otherwise prints the schedule in presentation order."""
     from config.ranking import PERFORMANCE_RANKING_DOMAINS, PROBE_ORDERS
     from task.ranking.schedule import probe_order, probe_order_problems, ranking_domain, ranking_domain_problems
-    from task.schedule import block_order, block_order_problems
+    from task.schedule import block_order, block_order_problems, presentation_order_problems
 
     n_blocks = len(S.BLOCK_PHASES)
     problems = ranking_domain_problems(PERFORMANCE_RANKING_DOMAINS, S.BLOCK_PHASES, S.DOMAINS)
     problems += probe_order_problems(PROBE_ORDERS, S.BLOCK_PHASES, PERFORMANCE_RANKING_DOMAINS)
-    problems += block_order_problems(S.BLOCK_ORDERS, n_blocks)
+    order_problems = block_order_problems(S.BLOCK_ORDERS, n_blocks)
+    if not order_problems:   # the presentation check needs valid block IDs (same as main.py)
+        order_problems = presentation_order_problems(S.BLOCK_ORDERS, S.BLOCK_PHASES, PERFORMANCE_RANKING_DOMAINS)
+    problems += order_problems
 
     for block_index in block_indices:
         if block_index < 0 or block_index >= n_blocks:

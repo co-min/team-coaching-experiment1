@@ -4,8 +4,10 @@ Attribute appraisal tests (task/appraisal).
     python -m unittest tests.test_appraisal -v
 
 The first classes need no window: checkpoints, appraisal type, questions,
-ground truth, order, and the position of the appraisals in the block loop.
-The Screen classes open a small PsychoPy window and answer with scripted keys.
+ground truth, order, the position of the appraisals in the block loop, and the
+LabJack codes / Neon labels.
+The Screen classes open a small PsychoPy window and answer with scripted keys;
+TestAppraisalEvents also checks which events go out on which screen flip.
 """
 
 import csv
@@ -18,6 +20,9 @@ from unittest import mock
 from psychopy import core, visual
 
 import recording.writers as writers
+import hardware.events as hw_events
+import hardware.labjack as labjack
+import task.appraisal.run as run_mod
 import task.block as block_mod
 from config import appraisal as A
 from config import settings as S
@@ -200,7 +205,7 @@ class TestBlockFlowOrder(unittest.TestCase):
             log.append(('trial', frame_log['trial_id'] + 1, forced_first))
             return None                                      # no response → no feedback screen
 
-        def fake_appraisal(env, block_i, phase, checkpoint, trial_after):
+        def fake_appraisal(env, block_i, phase, checkpoint, trial_after, presentation_pos=None):
             saved = _read_csv(Path(tmp) / 'sub-flow' / 'trials.csv')
             log.append(('appraisal', checkpoint, trial_after, len(saved)))
 
@@ -233,13 +238,123 @@ class TestBlockFlowOrder(unittest.TestCase):
         self.assertEqual(log, expected)
 
     def test_esc_in_the_appraisal_ends_the_session(self):
-        env = SimpleNamespace(win=mock.Mock(), global_clock=None, stim=STIM, subject_id='x', session_id=None)
-        with mock.patch.object(block_mod, 'make_appraisal_env', lambda *a: None), \
-             mock.patch.object(block_mod, 'run_appraisal', lambda *a: SimpleNamespace(aborted=True)), \
+        env = SimpleNamespace(win=mock.Mock(), global_clock=None, stim=STIM, subject_id='x', session_id=None,
+                              handle=None, neon_client=None, counterbalance_group=None)
+        with mock.patch.object(block_mod, 'make_appraisal_env', lambda *a, **k: None), \
+             mock.patch.object(block_mod, 'run_appraisal', lambda *a, **k: SimpleNamespace(aborted=True)), \
              mock.patch.object(block_mod.core, 'quit') as quit_mock:
             block_mod.run_block_appraisal(env, 0, 'phase_1', 'middle', 7)
         env.win.close.assert_called_once()
         quit_mock.assert_called_once()
+
+
+class TestAppraisalEventCodes(unittest.TestCase):
+    """TTL codes and Neon labels, without a window (fake win runs callOnFlip callbacks on flip())."""
+
+    def test_codes_follow_the_phase(self):
+        self.assertEqual(hw_events._APPRAISAL_START_TRIG,    {1: 151, 2: 152})
+        self.assertEqual(hw_events._APPRAISAL_QUESTION_TRIG, {1: 161, 2: 162})
+        self.assertEqual(hw_events._APPRAISAL_RESPONSE_TRIG, {1: 171, 2: 172})
+        self.assertEqual(hw_events._APPRAISAL_END_TRIG,      {1: 181, 2: 182})
+
+    def test_no_collision_with_existing_codes(self):
+        appraisal_codes = set()
+        other_codes = set()
+        for name in dir(labjack):
+            if not name.startswith('TRIG_') or name == 'TRIG_RESET':
+                continue
+            if 'APPRAISAL' in name:
+                appraisal_codes.add(getattr(labjack, name))
+            else:
+                other_codes.add(getattr(labjack, name))
+        # animal-encoded choice codes are base + 0..23
+        for base in (labjack.TRIG_P1_CHOICE1, labjack.TRIG_P1_CHOICE2, labjack.TRIG_P2_CHOICE1, labjack.TRIG_P2_CHOICE2):
+            for animal_index in labjack.ANIMAL_IDX.values():
+                other_codes.add(base + animal_index)
+
+        self.assertEqual(appraisal_codes, {151, 152, 161, 162, 171, 172, 181, 182})
+        self.assertEqual(appraisal_codes & other_codes, set())
+        for code in appraisal_codes | other_codes:
+            self.assertTrue(1 <= code <= 255, code)          # 8 EIO data lines
+
+    def test_labels_name_block_checkpoint_question_and_response(self):
+        ttl, neon = [], FakeNeon(lambda: (0, False))
+        win = FakeWin()
+        with mock.patch.object(hw_events, 'send_trigger', lambda handle, code, *a, **k: ttl.append(code)):
+            hw_events.callonflip_appraisal_start(win, neon, None, 2, 3, 'end')
+            hw_events.callonflip_appraisal_question(win, neon, None, 2, 3, 'end', 4)
+            self.assertEqual((ttl, neon.names()), ([], []))  # nothing before the flip
+            win.flip()
+            hw_events.on_appraisal_confirm(neon, None, 2, 3, 'end', 4, 'mid')
+            hw_events.on_appraisal_no_response(neon, 2, 3, 'end', 5, 'timeout')
+            hw_events.on_appraisal_no_response(neon, 2, 3, 'end', 6, 'aborted')
+            hw_events.on_appraisal_end(neon, None, 2, 3, 'end', 'aborted')
+        self.assertEqual(ttl, [152, 162, 172, 182])
+        self.assertEqual(neon.names(), [
+            'P2_BLOCK_03_APPRAISAL_END_START',
+            'P2_BLOCK_03_APPRAISAL_END_Q04_ONSET',
+            'P2_BLOCK_03_APPRAISAL_END_Q04_MID_CONFIRM',
+            'P2_BLOCK_03_APPRAISAL_END_Q05_TIMEOUT',
+            'P2_BLOCK_03_APPRAISAL_END_Q06_ABORTED',
+            'P2_BLOCK_03_APPRAISAL_END_END_ABORTED',
+        ])
+        self.assertEqual([e['meta'].get('task_type') for e in neon.events], ['appraisal'] * 6)
+        self.assertEqual([e['meta'].get('trial_index') for e in neon.events], [None, 4, 4, 5, 6, None])
+
+    def test_block_appraisal_passes_hardware_group_and_position(self):
+        seen = {}
+
+        def fake_make_env(*args, **kwargs):
+            seen['env_kwargs'] = kwargs
+            return 'appraisal_env'
+
+        def fake_run(appraisal_env, block_index, phase, checkpoint, trial_after, presentation_pos=None):
+            seen['run'] = (appraisal_env, block_index, phase, checkpoint, trial_after, presentation_pos)
+            return SimpleNamespace(aborted=False)
+
+        env = SimpleNamespace(win=None, global_clock=None, stim=STIM, subject_id='x', session_id='S',
+                              handle='LJ', neon_client='NEON', counterbalance_group='B')
+        with mock.patch.object(block_mod, 'make_appraisal_env', fake_make_env), \
+             mock.patch.object(block_mod, 'run_appraisal', fake_run):
+            block_mod.run_block_appraisal(env, 5, 'phase_2', 'end', 15, presentation_pos=2)
+        self.assertEqual(seen['env_kwargs'], {'lj_handle': 'LJ', 'neon': 'NEON', 'counterbalance_group': 'B'})
+        self.assertEqual(seen['run'], ('appraisal_env', 5, 'phase_2', 'end', 15, 2))
+
+
+class FakeWin:
+    """Just enough of a window for callOnFlip: callbacks run (in order) on the next flip()."""
+
+    def __init__(self):
+        self._callbacks = []
+
+    def callOnFlip(self, function, *args, **kwargs):
+        self._callbacks.append((function, args, kwargs))
+
+    def flip(self):
+        callbacks, self._callbacks = self._callbacks, []
+        for function, args, kwargs in callbacks:
+            function(*args, **kwargs)
+
+
+class FakeNeon:
+    """Records Neon events with where_now() = (flip number, inside a flip?) at the moment they are queued."""
+
+    def __init__(self, where_now):
+        self.where_now = where_now
+        self.events = []
+
+    def call_on_flip(self, win, names, **meta):
+        win.callOnFlip(self.enqueue_events, names, metadata=meta)
+
+    def enqueue_events(self, names, metadata=None):
+        if isinstance(names, str):
+            names = [names]
+        flip_number, in_flip = self.where_now()
+        for name in names:
+            self.events.append({'name': name, 'flip': flip_number, 'in_flip': in_flip, 'meta': metadata or {}})
+
+    def names(self):
+        return [e['name'] for e in self.events]
 
 
 # ── with a window ─────────────────────────────────────────────────────────────
@@ -370,6 +485,133 @@ class TestCompetenceScreen(ScreenBase):
         all_text = ' '.join(drawn['low'])
         for row in rows:
             self.assertNotIn(row['true_attribute_value'], all_text)
+
+
+class TestAppraisalEvents(ScreenBase):
+    """LabJack codes and Neon labels during a real appraisal, and which flip each one goes out on."""
+
+    def setUp(self):
+        super().setUp()
+        # Count flips and remember whether code runs inside one (callOnFlip callbacks do).
+        self.n_flips = 0
+        self.in_flip = False
+        real_flip = self.win.flip
+
+        def counting_flip(*args, **kwargs):
+            self.n_flips += 1
+            self.in_flip = True
+            try:
+                return real_flip(*args, **kwargs)
+            finally:
+                self.in_flip = False
+
+        self.win.flip = counting_flip
+        self.addCleanup(delattr, self.win, 'flip')
+
+        self.ttl = []
+
+        def record_ttl(handle, code, *args, **kwargs):
+            self.ttl.append({'code': code, 'flip': self.n_flips, 'in_flip': self.in_flip})
+
+        patcher = mock.patch.object(hw_events, 'send_trigger', record_ttl)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        self.neon = FakeNeon(lambda: (self.n_flips, self.in_flip))
+
+    def run_with_events(self, block_index, scripts, checkpoint='middle', show_intro=True,
+                        presentation_pos=None, group=None):
+        env = AppraisalEnv(win=self.win, global_clock=core.Clock(),
+                           source=ScriptedSource(scripts, key_map=A.APPRAISAL_KEYS), stim=STIM, attrs=ATTRS,
+                           subject_id='EV', subject_dir=self.tmp, session_id='S', lj_handle='LJ', neon=self.neon,
+                           counterbalance_group=group)
+
+        def one_frame_intro(win, text, advance_key='space'):
+            win.flip()                                   # the intro screen appears; no key wait in tests
+
+        with mock.patch.object(run_mod, 'show_instructions', one_frame_intro):
+            result = run_appraisal(env, block_index, S.BLOCK_PHASES[block_index], checkpoint, 7,
+                                   show_intro=show_intro, presentation_pos=presentation_pos)
+        return result, self.rows()
+
+    def codes(self):
+        return [e['code'] for e in self.ttl]
+
+    def test_synergy_block_codes_labels_and_flip_alignment(self):
+        block = 4                                         # a phase_1 block other than 0, so the ID is visible
+        self.assertEqual(S.BLOCK_PHASES[block], 'phase_1')
+        answers = ['left', 'down', 'right', 'left', 'down', 'right']
+        result, rows = self.run_with_events(block, [_script(key, 'space') for key in answers],
+                                            presentation_pos=3, group='B')
+        self.assertFalse(result.aborted)
+
+        self.assertEqual(self.codes(), [151] + [161, 171] * 6 + [181])
+        prefix = 'P1_BLOCK_04_APPRAISAL_MIDDLE'
+        expected_names = [f'{prefix}_START']
+        for number, response in enumerate(['low', 'mid', 'high', 'low', 'mid', 'high'], start=1):
+            expected_names += [f'{prefix}_Q{number:02d}_ONSET', f'{prefix}_Q{number:02d}_{response.upper()}_CONFIRM']
+        expected_names.append(f'{prefix}_END_COMPLETE')
+        self.assertEqual(self.neon.names(), expected_names)
+
+        # Visual onsets go out inside a flip: the start on the intro's flip (the first),
+        # each question onset on a later flip of its own, LabJack and Neon on the same flip.
+        start = self.ttl[0]
+        self.assertEqual((start['flip'], start['in_flip']), (1, True))
+        onset_ttl = [e for e in self.ttl if e['code'] == 161]
+        onset_neon = [e for e in self.neon.events if e['name'].endswith('_ONSET')]
+        self.assertTrue(all(e['in_flip'] for e in onset_ttl + onset_neon))
+        self.assertEqual([e['flip'] for e in onset_ttl], [e['flip'] for e in onset_neon])
+        self.assertEqual(len({e['flip'] for e in onset_ttl}), 6)
+        self.assertGreater(onset_ttl[0]['flip'], 1)
+        # Responses and the end go out right away, between flips.
+        for e in self.ttl:
+            if e['code'] in (171, 181):
+                self.assertFalse(e['in_flip'], e)
+        for e in self.neon.events:
+            if e['name'].endswith('_CONFIRM') or '_END_' in e['name']:
+                self.assertFalse(e['in_flip'], e)
+
+        # Behavioural CSV
+        self.assertEqual([row['response'] for row in rows], ['low', 'mid', 'high', 'low', 'mid', 'high'])
+        self.assertEqual({row['status'] for row in rows}, {'complete'})
+        self.assertEqual({(row['block_idx'], row['presentation_pos'], row['counterbalance_group']) for row in rows},
+                         {('4', '3', 'B')})
+
+    def test_competence_block_uses_phase_2_codes(self):
+        block = 3
+        self.assertEqual(S.BLOCK_PHASES[block], 'phase_2')
+        with mock.patch.object(A, 'COMPETENCE_APPRAISAL_DOMAINS', ('cooking',)):
+            result, rows = self.run_with_events(block, [_script('right', 'space')] * 4, checkpoint='end',
+                                                show_intro=False)
+        self.assertEqual(self.codes(), [152] + [162, 172] * 4 + [182])
+        # Without an intro, the start goes out on the first question's flip, before its onset.
+        self.assertEqual(self.ttl[0]['flip'], self.ttl[1]['flip'])
+        self.assertEqual(self.neon.names()[:2], ['P2_BLOCK_03_APPRAISAL_END_START',
+                                                 'P2_BLOCK_03_APPRAISAL_END_Q01_ONSET'])
+        self.assertEqual(self.neon.names()[-1], 'P2_BLOCK_03_APPRAISAL_END_END_COMPLETE')
+        self.assertIn('P2_BLOCK_03_APPRAISAL_END_Q04_HIGH_CONFIRM', self.neon.names())
+        self.assertEqual({row['presentation_pos'] for row in rows}, {''})     # not run from the block loop
+
+    def test_timeout_has_no_confirm_and_still_completes(self):
+        scripts = [[]] + [_script('down', 'space')] * 5
+        with mock.patch.object(A, 'APPRAISAL_MAX_TIME', 0.2):
+            result, rows = self.run_with_events(0, scripts)
+        self.assertFalse(result.aborted)
+        self.assertEqual(self.codes(), [151, 161] + [161, 171] * 5 + [181])
+        names = self.neon.names()
+        self.assertIn('P1_BLOCK_00_APPRAISAL_MIDDLE_Q01_TIMEOUT', names)
+        self.assertFalse(any(n.startswith('P1_BLOCK_00_APPRAISAL_MIDDLE_Q01_') and n.endswith('_CONFIRM')
+                             for n in names))
+        self.assertEqual(names[-1], 'P1_BLOCK_00_APPRAISAL_MIDDLE_END_COMPLETE')
+        self.assertEqual((rows[0]['status'], rows[0]['response']), ('timeout', ''))
+
+    def test_esc_sends_aborted_and_end_then_stops(self):
+        scripts = [_script('left', 'space'), _script('down', 'space'), _script('right', 'escape')]
+        result, rows = self.run_with_events(0, scripts)
+        self.assertTrue(result.aborted)
+        self.assertEqual(self.codes(), [151, 161, 171, 161, 171, 161, 181])     # no confirm for Q03, no Q04
+        self.assertEqual(self.neon.names()[-2:], ['P1_BLOCK_00_APPRAISAL_MIDDLE_Q03_ABORTED',
+                                                  'P1_BLOCK_00_APPRAISAL_MIDDLE_END_ABORTED'])
+        self.assertEqual([row['status'] for row in rows], ['complete', 'complete', 'aborted'])
 
 
 if __name__ == '__main__':

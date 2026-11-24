@@ -69,6 +69,21 @@ TRIG_P2_CHOICE1 = 89
 TRIG_P2_CHOICE2 = 113
 
 # =========================================
+# Attribute appraisal (task/appraisal) — phase를 인코딩
+#   phase = 원래 블록의 phase (제시 위치와 무관)
+#   151-182 는 choice (41-136) / feedback (191-) 와 겹치지 않음
+# =========================================
+
+TRIG_P1_APPRAISAL_START    = 151  # 안내 화면 등장 (flip)
+TRIG_P2_APPRAISAL_START    = 152
+TRIG_P1_APPRAISAL_QUESTION = 161  # 질문 화면 등장 (flip)
+TRIG_P2_APPRAISAL_QUESTION = 162
+TRIG_P1_APPRAISAL_RESPONSE = 171  # Space 로 응답 확정 (키 입력 즉시)
+TRIG_P2_APPRAISAL_RESPONSE = 172
+TRIG_P1_APPRAISAL_END      = 181  # 마지막 질문 종료 또는 Esc
+TRIG_P2_APPRAISAL_END      = 182
+
+# =========================================
 # Feedback — phase를 인코딩
 # =========================================
 

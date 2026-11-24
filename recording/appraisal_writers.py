@@ -13,6 +13,14 @@ session stops in the middle of a block.
 Rows are plain dicts built by task/appraisal/run.py (build_appraisal_row).
 Empty cells mean "not applicable": a synergy row has no domain / animal_id,
 a competence row has no pair_id.
+
+Block identity (same convention as rankings.csv)
+    block_idx            original block ID (0–5): phase, animals, appraisal type
+    presentation_pos     where this participant saw the block (0-based; block number shown = pos + 1)
+    counterbalance_group 'A' (odd subject ID) or 'B' (even)
+
+response is 'low' / 'mid' / 'high' (Low / Medium / High on screen) and is only
+filled when status is 'complete'; 'timeout' and 'aborted' rows leave it empty.
 """
 
 from pathlib import Path
@@ -22,7 +30,8 @@ from recording.ranking_writers import append_csv
 
 APPRAISAL_FIELDS = [
     # who / which appraisal
-    "subject_id", "session_id", "appraisal_id", "block_idx", "phase", "block_type",
+    "subject_id", "session_id", "counterbalance_group", "appraisal_id", "block_idx", "presentation_pos",
+    "phase", "block_type",
     "checkpoint", "trial_after", "appraisal_type", "n_items",
     # which question
     "presentation_order", "domain", "animal_id", "animal_name", "pair_id", "pair_animals", "display_animals",

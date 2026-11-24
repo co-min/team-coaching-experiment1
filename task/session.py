@@ -1,7 +1,7 @@
 """
 session.py
 ----------
-Pre-experiment setup: subject dialog, window, LabJack, Neon.
+Pre-experiment setup: subject dialog, counterbalance group, window, LabJack, Neon.
 Returns everything the task needs in one SessionContext.
 """
 
@@ -17,6 +17,7 @@ from hardware.labjack import init_labjack
 from hardware.neon import (
     NeonEventClient, NullNeonClient, check_neon_ready, create_neon_apriltags,
 )
+from task.schedule import counterbalance_group
 from task.screens.instructions import get_subject_info
 
 
@@ -28,6 +29,7 @@ class SessionContext:
     handle:            Any              # LabJack handle or None
     neon_client:       Any              # NeonEventClient | NullNeonClient
     neon_recording_id: Optional[str]
+    counterbalance_group: str           # 'A' (odd subject ID) | 'B' (even)
     apriltags:         List = field(default_factory=list)   # keep refs alive (AutoDraw)
 
 
@@ -73,11 +75,22 @@ def _connect_neon(win, subject_id: str, session_id: str):
         return NullNeonClient(), None, apriltags
 
 
+def _group_or_exit(subject_id: str) -> str:
+    """Counterbalance group of this subject ID. Exits before the window opens if it has no number."""
+    try:
+        return counterbalance_group(subject_id)
+    except ValueError as error:
+        print(f"✗ {error} — 숫자로 끝나는 Subject ID 를 입력하세요 (예: 001).")
+        sys.exit(1)
+
+
 def start_session() -> SessionContext:
     """Run all pre-experiment setup and return initialized state."""
     info       = get_subject_info()
     subject_id = info["subject_id"]
     session_id = datetime.now().strftime("%Y%m%dT%H%M%S")
+    group      = _group_or_exit(subject_id)
+    print(f"Counterbalance group: {group}")
 
     win    = create_window()
     handle = init_labjack(S.LABJACK_DEVICE)
@@ -93,5 +106,6 @@ def start_session() -> SessionContext:
         handle=handle,
         neon_client=neon_client,
         neon_recording_id=recording_id,
+        counterbalance_group=group,
         apriltags=apriltags,
     )

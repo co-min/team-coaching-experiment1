@@ -318,7 +318,7 @@ class TestBlockOrder(unittest.TestCase):
 
     def test_agreed_orders(self):
         self.assertEqual(block_order('A'), (0, 1, 2, 3, 4, 5))
-        self.assertEqual(block_order('B'), (1, 0, 3, 2, 5, 4))
+        self.assertEqual(block_order('B'), (1, 0, 5, 4, 3, 2))
         self.assertEqual(block_order_problems(S.BLOCK_ORDERS, len(S.BLOCK_PHASES)), [])
         with self.assertRaises(ValueError):
             block_order('C')
@@ -652,14 +652,14 @@ class TestSharedBaselineScreen(ScreenBase):
     def test_synergy_first_block_and_presentation_position(self):
         env = self.env(BASELINE_KEYS, CONTINUE, _script('return'), CONTINUE, CONTINUE, _script('return'),
                        group='B')
-        out = run_block_rankings(env, 2, 3, CONDITIONS)
+        out = run_block_rankings(env, 2, 5, CONDITIONS)       # group B presents block 2 last
         self.assertEqual([r.spec.change.kind for r in out.revised], ['synergy', 'competence'])
         rows = self.rows('rankings.csv')
         self.assertEqual([r['ranking_id'] for r in rows],
                          ['b2_baseline', 'b2_probe1_synergy', 'b2_probe2_competence'])
         self.assertEqual({(r['block_index'], r['presentation_pos'], r['counterbalance_group'], r['phase'],
                            r['domain'], r['probe_order']) for r in rows},
-                         {('2', '3', 'B', 'phase_1', 'tennis', 'synergy>competence')})
+                         {('2', '5', 'B', 'phase_1', 'tennis', 'synergy>competence')})
         self.assertEqual(rows[2]['change_domain'], 'tennis')
         self.assertEqual(_check(rows), [])
 

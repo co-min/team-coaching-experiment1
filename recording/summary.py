@@ -8,11 +8,15 @@ Reads data/sub-{id}/trials.csv and produces:
 
 Experiment structure assumed
 ----------------------------
-Blocks run sequentially and alternate phase_1 / phase_2 (see BLOCK_PHASES in config/settings.py).
+Blocks alternate phase_1 / phase_2 (see BLOCK_PHASES in config/settings.py).
 Each block's trials are spread evenly across its domains.
 Each block uses a dedicated animal group (4 animals).
 
   block_0 → phase_1,  block_1 → phase_2,  block_2 → phase_1 ...
+
+"block_N" is the original block ID. Blocks are presented in the subject's
+counterbalance order (BLOCK_ORDERS), so by_block lists them in that order
+and each entry carries its presentation_pos.
 
 Output structure
 ----------------
@@ -159,6 +163,8 @@ def build_experiment_summary(subject_id: str) -> Dict[str, Any]:
         stats = _aggregate(block_rows)
         stats["phase"]        = block_phase.get(block, "")
         stats["domain_order"] = block_domain_order.get(block, [])
+        # blocks_seen is already in presentation order; this is the saved position itself
+        stats["presentation_pos"] = block_rows[0].get("presentation_pos") or None
         times = _elapsed_times(block_rows)
         if times:
             block_end = max(times)

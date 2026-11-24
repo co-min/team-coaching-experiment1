@@ -23,6 +23,10 @@ from hardware.labjack import (
     TRIG_P1_CHOICE1, TRIG_P1_CHOICE2,
     TRIG_P2_CHOICE1, TRIG_P2_CHOICE2,
     TRIG_P1_FEEDBACK, TRIG_P2_FEEDBACK,
+    TRIG_P1_APPRAISAL_START,    TRIG_P2_APPRAISAL_START,
+    TRIG_P1_APPRAISAL_QUESTION, TRIG_P2_APPRAISAL_QUESTION,
+    TRIG_P1_APPRAISAL_RESPONSE, TRIG_P2_APPRAISAL_RESPONSE,
+    TRIG_P1_APPRAISAL_END,      TRIG_P2_APPRAISAL_END,
 )
 from hardware.neon import section_start_events, section_end_events
 
@@ -160,4 +164,86 @@ def callonflip_feedback(win, neon, lj_handle, phase: int, trial_index: int) -> N
         win,
         section_start_events(trial_index, f"P{phase}_FEEDBACK", first=True),
         task_type="feedback", phase=phase, trial_index=trial_index,
+    )
+
+
+# ── Attribute appraisal (task/appraisal) ──────────────────────────────────────
+#
+# phase is the ORIGINAL block's phase as an int (1 or 2), so the TTL code never
+# depends on where the block was presented. Every Neon label starts with
+#     P{phase}_BLOCK_{block_id:02d}_APPRAISAL_{CHECKPOINT}
+# e.g. P1_BLOCK_00_APPRAISAL_MIDDLE_START, ..._Q03_ONSET, ..._Q03_HIGH_CONFIRM.
+# The question number is 1-based (= presentation_order in appraisals.csv) and is
+# also logged as trial_index in the Neon event log; task_type is "appraisal".
+#
+#   event              LabJack (P1/P2)  when
+#   start              151 / 152        flip that shows the intro screen
+#   question onset     161 / 162        flip that first shows the question
+#   response confirm   171 / 172        Space press that confirms an answer
+#   question timeout   — (Neon only)    no answer before APPRAISAL_MAX_TIME
+#   question aborted   — (Neon only)    Esc during a question
+#   end                181 / 182        after the last question, or right after Esc
+
+_APPRAISAL_START_TRIG    = {1: TRIG_P1_APPRAISAL_START,    2: TRIG_P2_APPRAISAL_START}
+_APPRAISAL_QUESTION_TRIG = {1: TRIG_P1_APPRAISAL_QUESTION, 2: TRIG_P2_APPRAISAL_QUESTION}
+_APPRAISAL_RESPONSE_TRIG = {1: TRIG_P1_APPRAISAL_RESPONSE, 2: TRIG_P2_APPRAISAL_RESPONSE}
+_APPRAISAL_END_TRIG      = {1: TRIG_P1_APPRAISAL_END,      2: TRIG_P2_APPRAISAL_END}
+
+
+def appraisal_label(phase: int, block_id: int, checkpoint: str) -> str:
+    """Common start of every Neon label of one appraisal, e.g. 'P2_BLOCK_03_APPRAISAL_END'."""
+    return f"P{phase}_BLOCK_{block_id:02d}_APPRAISAL_{checkpoint.upper()}"
+
+
+def question_label(phase: int, block_id: int, checkpoint: str, question_number: int) -> str:
+    """Common start of the Neon labels of one question, e.g. 'P1_BLOCK_00_APPRAISAL_MIDDLE_Q01'."""
+    return f"{appraisal_label(phase, block_id, checkpoint)}_Q{question_number:02d}"
+
+
+def callonflip_appraisal_start(win, neon, lj_handle, phase: int, block_id: int, checkpoint: str) -> None:
+    """Register appraisal-start events for the next win.flip() (the intro screen)."""
+    win.callOnFlip(send_trigger, lj_handle, _APPRAISAL_START_TRIG[phase])
+    neon.call_on_flip(
+        win,
+        f"{appraisal_label(phase, block_id, checkpoint)}_START",
+        task_type="appraisal", phase=phase, trial_index=None,
+    )
+
+
+def callonflip_appraisal_question(win, neon, lj_handle, phase: int, block_id: int, checkpoint: str,
+                                  question_number: int) -> None:
+    """Register question-onset events for the next win.flip() (the question's first frame)."""
+    win.callOnFlip(send_trigger, lj_handle, _APPRAISAL_QUESTION_TRIG[phase])
+    neon.call_on_flip(
+        win,
+        f"{question_label(phase, block_id, checkpoint, question_number)}_ONSET",
+        task_type="appraisal", phase=phase, trial_index=question_number,
+    )
+
+
+def on_appraisal_confirm(neon, lj_handle, phase: int, block_id: int, checkpoint: str,
+                         question_number: int, response: str) -> None:
+    """Fire immediately when Space confirms a response ('low' / 'mid' / 'high')."""
+    send_trigger(lj_handle, _APPRAISAL_RESPONSE_TRIG[phase])
+    neon.enqueue_events(
+        f"{question_label(phase, block_id, checkpoint, question_number)}_{response.upper()}_CONFIRM",
+        metadata={"task_type": "appraisal", "phase": phase, "trial_index": question_number},
+    )
+
+
+def on_appraisal_no_response(neon, phase: int, block_id: int, checkpoint: str,
+                             question_number: int, status: str) -> None:
+    """Neon only: a question ended without a confirmed answer. status is 'timeout' or 'aborted'."""
+    neon.enqueue_events(
+        f"{question_label(phase, block_id, checkpoint, question_number)}_{status.upper()}",
+        metadata={"task_type": "appraisal", "phase": phase, "trial_index": question_number},
+    )
+
+
+def on_appraisal_end(neon, lj_handle, phase: int, block_id: int, checkpoint: str, outcome: str) -> None:
+    """Fire immediately when the appraisal is over. outcome is 'complete' or 'aborted'."""
+    send_trigger(lj_handle, _APPRAISAL_END_TRIG[phase])
+    neon.enqueue_events(
+        f"{appraisal_label(phase, block_id, checkpoint)}_END_{outcome.upper()}",
+        metadata={"task_type": "appraisal", "phase": phase, "trial_index": None},
     )

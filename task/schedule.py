@@ -63,3 +63,31 @@ def block_order_problems(orders: Mapping[str, Sequence[int]], n_blocks: int) -> 
         if sorted(order) != list(range(n_blocks)):
             problems.append(f"group {group}: {list(order)} is not a permutation of blocks 0–{n_blocks - 1}")
     return problems
+
+
+def presentation_order_problems(orders: Mapping[str, Sequence[int]], phases: Sequence[str],
+                                ranking_domains: Sequence[str]) -> List[str]:
+    """What the participant actually sees, block after block, for every group. Empty list = valid.
+
+    orders          : S.BLOCK_ORDERS (original block IDs in presentation order)
+    phases          : S.BLOCK_PHASES (phase of each original block)
+    ranking_domains : config.ranking.PERFORMANCE_RANKING_DOMAINS (domain of each original block)
+
+    Rules, checked between each pair of neighbouring presented blocks:
+        1. the phase changes (synergy-hidden and competence-hidden blocks alternate)
+        2. the ranking domain changes (no domain twice in a row)
+    Run block_order_problems first: this check assumes every ID is a valid block.
+    """
+    problems = []
+    for group, order in sorted(orders.items()):
+        for position in range(1, len(order)):
+            previous_block = order[position - 1]
+            current_block = order[position]
+            if phases[current_block] == phases[previous_block]:
+                problems.append(f"group {group}: positions {position - 1} and {position} "
+                                f"(blocks {previous_block}, {current_block}) are both {phases[current_block]}")
+            if ranking_domains[current_block] == ranking_domains[previous_block]:
+                problems.append(f"group {group}: positions {position - 1} and {position} "
+                                f"(blocks {previous_block}, {current_block}) both rank "
+                                f"{ranking_domains[current_block]}")
+    return problems

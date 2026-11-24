@@ -68,8 +68,13 @@ def save_session_metadata(
     neon_recording_id: Optional[str] = None,
     first_choice_mode: Optional[str] = None,
     schedule_version: Optional[str] = None,
+    counterbalance_group: Optional[str] = None,
+    block_order: Optional[List[int]] = None,
 ) -> Path:
-    """Save one-time session-level metadata (ground-truth win.size + slot AOIs)."""
+    """Save one-time session-level metadata (ground-truth win.size + slot AOIs).
+
+    block_order: original block IDs in presentation order (block_order[pos] = block ID).
+    """
     record: Dict[str, Any] = {
         "subject_id":        subject_id,
         "session_id":        session_id,
@@ -83,6 +88,8 @@ def save_session_metadata(
         "neon_recording_id": neon_recording_id,
         "first_choice_mode": first_choice_mode,
         "schedule_version":  schedule_version,
+        "counterbalance_group": counterbalance_group,
+        "block_order":       list(block_order) if block_order is not None else None,
     }
     if slot_info:
         record["slot_coords"]    = {k: [int(x), int(y)] for k, (x, y) in slot_info['slot_coords'].items()}
@@ -126,8 +133,13 @@ def build_trial_record(
     first_choice_mode: str = 'free',
     forced_first_animal: Optional[str] = None,
     schedule_version: Optional[str] = None,
+    presentation_pos: Optional[int] = None,
+    counterbalance_group: Optional[str] = None,
 ) -> Dict[str, Any]:
     """Build and return the trial metadata dict (does not write to disk).
+
+    block_i is the original block ID ("block" column); presentation_pos is the
+    block's position for this subject (0-based), counterbalance_group 'A' / 'B'.
 
     Forced mode: choice1_* describe the assigned animal; trig_choice1 and
     rt_choice1 stay None because no participant response / TTL exists for it.
@@ -172,6 +184,8 @@ def build_trial_record(
         "second_choice_onset": _round(result.get('choice2_onset')) if responded else None,
         "selected_team":       "+".join(sorted([c1_animal, c2_animal])) if responded else None,
         "schedule_version":    schedule_version,
+        "presentation_pos":    presentation_pos,
+        "counterbalance_group": counterbalance_group,
     }
 
 
@@ -228,6 +242,8 @@ _TRIAL_FIELDS = [
     # forced-first additions (appended so existing column positions are unchanged)
     "first_choice_mode", "forced_first_animal", "forced_first_code",
     "forced_first_onset", "second_choice_onset", "selected_team", "schedule_version",
+    # counterbalancing additions (appended for the same reason; "block" stays the original ID)
+    "presentation_pos", "counterbalance_group",
 ]
 
 _FRAME_FIELDS = [
