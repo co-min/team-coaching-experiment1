@@ -2,6 +2,7 @@
 Team-managing task — entry point.
 
     session setup → blocks (phase_1 / phase_2 alternating) → ending
+    each block: trials 1–7 → middle appraisal → trials 8–15 → end appraisal
 
 Task design, language, timing and hardware switches: config/settings.py
 """
@@ -63,7 +64,7 @@ def main() -> None:
     env = BlockEnv(
         win=win, global_clock=global_clock, factory=factory, stim=stim,
         subject_id=ctx.subject_id, handle=ctx.handle, neon_client=ctx.neon_client,
-        schedule_version=schedule_version,
+        schedule_version=schedule_version, session_id=ctx.session_id,
     )
     cumulative = {'total': 0, 'phase': 0, **{d: 0 for d in S.DOMAINS}}
     n_blocks = len(S.BLOCK_PHASES)
@@ -83,7 +84,11 @@ def main() -> None:
             for d in S.DOMAINS:
                 cumulative[d] = 0
 
+            # Trials 1–7 → middle appraisal → trials 8–15 → end appraisal (all inside run_block_trials)
             run_block_trials(env, block_index, phase, schedule, cumulative)
+            # Performance + counterfactual ranking go here, after the end appraisal
+            # (task.ranking.assessments.run_block_rankings). Not wired in yet: the
+            # probe conditions are still placeholders (tools/preview_ranking.py).
 
         run_ending(win, ctx.subject_id, cumulative['total'],
                     max_trial_score=stim.max_trial_score,

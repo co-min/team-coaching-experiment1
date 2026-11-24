@@ -32,7 +32,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
 
 from config.ranking_strings import rt
-from config.settings import BLOCK_PHASES, COMPETENCE_COLOR
+from config.settings import BLOCK_PHASES
 from recording.ranking_writers import save_ranking
 from recording.stimuli_loader import StimulusSet
 from task.ranking.flow import (
@@ -42,9 +42,6 @@ from task.ranking.items import Attributes, Change, RankItem, RankingSpec, pair_i
 from task.ranking.record import build_ranking_record
 from task.ranking.schedule import probe_order, ranking_domain
 from task.ranking.view import ChangeDisplay, domain_label
-
-# 단계 이름. 인덱스 0, 1, 2 가 각각 낮음·중간·높음입니다.
-LEVELS = ('low', 'mid', 'high')
 
 
 @dataclass
@@ -168,24 +165,14 @@ def _rounded(value: Optional[float]) -> Optional[float]:
 def change_level(stim: StimulusSet, change: Change) -> tuple:
     """가상 변화의 새 값이 과제의 색 규칙에서 몇 단계인지: (단계 이름, 색).
 
-    competence : 학습 과제의 테두리 색 규칙(stim.comp_color)으로 색을 정하고,
-                 COMPETENCE_COLOR = {1: 빨강, 2: 노랑, 3: 초록} 에서 그 색의 단계를 찾습니다.
-    synergy    : synergy 표의 값들을 크기순으로 정렬했을 때의 위치가 단계입니다.
+    competence : 학습 과제의 테두리 색 규칙 (stim.competence_level / stim.comp_color)
+    synergy    : synergy 표의 값들을 크기순으로 정렬했을 때의 위치 (stim.synergy_level)
                  표에 없는 값이면 ValueError (화면에 보여 줄 색이 없기 때문).
+    단계 규칙은 recording/stimuli_loader.py 한 곳에만 있고, 속성 평가(task/appraisal)도 같은 규칙을 씁니다.
     """
     if change.kind == 'competence':
-        color = stim.comp_color(change.value)
-        level_number_by_color = {}
-        for level_number, level_color in COMPETENCE_COLOR.items():
-            level_number_by_color[level_color] = level_number
-        level_index = level_number_by_color[color] - 1      # 단계 1~3 → 인덱스 0~2
-        return LEVELS[level_index], color
-
-    synergy_values = sorted(stim.synergy_color)
-    if change.value not in stim.synergy_color:
-        raise ValueError(f"synergy change value {change.value} not in synergy table {synergy_values}")
-    level_index = synergy_values.index(change.value)
-    return LEVELS[level_index], stim.synergy_color[change.value]
+        return stim.competence_level(change.value), stim.comp_color(change.value)
+    return stim.synergy_level(change.value), stim.synergy_color[change.value]
 
 
 def change_display(env: RankingEnv, spec: RankingSpec, change: Change) -> tuple:

@@ -12,6 +12,7 @@ PsychoPy task: participants pick the best 2-animal team out of 4 for a domain
 python main.py                    # from anywhere — all paths are resolved from the project root
 python tools/check_neon.py        # (optional) Neon pre-flight, when USE_NEON=True
 python -m tools.preview_ending    # preview the leaderboard screen
+python -m tools.preview_appraisal # preview the synergy / competence appraisal (no trials, no hardware)
 ```
 
 ## What to edit
@@ -20,6 +21,7 @@ python -m tools.preview_ending    # preview the leaderboard screen
 |-----------------------------------------------------|--------------------------|
 | domains, trial count, block order, language, timing, window, LabJack/Neon on/off | `config/settings.py` |
 | participant-facing text (ko/en)                     | `config/strings.py`      |
+| appraisal checkpoints, competence domains, keys     | `config/appraisal.py`    |
 | trigger codes                                       | `hardware/labjack.py`    |
 | stimulus tables / images                            | `stimuli/`               |
 
@@ -31,7 +33,10 @@ config/                 settings (constants), paths, strings
 task/                   everything the participant sees
   session.py            subject dialog, window, LabJack + Neon connection
   schedule.py           seeded per-block trial schedules
-  block.py              trial loop: ITI → trial → feedback → save (background thread)
+  block.py              trial loop: ITI → trial → feedback → save (background thread);
+                        appraisal after trial 7 (middle) and 15 (end)
+  appraisal/            High / Medium / Low appraisal of the hidden attribute
+                        items.py (questions + truth), view.py (drawing), run.py (flow + saving)
   trials/               phase1.py (competence), phase2.py (synergy), common.py
   screens/              instructions, ITI, feedback, ending
   visuals.py            preloaded animal/domain stimuli, 4-slot layout
@@ -79,7 +84,8 @@ second_choice_onset, selected_team, schedule_version`.
 
 ## Output (`data/sub-{id}/`)
 
-`session_metadata.json`, `trials.csv`, `frames.csv`, `summary.json`,
+`session_metadata.json`, `trials.csv`, `frames.csv`, `summary.json`, `appraisals.csv`
+(one row per appraisal question, written as soon as it is answered),
 `neon_event_log.xlsx`, and per trial
 `block_{i}/{phase}/{domain}/{stim_pair_id}/{metadata.json, frame_log.csv}`.
 Column layouts are identical to v3; forced-first columns are appended at the end of `trials.csv`.

@@ -1,8 +1,11 @@
-"""Block-level trial orchestration — schedule execution, scoring, and I/O."""
+"""Block-level trial orchestration — schedule execution, scoring, I/O, and the
+attribute appraisals between trials (after trial 7 and after the last trial)."""
 
 import threading
 from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Optional
+
+from psychopy import core
 
 from config.settings import DOMAINS
 from hardware.events import on_block_start, PHASE_INT
@@ -11,8 +14,10 @@ from recording.stimuli_loader import StimulusSet, pair_key
 from recording.summary import save_experiment_summary
 from recording.writers import (
     build_trial_record, build_trial_save_dir, save_trial_metadata,
-    save_frame_log, append_trial_row, append_frame_rows,
+    save_frame_log, append_trial_row, append_frame_rows, get_subject_dir,
 )
+from task.appraisal.items import checkpoint_after_trial
+from task.appraisal.run import make_appraisal_env, run_appraisal
 from task.forced_first import forced_first_for
 from task.screens.feedback import run_feedback
 from task.screens.iti import run_gaussian_iti
@@ -37,6 +42,7 @@ class BlockEnv:
     handle:       Any
     neon_client:  Any
     schedule_version: Optional[str] = None   # forced-first CSV version (forced mode)
+    session_id:   Optional[str] = None        # written to appraisals.csv
 
 
 # ── helpers ───────────────────────────────────────────────────────────────────
@@ -81,6 +87,19 @@ def _score_and_feedback(env: BlockEnv, result, phase, domain, char_order,
     return score
 
 
+def run_block_appraisal(env: BlockEnv, block_index: int, phase: str, checkpoint: str, trial_after: int) -> None:
+    """Middle / end attribute appraisal (task/appraisal). Answers go to data/sub-{id}/appraisals.csv.
+
+    Esc during the appraisal ends the session, the same as Esc during a trial.
+    """
+    appraisal_env = make_appraisal_env(env.win, env.global_clock, env.stim, env.subject_id,
+                                       get_subject_dir(env.subject_id), env.session_id)
+    result = run_appraisal(appraisal_env, block_index, phase, checkpoint, trial_after)
+    if result.aborted:
+        env.win.close()
+        core.quit()
+
+
 # ── entry point ───────────────────────────────────────────────────────────────
 
 def run_block_trials(env: BlockEnv, block_index: int, phase: str,
@@ -92,6 +111,9 @@ def run_block_trials(env: BlockEnv, block_index: int, phase: str,
                               [, 'forced_first': str]}  (see task/forced_first.py)
     cumulative     : {'total', 'phase', <domain>...} running scores (mutated)
     File I/O is offloaded to a background thread during the following ITI.
+    After the trials listed in config.appraisal.APPRAISAL_CHECKPOINTS (7 and the
+    last one) the attribute appraisal runs before the next ITI; the end appraisal
+    is therefore the last thing a block does before returning to main().
     """
     trial_runner = TRIAL_RUNNERS[phase]
     n_per_domain = len(block_schedule) // len(DOMAINS)
@@ -146,6 +168,14 @@ def run_block_trials(env: BlockEnv, block_index: int, phase: str,
             daemon=True,
         )
         save_thread.start()
+
+        # Attribute appraisal after trial 7 (middle) and after the last trial (end).
+        trial_number = trial_index + 1
+        checkpoint = checkpoint_after_trial(trial_number)
+        if checkpoint is not None:
+            save_thread.join()      # this trial is on disk before the appraisal starts
+            save_thread = None
+            run_block_appraisal(env, block_index, phase, checkpoint, trial_number)
 
     if save_thread:
         save_thread.join()

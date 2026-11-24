@@ -17,6 +17,11 @@ from config.settings import COMPETENCE_COLOR, DOMAINS
 
 Pair = Tuple[str, str]
 
+# Attribute level names, lowest first. Index 0/1/2 = COMPETENCE_COLOR level 1/2/3
+# = the three synergy values in ascending order. Shared by the ranking probes
+# and the attribute appraisal so both use the same category definitions.
+LEVELS = ('low', 'mid', 'high')
+
 
 @dataclass
 class StimulusSet:
@@ -33,13 +38,37 @@ class StimulusSet:
         """Best possible single-trial score across all domains (a "perfect" trial)."""
         return max(hi for _, hi in self.score_ranges.values())
 
-    def comp_color(self, score: float) -> str:
-        """Competence level → border colour (low ≤3 / middle ≤6 / high)."""
+    def competence_level(self, score: float) -> str:
+        """Competence value → 'low' (≤3) / 'mid' (≤6) / 'high'. The border-colour cut-offs.
+
+        Design table: Low 1.0–3.0, Middle 3.5–6.0, High 6.5–9.0. Every value gets a
+        level (never an error): a value between ranges (e.g. 3.2) goes to the level above.
+        """
         if score <= 3.0:
-            return COMPETENCE_COLOR[1]
+            return 'low'
         elif score <= 6.0:
-            return COMPETENCE_COLOR[2]
-        return COMPETENCE_COLOR[3]
+            return 'mid'
+        return 'high'
+
+    def comp_color(self, score: float) -> str:
+        """Competence value → border colour of its level."""
+        level_number = LEVELS.index(self.competence_level(score)) + 1
+        return COMPETENCE_COLOR[level_number]
+
+    def synergy_level(self, value: float) -> str:
+        """Synergy value → 'low' / 'mid' / 'high': its position among the table's values
+        in ascending order (the same order synergy_color.csv assigns red / yellow / green).
+
+        Raises ValueError for a value not in the synergy table, or if the table does
+        not have exactly three distinct values (then there is no 3-level definition).
+        """
+        synergy_values = sorted(self.synergy_color)
+        if len(synergy_values) != len(LEVELS):
+            raise ValueError(f"synergy table has {len(synergy_values)} distinct values, "
+                             f"expected {len(LEVELS)} for low / mid / high")
+        if value not in self.synergy_color:
+            raise ValueError(f"synergy value {value} not in synergy table {synergy_values}")
+        return LEVELS[synergy_values.index(value)]
 
 
 def pair_key(a: str, b: str) -> Pair:

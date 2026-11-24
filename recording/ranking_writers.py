@@ -44,7 +44,9 @@ EVENT_FIELDS = [
 ]
 
 
-def _append_csv(path: Path, fields: List[str], rows: List[Dict[str, Any]]) -> None:
+def append_csv(path: Path, fields: List[str], rows: List[Dict[str, Any]]) -> None:
+    """Append rows to a CSV, writing the header first if the file is new.
+    Also used by recording/appraisal_writers.py."""
     write_header = not path.exists()
     with open(path, "a", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=fields, extrasaction="ignore")
@@ -60,5 +62,5 @@ def save_ranking(subject_dir: Path, record: Dict[str, Any], events: List[Dict[st
     json_path.parent.mkdir(parents=True, exist_ok=True)
     with open(json_path, "w", encoding="utf-8") as f:
         json.dump({"record": record, "events": events}, f, indent=2, ensure_ascii=False)
-    _append_csv(subject_dir / "rankings.csv", RANKING_FIELDS, [record])
-    _append_csv(subject_dir / "ranking_events.csv", EVENT_FIELDS, events)
+    append_csv(subject_dir / "rankings.csv", RANKING_FIELDS, [record])
+    append_csv(subject_dir / "ranking_events.csv", EVENT_FIELDS, events)
