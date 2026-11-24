@@ -55,17 +55,20 @@ def _identity_fields(result: RankingResult, subject_id: str, session_id: Optiona
     return {
         "subject_id":   subject_id,
         "session_id":   session_id,
+        "counterbalance_group": spec.counterbalance_group,
         "ranking_id":   spec.ranking_id,
         "ranking_type": spec.ranking_type,
         "n_items":      len(result.display_order),
         "block_index":  spec.block_index,
+        "presentation_pos": spec.presentation_pos,
         "phase":        spec.phase,
         "block_type":   BLOCK_TYPE.get(spec.phase, spec.phase),
         "animal_set":   ','.join(spec.group),
         "role_map":     ';'.join(role_map_parts),
         "domain":       spec.domain,
-        "probe_id":     spec.probe_id,
         "baseline_id":  spec.baseline_id,
+        "probe_order":  spec.probe_order,
+        "probe_pos":    spec.probe_pos,
     }
 
 
@@ -86,6 +89,8 @@ def _change_fields(result: RankingResult, change_level: Optional[str]) -> Dict[s
             "change_level":   change_level,
             "change_onset":   result.change_onset_global,
             "change_rt":      result.change_rt,
+            "reset_onset":    result.reset_onset_global,
+            "reset_rt":       result.reset_rt,
         }
     return {
         "change_kind":    None,
@@ -96,6 +101,8 @@ def _change_fields(result: RankingResult, change_level: Optional[str]) -> Dict[s
         "change_level":   change_level,
         "change_onset":   result.change_onset_global,
         "change_rt":      result.change_rt,
+        "reset_onset":    result.reset_onset_global,
+        "reset_rt":       result.reset_rt,
     }
 
 
@@ -266,8 +273,11 @@ def build_ranking_record(result: RankingResult, attrs: Attributes, subject_id: s
     record["timestamp"] = datetime.now().isoformat(timespec='seconds')
 
     # 이벤트 행마다 어느 참가자·순위의 것인지 알 수 있도록 식별 열을 앞에 붙입니다.
-    common = {"subject_id": subject_id, "session_id": session_id, "ranking_id": spec.ranking_id,
-              "ranking_type": spec.ranking_type, "block_index": spec.block_index, "probe_id": spec.probe_id}
+    common = {"subject_id": subject_id, "session_id": session_id,
+              "counterbalance_group": spec.counterbalance_group, "ranking_id": spec.ranking_id,
+              "ranking_type": spec.ranking_type, "block_index": spec.block_index,
+              "presentation_pos": spec.presentation_pos, "baseline_id": spec.baseline_id,
+              "probe_pos": spec.probe_pos}
     event_rows = []
     for row in result.events:
         event_rows.append({**common, **row})

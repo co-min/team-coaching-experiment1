@@ -3,8 +3,17 @@ assessments.py
 --------------
 평가(assessment) 하나를 처음부터 끝까지 실행하고, 각 순위의 결과를 저장합니다.
 
-    run_counterfactual_probe  블록 끝: 기준(baseline) 팀 점수 순위
-                              → 가상 변화 안내 → 수정(revised) 순위
+    run_block_rankings  블록 끝: 공유 기준(baseline) 팀 점수 순위 1번
+                        → probe 1: 가상 변화 안내 → 수정 순위 (기준 순위에서 출발)
+                        → "변화 취소" 안내
+                        → probe 2: 가상 변화 안내 → 수정 순위 (다시 기준 순위에서 출발)
+
+두 수정 순위는 같은 기준 순위에서 출발하고(1번 수정 결과와 무관), 두 가상 변화는
+각각 원래 속성값에 따로 적용됩니다(Attributes.with_change). 기준 순위가 완료되지
+않으면(시간 초과 등) 수정 순위는 진행하지 않습니다 — 빈 자리를 채워 넣지 않습니다.
+
+블록의 phase, 순위 도메인, probe 순서는 모두 "원래 블록 번호"로 스케줄에서 찾습니다
+(config.ranking). 제시 위치(presentation_pos)는 기록에만 쓰입니다.
 
 숨은 속성(시너지 / 능력)은 순위로 묻지 않습니다. 그 평가는 별도 모듈의
 High / Medium / Low 평가 페이지가 맡습니다.
@@ -15,22 +24,23 @@ High / Medium / Low 평가 페이지가 맡습니다.
 선택지 표시 순서는 (참가자 id, ranking_id) 로 만든 seed 로 섞습니다.
 그래서 같은 참가자·같은 순위는 언제 다시 실행해도 같은 순서가 나오고(재현 가능),
 그 순서는 결과에 기록됩니다.
-가상 변화는 매번 원래 속성값의 복사본에 적용되므로(Attributes.with_change)
-probe 를 여러 번 해도 변화가 누적되지 않습니다.
 """
 
 import random
-from dataclasses import dataclass
+from dataclasses import dataclass, field, replace
 from pathlib import Path
-from typing import Any, List, Optional, Sequence, Tuple
+from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
 
 from config.ranking_strings import rt
-from config.settings import COMPETENCE_COLOR
+from config.settings import BLOCK_PHASES, COMPETENCE_COLOR
 from recording.ranking_writers import save_ranking
 from recording.stimuli_loader import StimulusSet
-from task.ranking.flow import RankingResult, run_revised_ranking, run_sequential_ranking, show_change_screen
+from task.ranking.flow import (
+    COMPLETE, RankingResult, run_revised_ranking, run_sequential_ranking, show_change_screen, show_reset_screen,
+)
 from task.ranking.items import Attributes, Change, RankItem, RankingSpec, pair_items, role_map
 from task.ranking.record import build_ranking_record
+from task.ranking.schedule import probe_order, ranking_domain
 from task.ranking.view import ChangeDisplay, domain_label
 
 # 단계 이름. 인덱스 0, 1, 2 가 각각 낮음·중간·높음입니다.
@@ -48,16 +58,17 @@ class RankingEnv:
     subject_id:   str
     subject_dir:  Path                      # 결과 파일을 쓸 폴더
     session_id:   Optional[str] = None
+    counterbalance_group: Optional[str] = None   # 'A' | 'B' (task.schedule.counterbalance_group)
 
 
 @dataclass(frozen=True)
 class Probe:
-    """가상 변화 probe 하나: 어느 도메인의 팀 점수를, 어떤 변화를 가정하고 다시 묻는지.
+    """가상 변화 probe 하나: 블록 안에서 몇 번째인지, 어느 도메인의 팀 점수를, 어떤 변화를 가정하고 묻는지.
 
-    기준 순위와 수정 순위는 모두 domain 으로 묻습니다.
+    수정 순위는 domain 으로 묻습니다 (기준 순위와 같은 도메인).
     competence 변화는 반드시 같은 도메인의 실력을 바꿔야 합니다.
     """
-    probe_id: int
+    position: int           # 1 또는 2
     domain:   str
     change:   Change
 
@@ -69,25 +80,49 @@ class Probe:
 
 @dataclass(frozen=True)
 class ProbeCondition:
-    """도메인이 정해지지 않은 가상 변화 조건. 도메인 스케줄과 따로 정의합니다.
+    """도메인과 순서가 정해지지 않은 가상 변화 조건. 도메인·순서 스케줄과 따로 정의합니다.
 
-    for_domain(domain) 으로 그 블록의 순위 도메인에 묶어 Probe 를 만듭니다.
+    for_domain(domain, position) 으로 그 블록의 순위 도메인과 probe 위치에 묶어 Probe 를 만듭니다.
         competence : 그 도메인의 실력을 value 로 바꿈
         synergy    : 도메인과 상관없이 짝의 시너지를 value 로 바꿈 (효과는 그 도메인의 팀 점수로 평가)
     """
-    probe_id: int
     kind:     str
     roles:    Tuple[str, ...]
     value:    float
 
-    def for_domain(self, domain: str) -> Probe:
-        """이 조건을 순위 도메인 domain 에 묶은 Probe."""
+    def for_domain(self, domain: str, position: int) -> Probe:
+        """이 조건을 순위 도메인 domain, 블록 안의 위치 position 에 묶은 Probe."""
         if self.kind == 'competence':
             change_domain = domain          # 순위 도메인의 실력을 바꿈
         else:
             change_domain = None            # synergy 는 도메인과 상관없음
         change = Change(self.kind, self.roles, self.value, domain=change_domain)
-        return Probe(self.probe_id, domain, change)
+        return Probe(position, domain, change)
+
+
+@dataclass
+class BlockRankings:
+    """run_block_rankings 의 결과: 공유 기준 순위 하나와 그 뒤의 수정 순위들."""
+    baseline: RankingResult
+    revised:  List[RankingResult] = field(default_factory=list)
+    aborted:  bool = False                  # 어느 화면에서든 Esc 로 중단했는지
+
+
+def block_probes(block_index: int, conditions: Mapping[str, ProbeCondition]) -> List[Probe]:
+    """이 블록의 probe 들을 스케줄의 순서대로 만듭니다.
+
+    conditions : {'competence': ProbeCondition, 'synergy': ProbeCondition}
+    순서는 PROBE_ORDERS[block_index], 도메인은 PERFORMANCE_RANKING_DOMAINS[block_index]
+    — 둘 다 원래 블록 번호로 찾으므로 제시 순서와 상관없습니다.
+    """
+    domain = ranking_domain(block_index)
+    probes = []
+    for position, kind in enumerate(probe_order(block_index), start=1):
+        condition = conditions[kind]
+        if condition.kind != kind:
+            raise ValueError(f"conditions[{kind!r}] is a {condition.kind!r} condition")
+        probes.append(condition.for_domain(domain, position))
+    return probes
 
 
 # ── 도우미 ────────────────────────────────────────────────────────────────────
@@ -122,6 +157,12 @@ def _save(env: RankingEnv, result: RankingResult, change_level: Optional[str] = 
     record, events = build_ranking_record(result, env.attrs, env.subject_id, env.session_id, change_level)
     save_ranking(env.subject_dir, record, events)
     return result
+
+
+def _rounded(value: Optional[float]) -> Optional[float]:
+    if value is None:
+        return None
+    return round(value, 5)
 
 
 def change_level(stim: StimulusSet, change: Change) -> tuple:
@@ -167,78 +208,83 @@ def change_display(env: RankingEnv, spec: RankingSpec, change: Change) -> tuple:
 
 # ── 진입점 ────────────────────────────────────────────────────────────────────
 
-def run_counterfactual_probe(env: RankingEnv, block_index: int, phase: str,
-                             probe: Probe) -> Sequence[RankingResult]:
-    """가상 변화 probe 하나: 기준 순위 → 가상 변화 안내 → 수정 순위.
+def run_block_rankings(env: RankingEnv, block_index: int, presentation_pos: int,
+                       conditions: Mapping[str, ProbeCondition]) -> BlockRankings:
+    """블록 끝의 순위 평가 전체: 공유 기준 순위 → probe 1 → 변화 취소 안내 → probe 2.
 
-    반환: 실행한 순위 결과 목록
-        [baseline, revised]  끝까지 진행한 경우
-        [baseline]           기준 순위나 가상 변화 화면에서 Esc 로 중단한 경우
-    부작용: 순위마다 즉시 파일에 저장합니다 (중간에 중단돼도 앞의 결과는 남음).
+    block_index      : 원래 블록 번호. phase·도메인·probe 순서는 이것으로 스케줄에서 찾습니다.
+    presentation_pos : 이 참가자에게 이 블록이 몇 번째로 제시되는지 (0부터, 기록용)
+    conditions       : {'competence': ..., 'synergy': ...} 가상 변화 조건
+    반환              : BlockRankings
+    부작용            : 순위마다 즉시 파일에 저장합니다 (중간에 중단돼도 앞의 결과는 남음).
+
+    기준 순위가 완료(complete)되지 않으면 — 중단이든 시간 초과든 — 일부만 고른
+    순위를 그대로 저장하고 수정 순위는 진행하지 않습니다.
     """
-    # 1단계: 기준 순위 (현재 속성으로 팀 점수 예측)
-    baseline_spec = _baseline_spec(env, block_index, phase, probe)
-    baseline = _run_baseline_ranking(env, baseline_spec, probe)
-    _save(env, baseline)
-    if baseline.aborted:
-        return [baseline]
+    phase = BLOCK_PHASES[block_index]
+    domain = ranking_domain(block_index)
+    probes = block_probes(block_index, conditions)
 
-    # 2단계: 가상 변화 안내 화면
-    revised_spec = _revised_spec(env, block_index, phase, probe, baseline_spec)
-    display, level = change_display(env, revised_spec, probe.change)
+    # 1단계: 공유 기준 순위 (현재 속성으로 팀 점수 예측)
+    baseline_id = f"b{block_index}_baseline"
+    baseline_spec = _spec(env, block_index, phase, baseline_id, ranking_type='performance', domain=domain,
+                          baseline_id=baseline_id, presentation_pos=presentation_pos,
+                          counterbalance_group=env.counterbalance_group,
+                          probe_order='>'.join(probe_order(block_index)))
+    prompt = rt("rank_prompt_performance", domain=domain_label(domain))
+    baseline = run_sequential_ranking(env.win, env.global_clock, env.source, baseline_spec,
+                                      _shuffled(env, baseline_spec), prompt)
+    _save(env, baseline)
+    out = BlockRankings(baseline, aborted=baseline.aborted)
+    if baseline.status != COMPLETE:
+        return out
+
+    # 두 수정 순위가 함께 쓰는 출발 순위. 튜플이라 1번 수정이 바꿀 수 없습니다.
+    original = tuple(baseline.final)
+
+    # 2단계: probe 들 (두 번째부터는 앞의 변화가 취소됐음을 먼저 알림)
+    for probe in probes:
+        reset = None
+        if probe.position > 1:
+            reset = show_reset_screen(env.win, env.global_clock, env.source, domain)
+            if reset['aborted']:
+                out.aborted = True
+                return out
+
+        revised = _run_probe(env, baseline_spec, probe, original, reset)
+        if revised is None:                 # 가상 변화 화면에서 중단
+            out.aborted = True
+            return out
+        out.revised.append(revised)
+        if revised.aborted:
+            out.aborted = True
+            return out
+    return out
+
+
+def _run_probe(env: RankingEnv, baseline_spec: RankingSpec, probe: Probe, original: Sequence[RankItem],
+               reset: Optional[Dict]) -> Optional[RankingResult]:
+    """probe 하나: 가상 변화 안내 → 수정 순위(original 에서 출발) → 저장.
+
+    reset : 이 probe 앞에 보여 준 "변화 취소" 화면의 결과 (1번째 probe 는 None)
+    반환   : 수정 순위 결과. 가상 변화 화면에서 Esc 로 중단하면 None
+    """
+    spec = replace(baseline_spec, ranking_id=f"b{baseline_spec.block_index}_probe{probe.position}_{probe.change.kind}",
+                   ranking_type='counterfactual', probe_pos=probe.position, change=probe.change)
+
+    display, level = change_display(env, spec, probe.change)
     change_screen = show_change_screen(env.win, env.global_clock, env.source, display, probe.domain)
     if change_screen['aborted']:
-        return [baseline]
+        return None
 
-    # 3단계: 수정 순위 (기준 순위에서 출발)
-    initial = _starting_order_for_revision(baseline)
-    revised = run_revised_ranking(env.win, env.global_clock, env.source, revised_spec, initial,
+    revised = run_revised_ranking(env.win, env.global_clock, env.source, spec, list(original),
                                   rt("rank_prompt_revised", domain=domain_label(probe.domain)), display)
 
-    # 4단계: 가상 변화 화면의 시간 정보를 수정 순위 결과에 붙여 저장
-    if change_screen['onset'] is None:
-        revised.change_onset_global = None
-    else:
-        revised.change_onset_global = round(change_screen['onset'], 5)
+    # 안내 화면들의 시간 정보를 수정 순위 결과에 붙여 저장
+    revised.change_onset_global = _rounded(change_screen['onset'])
     revised.change_rt = change_screen['rt']
+    if reset is not None:
+        revised.reset_onset_global = _rounded(reset['onset'])
+        revised.reset_rt = reset['rt']
     _save(env, revised, change_level=level)
-    return [baseline, revised]
-
-
-# ── run_counterfactual_probe 의 단계별 도우미 ─────────────────────────────────
-
-def _baseline_spec(env: RankingEnv, block_index: int, phase: str, probe: Probe) -> RankingSpec:
-    """기준 순위의 RankingSpec. ranking_id 예: 'b0_p1_baseline'"""
-    return _spec(env, block_index, phase, f"b{block_index}_p{probe.probe_id}_baseline",
-                 ranking_type='performance', domain=probe.domain, probe_id=probe.probe_id)
-
-
-def _revised_spec(env: RankingEnv, block_index: int, phase: str, probe: Probe,
-                  baseline_spec: RankingSpec) -> RankingSpec:
-    """수정 순위의 RankingSpec. 가상 변화와 기준 순위의 id 를 함께 담습니다."""
-    return _spec(env, block_index, phase, f"b{block_index}_p{probe.probe_id}_revised",
-                 ranking_type='counterfactual', domain=probe.domain,
-                 probe_id=probe.probe_id, change=probe.change, baseline_id=baseline_spec.ranking_id)
-
-
-def _run_baseline_ranking(env: RankingEnv, baseline_spec: RankingSpec, probe: Probe) -> RankingResult:
-    """기준 순위 화면을 실행합니다 (선택지는 재현 가능한 무작위 순서)."""
-    prompt = rt("rank_prompt_performance", domain=domain_label(probe.domain))
-    options = _shuffled(env, baseline_spec)
-    return run_sequential_ranking(env.win, env.global_clock, env.source, baseline_spec, options, prompt)
-
-
-def _starting_order_for_revision(baseline: RankingResult) -> List[RankItem]:
-    """수정 순위의 출발 순위 = 기준 순위의 최종 순위.
-
-    기준 순위가 시간 초과로 덜 끝났다면(일부만 고름), 고르지 않은 대상을
-    "화면에 표시됐던 순서(위→아래)" 그대로 뒤에 붙여 완전한 목록으로 만듭니다.
-    수정 화면은 항상 모든 대상이 있어야 하기 때문입니다.
-    이렇게 채운 뒤쪽 순서는 참가자가 고른 것이 아니므로, 분석 시
-    기준 순위의 status 가 'timeout' 인지 꼭 확인해야 합니다.
-    """
-    starting_order = list(baseline.final)
-    for item in baseline.display_order:
-        if item not in baseline.final:
-            starting_order.append(item)
-    return starting_order
+    return revised

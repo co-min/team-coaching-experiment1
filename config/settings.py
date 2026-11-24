@@ -13,6 +13,16 @@ DOMAINS            = ['cooking', 'repairing', 'tennis']
 N_TRIALS_PER_BLOCK = 15
 BLOCK_PHASES       = ['phase_1', 'phase_2'] * 3     # one animal group per block
 
+# Block presentation order per counterbalance group (original block IDs).
+# Group A = odd subject IDs, group B = even (task.schedule.counterbalance_group).
+# Only the order changes: each original block keeps its phase, animals, trial
+# schedule, ranking domain and probe order.
+# Not used by main.py yet — blocks still run 0–5.
+BLOCK_ORDERS = {
+    'A': (0, 1, 2, 3, 4, 5),
+    'B': (1, 0, 3, 2, 5, 4),
+}
+
 # Competence level → border colour (low ≤3 / middle ≤6 / high)
 COMPETENCE_COLOR = {1: '#F44336', 2: '#FFEB3B', 3: '#4CAF50'}
 

@@ -26,6 +26,7 @@ draw_* 메서드는 넘겨받은 상태 객체(state.py)를 "보이는 그대로
     RankingView          순위 화면 (배치 계산 → 자극 생성 → 그리기)
     ChangePanel          가상 변화 패널 (동물 이미지 + 새 단계의 색 + 문장)
     change_screen_stims  수정 순위 전에 보여 주는 가상 변화 안내 화면 전체
+    reset_screen_stims   두 probe 사이: "앞의 변화는 더 이상 적용되지 않음" 안내 화면
 """
 
 from dataclasses import dataclass
@@ -395,7 +396,29 @@ def change_screen_stims(win, change: ChangeDisplay, domain: Optional[str], conti
     stims: List = [ChangePanel(win, change, center=(0, H * 0.08), scale=1.4, wrap=0.7)]
     if domain:
         stims.append(_domain_image_stim(win, domain))
-    stims.append(visual.TextStim(win, text=rt("change_continue", key=continue_key), font=S.FONT,
-                                 height=max(int(H * 0.026), 16), color='white', pos=(0, -H * 0.5 + H * 0.055),
-                                 units='pix'))
+    stims.append(_continue_stim(win, continue_key))
     return stims
+
+
+def reset_screen_stims(win, domain: Optional[str], continue_key: str) -> List:
+    """두 probe 사이의 안내: 앞의 가상 변화는 더 이상 적용되지 않음."""
+    W, H = (int(v) for v in win.size)
+    text_height = max(int(H * 0.032), 16)
+    stims: List = [
+        visual.TextStim(win, text=rt("reset_title"), font=S.FONT, height=text_height, color=R.HELD_COLOR,
+                        pos=(0, H * 0.16), units='pix', bold=True),
+        visual.TextStim(win, text=rt("reset_body"), font=S.FONT, height=text_height, color='white',
+                        pos=(0, H * 0.10), wrapWidth=W * 0.7, units='pix', anchorVert='top', alignText='center'),
+    ]
+    if domain:
+        stims.append(_domain_image_stim(win, domain))
+    stims.append(_continue_stim(win, continue_key))
+    return stims
+
+
+def _continue_stim(win, continue_key: str) -> visual.TextStim:
+    """화면 아래 "[키]를 눌러 계속"."""
+    H = int(win.size[1])
+    return visual.TextStim(win, text=rt("change_continue", key=continue_key), font=S.FONT,
+                           height=max(int(H * 0.026), 16), color='white', pos=(0, -H * 0.5 + H * 0.055),
+                           units='pix')

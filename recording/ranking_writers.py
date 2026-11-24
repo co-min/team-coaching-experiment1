@@ -19,11 +19,11 @@ from typing import Any, Dict, List
 MAX_ITEMS = 6
 
 RANKING_FIELDS = [
-    "subject_id", "session_id", "ranking_id", "ranking_type", "n_items",
-    "block_index", "phase", "block_type", "animal_set", "role_map",
-    "domain", "probe_id", "baseline_id",
+    "subject_id", "session_id", "counterbalance_group", "ranking_id", "ranking_type", "n_items",
+    "block_index", "presentation_pos", "phase", "block_type", "animal_set", "role_map",
+    "domain", "baseline_id", "probe_order", "probe_pos",
     "change_kind", "change_roles", "change_animals", "change_domain", "change_value", "change_level",
-    "change_onset", "change_rt",
+    "change_onset", "change_rt", "reset_onset", "reset_rt",
     "status", "key_backend", "time_limit",
     "onset_global", "first_key_rt", "confirm_rt", "confirm_global", "total_rt",
     "n_keypresses", "n_unmapped", "n_invalid", "n_selections", "n_undos", "n_moves", "n_relocations",
@@ -37,7 +37,8 @@ RANKING_FIELDS = [
 ]
 
 EVENT_FIELDS = [
-    "subject_id", "session_id", "ranking_id", "ranking_type", "block_index", "probe_id",
+    "subject_id", "session_id", "counterbalance_group", "ranking_id", "ranking_type",
+    "block_index", "presentation_pos", "baseline_id", "probe_pos",
     "event_idx", "event", "key", "action", "rt", "t_global",
     "item", "item_animals", "rank_pos", "from_pos", "to_pos", "ranking_state", "detail",
 ]

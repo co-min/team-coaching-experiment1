@@ -282,14 +282,17 @@ def kendall_distance(a: Sequence[str], b: Sequence[str]) -> Optional[int]:
 @dataclass
 class RankingSpec:
     """로그에서 순위 화면 하나를 식별하는 모든 정보."""
-    ranking_id:   str                   # 예: 'b0_p1_baseline'
+    ranking_id:   str                   # 예: 'b0_baseline', 'b0_probe1_competence'
     ranking_type: str                   # 'performance'(기준) | 'counterfactual'(수정)
-    block_index:  int
+    block_index:  int                   # 원래 블록 번호 (제시 위치가 아님)
     phase:        str
     group:        Tuple[str, ...]       # 이 블록의 동물들
     roles:        Dict[str, str]        # 역할 코드 → 동물 이름
     domain:       Optional[str] = None
-    probe_id:     Optional[int] = None
+    probe_pos:    Optional[int] = None  # counterfactual 순위: 블록 안에서 몇 번째 probe (1, 2)
     change:       Optional[Change] = None
-    baseline_id:  Optional[str] = None  # counterfactual 순위 → 그 기준(baseline) 순위의 id
+    baseline_id:  Optional[str] = None  # 이 블록의 공유 기준(baseline) 순위 id (baseline 자신은 자기 id)
+    presentation_pos:     Optional[int] = None   # 이 참가자에게 이 블록이 몇 번째로 제시되는지 (0부터)
+    counterbalance_group: Optional[str] = None   # 'A' | 'B'
+    probe_order:  Optional[str] = None  # 이 블록의 probe 순서, 예: 'competence>synergy'
     extra:        Dict[str, object] = field(default_factory=dict)

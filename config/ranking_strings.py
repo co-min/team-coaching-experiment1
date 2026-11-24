@@ -65,6 +65,15 @@ _STRINGS: dict[str, dict[str, str]] = {
     },
     "change_continue": {"ko": "[{key}] 키를 눌러 계속", "en": "Press [{key}] to continue"},
 
+    # ── between the two probes ───────────────────────────────────────────────
+    "reset_title": {"ko": "변화 취소", "en": "Change cancelled"},
+    "reset_body": {
+        "ko": "앞의 가상 변화는 이제 적용되지 않아요.\n모든 것이 원래대로 돌아갔어요.\n\n"
+              "다음 질문은 처음에 매긴 순위에서 다시 시작해요.",
+        "en": "The previous hypothetical change no longer applies.\nEverything is back to how it was.\n\n"
+              "The next question starts again from your original ranking.",
+    },
+
     "level_low":  {"ko": "낮음", "en": "low"},
     "level_mid":  {"ko": "보통", "en": "medium"},
     "level_high": {"ko": "높음", "en": "high"},

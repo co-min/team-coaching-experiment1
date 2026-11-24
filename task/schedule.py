@@ -1,7 +1,9 @@
-"""Per-block trial schedules (seeded, so every subject sees the same sequence)."""
+"""Per-block trial schedules (seeded, so every subject sees the same sequence)
+and the between-subject block presentation order."""
 
 import random
-from typing import Dict, List
+import re
+from typing import Dict, List, Mapping, Sequence, Tuple
 
 from config import settings as S
 
@@ -9,7 +11,11 @@ Trial = Dict[str, object]   # {'domain': str, 'char_order': list[str]}
 
 
 def generate_block_schedules(animal_groups: List[List[str]]) -> List[List[Trial]]:
-    """One schedule per block; block i uses animal_groups[i]."""
+    """One schedule per block; block i uses animal_groups[i].
+
+    Indexed by original block ID and generated in that order, independent of
+    the presentation order — index it with the block ID, not the position.
+    """
     rng = random.Random(S.SCHEDULE_SEED)
     schedules = []
     trials_per_domain = S.N_TRIALS_PER_BLOCK // len(S.DOMAINS)
@@ -25,3 +31,35 @@ def generate_block_schedules(animal_groups: List[List[str]]) -> List[List[Trial]
             for d in domain_sequence
         ])
     return schedules
+
+
+# ── block order counterbalancing ──────────────────────────────────────────────
+
+def counterbalance_group(subject_id: str) -> str:
+    """'A' for an odd subject ID, 'B' for an even one.
+
+    The number is the trailing digits of the ID ('007' → 7, 'P12' → 12).
+    An ID without trailing digits raises ValueError rather than guessing.
+    """
+    match = re.search(r'(\d+)$', str(subject_id).strip())
+    if match is None:
+        raise ValueError(f"subject ID {subject_id!r} has no trailing number for counterbalancing")
+    if int(match.group(1)) % 2 == 1:
+        return 'A'
+    return 'B'
+
+
+def block_order(group: str, orders: Mapping[str, Sequence[int]] = S.BLOCK_ORDERS) -> Tuple[int, ...]:
+    """Original block IDs in presentation order for this group."""
+    if group not in orders:
+        raise ValueError(f"unknown counterbalance group {group!r}; expected one of {sorted(orders)}")
+    return tuple(orders[group])
+
+
+def block_order_problems(orders: Mapping[str, Sequence[int]], n_blocks: int) -> List[str]:
+    """Every group's order must present each original block exactly once. Empty list = valid."""
+    problems = []
+    for group, order in sorted(orders.items()):
+        if sorted(order) != list(range(n_blocks)):
+            problems.append(f"group {group}: {list(order)} is not a permutation of blocks 0–{n_blocks - 1}")
+    return problems

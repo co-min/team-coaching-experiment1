@@ -5,6 +5,7 @@ flow.py
 
     run_sequential_ranking   기준(baseline) 순위: 1위부터 차례로 고르기
     show_change_screen       가상 변화 안내 화면
+    show_reset_screen        두 probe 사이 "앞의 변화는 취소" 안내 화면
     run_revised_ranking      수정(counterfactual) 순위: 이전 순위에서 출발해 고치기
 
 시간 기준
@@ -22,7 +23,7 @@ from psychopy import core, event
 from config import ranking as R
 from task.ranking.items import RankItem, RankingSpec
 from task.ranking.state import RevisedRanking, SequentialRanking
-from task.ranking.view import ChangeDisplay, RankingView, change_screen_stims, key_names
+from task.ranking.view import ChangeDisplay, RankingView, change_screen_stims, key_names, reset_screen_stims
 from task.trials.common import stamp_on_flip
 
 # rankings.csv 의 status 열 값
@@ -44,6 +45,8 @@ class RankingResult:
     n_relocations: int = 0
     change_onset_global: Optional[float] = None   # revised 만: 가상 변화 화면이 나타난 시각
     change_rt:     Optional[float] = None         # revised 만: 가상 변화 화면에서 넘어간 rt
+    reset_onset_global: Optional[float] = None    # 2번째 probe 만: "변화 취소" 화면이 나타난 시각
+    reset_rt:      Optional[float] = None         # 2번째 probe 만: "변화 취소" 화면에서 넘어간 rt
 
     @property
     def aborted(self) -> bool:
@@ -340,8 +343,25 @@ def show_change_screen(win, global_clock, source, change: ChangeDisplay, domain:
     반환: {'onset': 화면이 나타난 global 시각, 'rt': 넘어간 rt(소수 5자리), 'aborted': Esc 로 중단했는지}
     이 화면은 이벤트 로그를 남기지 않고, onset 과 rt 만 수정 순위 기록에 들어갑니다.
     """
-    names = key_names()
-    stims = change_screen_stims(win, change, domain, continue_key=names['select'])
+    stims = change_screen_stims(win, change, domain, continue_key=key_names()['select'])
+    return _show_static_screen(win, global_clock, source, stims)
+
+
+def show_reset_screen(win, global_clock, source, domain: Optional[str]) -> Dict:
+    """두 probe 사이: 앞의 가상 변화가 더 이상 적용되지 않음을 알리는 화면.
+
+    반환과 키는 show_change_screen 과 같습니다.
+    """
+    stims = reset_screen_stims(win, domain, continue_key=key_names()['select'])
+    return _show_static_screen(win, global_clock, source, stims)
+
+
+def _show_static_screen(win, global_clock, source, stims: Sequence) -> Dict:
+    """stims 를 그리고 select / confirm(넘어가기) 또는 quit(중단) 를 기다립니다.
+
+    키는 첫 flip(화면이 실제로 나타난 뒤)부터 받습니다. 그 전에 읽으면 키 시계가
+    아직 0 으로 맞춰지지 않아, 화면이 보이기도 전에 넘어가고 onset 이 비게 됩니다.
+    """
     onsets = {'onset': None}
 
     event.clearEvents()
@@ -349,10 +369,10 @@ def show_change_screen(win, global_clock, source, change: ChangeDisplay, domain:
     stamp_on_flip(win, global_clock, onsets, 'onset')
 
     while True:
+        for stim in stims:
+            stim.draw()
+        win.flip()
         for press in source.poll():
             if press.action in ('select', 'confirm', 'quit'):
                 event.clearEvents()
                 return {'onset': onsets['onset'], 'rt': round(press.rt, 5), 'aborted': press.action == 'quit'}
-        for stim in stims:
-            stim.draw()
-        win.flip()
