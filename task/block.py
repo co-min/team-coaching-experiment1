@@ -65,7 +65,7 @@ def _persist_trial(subject_id, record, rows, save_dir):
 
 
 def _score_and_feedback(env: BlockEnv, result, phase, domain, char_order,
-                        cumulative, trial_index, n_per_domain, frame_log) -> float:
+                        cumulative, trial_index, frame_log) -> float:
     """Update cumulative scores and show feedback. Returns the trial score (0 if no response)."""
     if not result:
         return 0
@@ -84,7 +84,6 @@ def _score_and_feedback(env: BlockEnv, result, phase, domain, char_order,
         cumulative_score=cumulative['total'],
         phase_score=cumulative['phase'],
         domain_scores={d: cumulative[d] for d in DOMAINS},
-        n_trials_per_domain=n_per_domain,
         handle=env.handle,
         phase=PHASE_INT[phase],
         trial_index=trial_index,
@@ -136,7 +135,6 @@ def run_block_trials(env: BlockEnv, block_index: int, phase: str,
     is therefore the last thing a block does before returning to main().
     """
     trial_runner = TRIAL_RUNNERS[phase]
-    n_per_domain = len(block_schedule) // len(DOMAINS)
     slot_info    = env.factory.get_slot_info()
     win_size     = (int(env.win.size[0]), int(env.win.size[1]))
     save_thread  = None
@@ -161,7 +159,7 @@ def run_block_trials(env: BlockEnv, block_index: int, phase: str,
 
         fb_score = _score_and_feedback(
             env, result, phase, domain, char_order, cumulative,
-            trial_index, n_per_domain, frame_log,
+            trial_index, frame_log,
         )
 
         record = build_trial_record(

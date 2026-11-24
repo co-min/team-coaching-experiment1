@@ -60,11 +60,11 @@ _STRINGS: dict[str, dict[str, str]] = {
 
     # ── feedback screen ──────────────────────────────────────────────────────
     "feedback_bubble": {
-        "ko": "{max_score}점 만점에 {score}점이야.\n{comment}",
-        "en": "{score} out of {max_score} points.\n{comment}",
+        "ko": "{score}점이야.\n{comment}",
+        "en": "{score} points.\n{comment}",
     },
     "feedback_domain_score": {"ko": "{domain}: {score}점", "en": "{domain}: {score} pts"},
-    "feedback_phase_score":  {"ko": "단계 점수: {cur}/{max}점", "en": "Phase score: {cur}/{max}"},
+    "feedback_phase_score":  {"ko": "단계 점수: {cur}점", "en": "Phase score: {cur}"},
     "feedback_total_score":  {"ko": "총 점수: {score}점", "en": "Total score: {score}"},
 
     # ── attribute appraisal (task/appraisal) ─────────────────────────────────

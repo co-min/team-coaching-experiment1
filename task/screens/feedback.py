@@ -45,11 +45,8 @@ def score_to_stage(score: float, domain: str, score_ranges: dict) -> int:
 
 # ── Stim builders ─────────────────────────────────────────────────────────────
 
-def _monkey_text(score: float, stage: int, domain: str, score_ranges: dict) -> str:
-    _, hi = score_ranges.get(domain, (0.0, 10.0))
-    max_score = int(hi) if hi == int(hi) else hi
-    return t("feedback_bubble", max_score=max_score, score=f"{score:g}",
-             comment=monkey_comment(domain, stage))
+def _monkey_text(score: float, stage: int, domain: str) -> str:
+    return t("feedback_bubble", score=f"{score:g}", comment=monkey_comment(domain, stage))
 
 
 def _get_monkey_stim(win: visual.Window) -> 'visual.ImageStim | None':
@@ -85,9 +82,8 @@ def _build_choice_animal_stims(win: visual.Window, animal1: str = None, animal2:
     return stims
 
 
-def _build_monkey_stims(win: visual.Window, stage: int, score: float, domain: str,
-                        score_ranges: dict) -> list:
-    bubble_text  = _monkey_text(score, stage, domain, score_ranges)
+def _build_monkey_stims(win: visual.Window, stage: int, score: float, domain: str) -> list:
+    bubble_text  = _monkey_text(score, stage, domain)
     bubble_color = _RESULT_COLORS[stage - 1]
     stims = []
     monkey = _get_monkey_stim(win)
@@ -122,7 +118,6 @@ def run_feedback(
     cumulative_score: float = 0,
     phase_score: float = 0,
     domain_scores: dict = None,
-    n_trials_per_domain: int = 18,
     handle=None,
     phase: int = 0,
     trial_index: int = 0,
@@ -140,8 +135,6 @@ def run_feedback(
     """
     stage     = score_to_stage(score, domain, score_ranges)
     domain_xs = _make_domain_xs(block_domains)
-    max_score_per_trial = max(hi for _, hi in score_ranges.values())
-    max_phase = n_trials_per_domain * len(domain_xs) * max_score_per_trial
 
     domain_score_stims = []
     if domain_scores:
@@ -156,10 +149,10 @@ def run_feedback(
     stims = (
         _build_domain_img_stims(win, domain)
         + _build_choice_animal_stims(win, animal1, animal2)
-        + _build_monkey_stims(win, stage, score, domain, score_ranges)
+        + _build_monkey_stims(win, stage, score, domain)
         + domain_score_stims
         + [
-            visual.TextStim(win, text=t("feedback_phase_score", cur=int(phase_score), max=int(max_phase)),
+            visual.TextStim(win, text=t("feedback_phase_score", cur=int(phase_score)),
                             pos=(0, -285), color="#AAAAAA", height=40, font=FONT, bold=False),
             visual.TextStim(win, text=t("feedback_total_score", score=float(cumulative_score)),
                             pos=(0, -340), color="#FFD700", height=48, font=FONT, bold=True),
