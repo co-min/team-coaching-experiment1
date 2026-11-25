@@ -1,0 +1,8976 @@
+{
+ "candidates": [
+  {
+   "id": "C01",
+   "kind": "competence",
+   "domain": "cooking",
+   "target": "A",
+   "direction": "H->L",
+   "old": 8.5,
+   "new": 1.9,
+   "old_level": "high",
+   "new_level": "low",
+   "valid": true,
+   "tie": false,
+   "kendall": 6,
+   "footrule": 8,
+   "gap_cv": 1.153,
+   "gaps": [
+    7.52,
+    2.18,
+    0.82,
+    0.96,
+    0.14
+   ],
+   "base_gaps": [
+    2.24,
+    1.68,
+    0.5,
+    3.1,
+    4.1
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 13.3,
+     "rev": 6.7,
+     "base_rank": 3,
+     "rev_rank": 4,
+     "affected": true
+    },
+    {
+     "team": "A+C",
+     "base": 14.98,
+     "rev": 5.74,
+     "base_rank": 2,
+     "rev_rank": 5,
+     "affected": true
+    },
+    {
+     "team": "A+D",
+     "base": 12.8,
+     "rev": 7.52,
+     "base_rank": 4,
+     "rev_rank": 3,
+     "affected": true
+    },
+    {
+     "team": "B+C",
+     "base": 5.6,
+     "rev": 5.6,
+     "base_rank": 6,
+     "rev_rank": 6,
+     "affected": false
+    },
+    {
+     "team": "B+D",
+     "base": 17.22,
+     "rev": 17.22,
+     "base_rank": 1,
+     "rev_rank": 1,
+     "affected": false
+    },
+    {
+     "team": "C+D",
+     "base": 9.7,
+     "rev": 9.7,
+     "base_rank": 5,
+     "rev_rank": 2,
+     "affected": false
+    }
+   ],
+   "to_extreme": [],
+   "robust_obs": 1,
+   "robust_design": 2,
+   "breakpoints": [
+    1.8
+   ],
+   "domain_value": false,
+   "to_top": 0,
+   "to_bottom": 0
+  },
+  {
+   "id": "C02",
+   "kind": "competence",
+   "domain": "cooking",
+   "target": "A",
+   "direction": "H->L",
+   "old": 8.5,
+   "new": 2.0,
+   "old_level": "high",
+   "new_level": "low",
+   "valid": true,
+   "tie": false,
+   "kendall": 6,
+   "footrule": 8,
+   "gap_cv": 1.147,
+   "gaps": [
+    7.52,
+    2.1,
+    0.8,
+    0.92,
+    0.28
+   ],
+   "base_gaps": [
+    2.24,
+    1.68,
+    0.5,
+    3.1,
+    4.1
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 13.3,
+     "rev": 6.8,
+     "base_rank": 3,
+     "rev_rank": 4,
+     "affected": true
+    },
+    {
+     "team": "A+C",
+     "base": 14.98,
+     "rev": 5.88,
+     "base_rank": 2,
+     "rev_rank": 5,
+     "affected": true
+    },
+    {
+     "team": "A+D",
+     "base": 12.8,
+     "rev": 7.6,
+     "base_rank": 4,
+     "rev_rank": 3,
+     "affected": true
+    },
+    {
+     "team": "B+C",
+     "base": 5.6,
+     "rev": 5.6,
+     "base_rank": 6,
+     "rev_rank": 6,
+     "affected": false
+    },
+    {
+     "team": "B+D",
+     "base": 17.22,
+     "rev": 17.22,
+     "base_rank": 1,
+     "rev_rank": 1,
+     "affected": false
+    },
+    {
+     "team": "C+D",
+     "base": 9.7,
+     "rev": 9.7,
+     "base_rank": 5,
+     "rev_rank": 2,
+     "affected": false
+    }
+   ],
+   "to_extreme": [],
+   "robust_obs": 1,
+   "robust_design": 2,
+   "breakpoints": [
+    1.8
+   ],
+   "domain_value": false,
+   "to_top": 0,
+   "to_bottom": 0
+  },
+  {
+   "id": "C03",
+   "kind": "competence",
+   "domain": "cooking",
+   "target": "A",
+   "direction": "H->L",
+   "old": 8.5,
+   "new": 2.1,
+   "old_level": "high",
+   "new_level": "low",
+   "valid": true,
+   "tie": false,
+   "kendall": 6,
+   "footrule": 8,
+   "gap_cv": 1.141,
+   "gaps": [
+    7.52,
+    2.02,
+    0.78,
+    0.88,
+    0.42
+   ],
+   "base_gaps": [
+    2.24,
+    1.68,
+    0.5,
+    3.1,
+    4.1
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 13.3,
+     "rev": 6.9,
+     "base_rank": 3,
+     "rev_rank": 4,
+     "affected": true
+    },
+    {
+     "team": "A+C",
+     "base": 14.98,
+     "rev": 6.02,
+     "base_rank": 2,
+     "rev_rank": 5,
+     "affected": true
+    },
+    {
+     "team": "A+D",
+     "base": 12.8,
+     "rev": 7.68,
+     "base_rank": 4,
+     "rev_rank": 3,
+     "affected": true
+    },
+    {
+     "team": "B+C",
+     "base": 5.6,
+     "rev": 5.6,
+     "base_rank": 6,
+     "rev_rank": 6,
+     "affected": false
+    },
+    {
+     "team": "B+D",
+     "base": 17.22,
+     "rev": 17.22,
+     "base_rank": 1,
+     "rev_rank": 1,
+     "affected": false
+    },
+    {
+     "team": "C+D",
+     "base": 9.7,
+     "rev": 9.7,
+     "base_rank": 5,
+     "rev_rank": 2,
+     "affected": false
+    }
+   ],
+   "to_extreme": [],
+   "robust_obs": 1,
+   "robust_design": 2,
+   "breakpoints": [
+    1.8
+   ],
+   "domain_value": false,
+   "to_top": 0,
+   "to_bottom": 0
+  },
+  {
+   "id": "C04",
+   "kind": "competence",
+   "domain": "cooking",
+   "target": "A",
+   "direction": "H->L",
+   "old": 8.5,
+   "new": 2.2,
+   "old_level": "high",
+   "new_level": "low",
+   "valid": true,
+   "tie": false,
+   "kendall": 6,
+   "footrule": 8,
+   "gap_cv": 1.137,
+   "gaps": [
+    7.52,
+    1.94,
+    0.76,
+    0.84,
+    0.56
+   ],
+   "base_gaps": [
+    2.24,
+    1.68,
+    0.5,
+    3.1,
+    4.1
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 13.3,
+     "rev": 7.0,
+     "base_rank": 3,
+     "rev_rank": 4,
+     "affected": true
+    },
+    {
+     "team": "A+C",
+     "base": 14.98,
+     "rev": 6.16,
+     "base_rank": 2,
+     "rev_rank": 5,
+     "affected": true
+    },
+    {
+     "team": "A+D",
+     "base": 12.8,
+     "rev": 7.76,
+     "base_rank": 4,
+     "rev_rank": 3,
+     "affected": true
+    },
+    {
+     "team": "B+C",
+     "base": 5.6,
+     "rev": 5.6,
+     "base_rank": 6,
+     "rev_rank": 6,
+     "affected": false
+    },
+    {
+     "team": "B+D",
+     "base": 17.22,
+     "rev": 17.22,
+     "base_rank": 1,
+     "rev_rank": 1,
+     "affected": false
+    },
+    {
+     "team": "C+D",
+     "base": 9.7,
+     "rev": 9.7,
+     "base_rank": 5,
+     "rev_rank": 2,
+     "affected": false
+    }
+   ],
+   "to_extreme": [],
+   "robust_obs": 1,
+   "robust_design": 2,
+   "breakpoints": [
+    1.8
+   ],
+   "domain_value": true,
+   "to_top": 0,
+   "to_bottom": 0
+  },
+  {
+   "id": "C05",
+   "kind": "competence",
+   "domain": "cooking",
+   "target": "C",
+   "direction": "L->H",
+   "old": 2.2,
+   "new": 7.5,
+   "old_level": "low",
+   "new_level": "high",
+   "valid": true,
+   "tie": false,
+   "kendall": 3,
+   "footrule": 6,
+   "gap_cv": 0.62,
+   "gaps": [
+    5.18,
+    2.22,
+    1.7,
+    0.5,
+    2.96
+   ],
+   "base_gaps": [
+    2.24,
+    1.68,
+    0.5,
+    3.1,
+    4.1
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 13.3,
+     "rev": 13.3,
+     "base_rank": 3,
+     "rev_rank": 4,
+     "affected": false
+    },
+    {
+     "team": "A+C",
+     "base": 14.98,
+     "rev": 22.4,
+     "base_rank": 2,
+     "rev_rank": 1,
+     "affected": true
+    },
+    {
+     "team": "A+D",
+     "base": 12.8,
+     "rev": 12.8,
+     "base_rank": 4,
+     "rev_rank": 5,
+     "affected": false
+    },
+    {
+     "team": "B+C",
+     "base": 5.6,
+     "rev": 9.84,
+     "base_rank": 6,
+     "rev_rank": 6,
+     "affected": true
+    },
+    {
+     "team": "B+D",
+     "base": 17.22,
+     "rev": 17.22,
+     "base_rank": 1,
+     "rev_rank": 2,
+     "affected": false
+    },
+    {
+     "team": "C+D",
+     "base": 9.7,
+     "rev": 15.0,
+     "base_rank": 5,
+     "rev_rank": 3,
+     "affected": true
+    }
+   ],
+   "to_extreme": [
+    "A+C"
+   ],
+   "robust_obs": 1,
+   "robust_design": 1,
+   "breakpoints": [],
+   "domain_value": true,
+   "to_top": 1,
+   "to_bottom": 0
+  },
+  {
+   "id": "C06",
+   "kind": "competence",
+   "domain": "cooking",
+   "target": "C",
+   "direction": "L->H",
+   "old": 2.2,
+   "new": 7.7,
+   "old_level": "low",
+   "new_level": "high",
+   "valid": true,
+   "tie": false,
+   "kendall": 3,
+   "footrule": 6,
+   "gap_cv": 0.646,
+   "gaps": [
+    5.46,
+    2.02,
+    1.9,
+    0.5,
+    2.8
+   ],
+   "base_gaps": [
+    2.24,
+    1.68,
+    0.5,
+    3.1,
+    4.1
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 13.3,
+     "rev": 13.3,
+     "base_rank": 3,
+     "rev_rank": 4,
+     "affected": false
+    },
+    {
+     "team": "A+C",
+     "base": 14.98,
+     "rev": 22.68,
+     "base_rank": 2,
+     "rev_rank": 1,
+     "affected": true
+    },
+    {
+     "team": "A+D",
+     "base": 12.8,
+     "rev": 12.8,
+     "base_rank": 4,
+     "rev_rank": 5,
+     "affected": false
+    },
+    {
+     "team": "B+C",
+     "base": 5.6,
+     "rev": 10.0,
+     "base_rank": 6,
+     "rev_rank": 6,
+     "affected": true
+    },
+    {
+     "team": "B+D",
+     "base": 17.22,
+     "rev": 17.22,
+     "base_rank": 1,
+     "rev_rank": 2,
+     "affected": false
+    },
+    {
+     "team": "C+D",
+     "base": 9.7,
+     "rev": 15.2,
+     "base_rank": 5,
+     "rev_rank": 3,
+     "affected": true
+    }
+   ],
+   "to_extreme": [
+    "A+C"
+   ],
+   "robust_obs": 1,
+   "robust_design": 1,
+   "breakpoints": [],
+   "domain_value": false,
+   "to_top": 1,
+   "to_bottom": 0
+  },
+  {
+   "id": "C07",
+   "kind": "competence",
+   "domain": "cooking",
+   "target": "C",
+   "direction": "L->H",
+   "old": 2.2,
+   "new": 8.2,
+   "old_level": "low",
+   "new_level": "high",
+   "valid": true,
+   "tie": false,
+   "kendall": 3,
+   "footrule": 6,
+   "gap_cv": 0.738,
+   "gaps": [
+    6.16,
+    1.52,
+    2.4,
+    0.5,
+    2.4
+   ],
+   "base_gaps": [
+    2.24,
+    1.68,
+    0.5,
+    3.1,
+    4.1
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 13.3,
+     "rev": 13.3,
+     "base_rank": 3,
+     "rev_rank": 4,
+     "affected": false
+    },
+    {
+     "team": "A+C",
+     "base": 14.98,
+     "rev": 23.38,
+     "base_rank": 2,
+     "rev_rank": 1,
+     "affected": true
+    },
+    {
+     "team": "A+D",
+     "base": 12.8,
+     "rev": 12.8,
+     "base_rank": 4,
+     "rev_rank": 5,
+     "affected": false
+    },
+    {
+     "team": "B+C",
+     "base": 5.6,
+     "rev": 10.4,
+     "base_rank": 6,
+     "rev_rank": 6,
+     "affected": true
+    },
+    {
+     "team": "B+D",
+     "base": 17.22,
+     "rev": 17.22,
+     "base_rank": 1,
+     "rev_rank": 2,
+     "affected": false
+    },
+    {
+     "team": "C+D",
+     "base": 9.7,
+     "rev": 15.7,
+     "base_rank": 5,
+     "rev_rank": 3,
+     "affected": true
+    }
+   ],
+   "to_extreme": [
+    "A+C"
+   ],
+   "robust_obs": 1,
+   "robust_design": 1,
+   "breakpoints": [],
+   "domain_value": false,
+   "to_top": 1,
+   "to_bottom": 0
+  },
+  {
+   "id": "C08",
+   "kind": "competence",
+   "domain": "cooking",
+   "target": "C",
+   "direction": "L->H",
+   "old": 2.2,
+   "new": 8.5,
+   "old_level": "low",
+   "new_level": "high",
+   "valid": true,
+   "tie": false,
+   "kendall": 3,
+   "footrule": 6,
+   "gap_cv": 0.803,
+   "gaps": [
+    6.58,
+    1.22,
+    2.7,
+    0.5,
+    2.16
+   ],
+   "base_gaps": [
+    2.24,
+    1.68,
+    0.5,
+    3.1,
+    4.1
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 13.3,
+     "rev": 13.3,
+     "base_rank": 3,
+     "rev_rank": 4,
+     "affected": false
+    },
+    {
+     "team": "A+C",
+     "base": 14.98,
+     "rev": 23.8,
+     "base_rank": 2,
+     "rev_rank": 1,
+     "affected": true
+    },
+    {
+     "team": "A+D",
+     "base": 12.8,
+     "rev": 12.8,
+     "base_rank": 4,
+     "rev_rank": 5,
+     "affected": false
+    },
+    {
+     "team": "B+C",
+     "base": 5.6,
+     "rev": 10.64,
+     "base_rank": 6,
+     "rev_rank": 6,
+     "affected": true
+    },
+    {
+     "team": "B+D",
+     "base": 17.22,
+     "rev": 17.22,
+     "base_rank": 1,
+     "rev_rank": 2,
+     "affected": false
+    },
+    {
+     "team": "C+D",
+     "base": 9.7,
+     "rev": 16.0,
+     "base_rank": 5,
+     "rev_rank": 3,
+     "affected": true
+    }
+   ],
+   "to_extreme": [
+    "A+C"
+   ],
+   "robust_obs": 1,
+   "robust_design": 1,
+   "breakpoints": [],
+   "domain_value": true,
+   "to_top": 1,
+   "to_bottom": 0
+  },
+  {
+   "id": "C09",
+   "kind": "competence",
+   "domain": "cooking",
+   "target": "D",
+   "direction": "H->L",
+   "old": 7.5,
+   "new": 1.9,
+   "old_level": "high",
+   "new_level": "low",
+   "valid": true,
+   "tie": false,
+   "kendall": 3,
+   "footrule": 6,
+   "gap_cv": 0.473,
+   "gaps": [
+    1.68,
+    3.92,
+    1.06,
+    2.72,
+    1.5
+   ],
+   "base_gaps": [
+    2.24,
+    1.68,
+    0.5,
+    3.1,
+    4.1
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 13.3,
+     "rev": 13.3,
+     "base_rank": 3,
+     "rev_rank": 2,
+     "affected": false
+    },
+    {
+     "team": "A+C",
+     "base": 14.98,
+     "rev": 14.98,
+     "base_rank": 2,
+     "rev_rank": 1,
+     "affected": false
+    },
+    {
+     "team": "A+D",
+     "base": 12.8,
+     "rev": 8.32,
+     "base_rank": 4,
+     "rev_rank": 4,
+     "affected": true
+    },
+    {
+     "team": "B+C",
+     "base": 5.6,
+     "rev": 5.6,
+     "base_rank": 6,
+     "rev_rank": 5,
+     "affected": false
+    },
+    {
+     "team": "B+D",
+     "base": 17.22,
+     "rev": 9.38,
+     "base_rank": 1,
+     "rev_rank": 3,
+     "affected": true
+    },
+    {
+     "team": "C+D",
+     "base": 9.7,
+     "rev": 4.1,
+     "base_rank": 5,
+     "rev_rank": 6,
+     "affected": true
+    }
+   ],
+   "to_extreme": [
+    "C+D"
+   ],
+   "robust_obs": 1,
+   "robust_design": 1,
+   "breakpoints": [],
+   "domain_value": false,
+   "to_top": 0,
+   "to_bottom": 1
+  },
+  {
+   "id": "C10",
+   "kind": "competence",
+   "domain": "cooking",
+   "target": "D",
+   "direction": "H->L",
+   "old": 7.5,
+   "new": 2.0,
+   "old_level": "high",
+   "new_level": "low",
+   "valid": true,
+   "tie": false,
+   "kendall": 3,
+   "footrule": 6,
+   "gap_cv": 0.46,
+   "gaps": [
+    1.68,
+    3.78,
+    1.12,
+    2.8,
+    1.4
+   ],
+   "base_gaps": [
+    2.24,
+    1.68,
+    0.5,
+    3.1,
+    4.1
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 13.3,
+     "rev": 13.3,
+     "base_rank": 3,
+     "rev_rank": 2,
+     "affected": false
+    },
+    {
+     "team": "A+C",
+     "base": 14.98,
+     "rev": 14.98,
+     "base_rank": 2,
+     "rev_rank": 1,
+     "affected": false
+    },
+    {
+     "team": "A+D",
+     "base": 12.8,
+     "rev": 8.4,
+     "base_rank": 4,
+     "rev_rank": 4,
+     "affected": true
+    },
+    {
+     "team": "B+C",
+     "base": 5.6,
+     "rev": 5.6,
+     "base_rank": 6,
+     "rev_rank": 5,
+     "affected": false
+    },
+    {
+     "team": "B+D",
+     "base": 17.22,
+     "rev": 9.52,
+     "base_rank": 1,
+     "rev_rank": 3,
+     "affected": true
+    },
+    {
+     "team": "C+D",
+     "base": 9.7,
+     "rev": 4.2,
+     "base_rank": 5,
+     "rev_rank": 6,
+     "affected": true
+    }
+   ],
+   "to_extreme": [
+    "C+D"
+   ],
+   "robust_obs": 1,
+   "robust_design": 1,
+   "breakpoints": [],
+   "domain_value": false,
+   "to_top": 0,
+   "to_bottom": 1
+  },
+  {
+   "id": "C11",
+   "kind": "competence",
+   "domain": "cooking",
+   "target": "D",
+   "direction": "H->L",
+   "old": 7.5,
+   "new": 2.1,
+   "old_level": "high",
+   "new_level": "low",
+   "valid": true,
+   "tie": false,
+   "kendall": 3,
+   "footrule": 6,
+   "gap_cv": 0.451,
+   "gaps": [
+    1.68,
+    3.64,
+    1.18,
+    2.88,
+    1.3
+   ],
+   "base_gaps": [
+    2.24,
+    1.68,
+    0.5,
+    3.1,
+    4.1
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 13.3,
+     "rev": 13.3,
+     "base_rank": 3,
+     "rev_rank": 2,
+     "affected": false
+    },
+    {
+     "team": "A+C",
+     "base": 14.98,
+     "rev": 14.98,
+     "base_rank": 2,
+     "rev_rank": 1,
+     "affected": false
+    },
+    {
+     "team": "A+D",
+     "base": 12.8,
+     "rev": 8.48,
+     "base_rank": 4,
+     "rev_rank": 4,
+     "affected": true
+    },
+    {
+     "team": "B+C",
+     "base": 5.6,
+     "rev": 5.6,
+     "base_rank": 6,
+     "rev_rank": 5,
+     "affected": false
+    },
+    {
+     "team": "B+D",
+     "base": 17.22,
+     "rev": 9.66,
+     "base_rank": 1,
+     "rev_rank": 3,
+     "affected": true
+    },
+    {
+     "team": "C+D",
+     "base": 9.7,
+     "rev": 4.3,
+     "base_rank": 5,
+     "rev_rank": 6,
+     "affected": true
+    }
+   ],
+   "to_extreme": [
+    "C+D"
+   ],
+   "robust_obs": 1,
+   "robust_design": 1,
+   "breakpoints": [],
+   "domain_value": false,
+   "to_top": 0,
+   "to_bottom": 1
+  },
+  {
+   "id": "C12",
+   "kind": "competence",
+   "domain": "cooking",
+   "target": "D",
+   "direction": "H->L",
+   "old": 7.5,
+   "new": 2.2,
+   "old_level": "high",
+   "new_level": "low",
+   "valid": true,
+   "tie": false,
+   "kendall": 3,
+   "footrule": 6,
+   "gap_cv": 0.445,
+   "gaps": [
+    1.68,
+    3.5,
+    1.24,
+    2.96,
+    1.2
+   ],
+   "base_gaps": [
+    2.24,
+    1.68,
+    0.5,
+    3.1,
+    4.1
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 13.3,
+     "rev": 13.3,
+     "base_rank": 3,
+     "rev_rank": 2,
+     "affected": false
+    },
+    {
+     "team": "A+C",
+     "base": 14.98,
+     "rev": 14.98,
+     "base_rank": 2,
+     "rev_rank": 1,
+     "affected": false
+    },
+    {
+     "team": "A+D",
+     "base": 12.8,
+     "rev": 8.56,
+     "base_rank": 4,
+     "rev_rank": 4,
+     "affected": true
+    },
+    {
+     "team": "B+C",
+     "base": 5.6,
+     "rev": 5.6,
+     "base_rank": 6,
+     "rev_rank": 5,
+     "affected": false
+    },
+    {
+     "team": "B+D",
+     "base": 17.22,
+     "rev": 9.8,
+     "base_rank": 1,
+     "rev_rank": 3,
+     "affected": true
+    },
+    {
+     "team": "C+D",
+     "base": 9.7,
+     "rev": 4.4,
+     "base_rank": 5,
+     "rev_rank": 6,
+     "affected": true
+    }
+   ],
+   "to_extreme": [
+    "C+D"
+   ],
+   "robust_obs": 1,
+   "robust_design": 1,
+   "breakpoints": [],
+   "domain_value": true,
+   "to_top": 0,
+   "to_bottom": 1
+  },
+  {
+   "id": "S13",
+   "kind": "synergy",
+   "domain": "cooking",
+   "target": "A+C",
+   "direction": "H->L",
+   "old": 1.4,
+   "new": 0.8,
+   "old_level": "high",
+   "new_level": "low",
+   "valid": true,
+   "tie": false,
+   "kendall": 3,
+   "footrule": 6,
+   "gap_cv": 0.554,
+   "gaps": [
+    3.92,
+    0.5,
+    3.1,
+    1.14,
+    2.96
+   ],
+   "base_gaps": [
+    2.24,
+    1.68,
+    0.5,
+    3.1,
+    4.1
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 13.3,
+     "rev": 13.3,
+     "base_rank": 3,
+     "rev_rank": 2,
+     "affected": false
+    },
+    {
+     "team": "A+C",
+     "base": 14.98,
+     "rev": 8.56,
+     "base_rank": 2,
+     "rev_rank": 5,
+     "affected": true
+    },
+    {
+     "team": "A+D",
+     "base": 12.8,
+     "rev": 12.8,
+     "base_rank": 4,
+     "rev_rank": 3,
+     "affected": false
+    },
+    {
+     "team": "B+C",
+     "base": 5.6,
+     "rev": 5.6,
+     "base_rank": 6,
+     "rev_rank": 6,
+     "affected": false
+    },
+    {
+     "team": "B+D",
+     "base": 17.22,
+     "rev": 17.22,
+     "base_rank": 1,
+     "rev_rank": 1,
+     "affected": false
+    },
+    {
+     "team": "C+D",
+     "base": 9.7,
+     "rev": 9.7,
+     "base_rank": 5,
+     "rev_rank": 4,
+     "affected": false
+    }
+   ],
+   "to_extreme": [],
+   "robust_obs": 1,
+   "robust_design": 1,
+   "breakpoints": [],
+   "domain_value": true,
+   "to_top": 0,
+   "to_bottom": 0
+  },
+  {
+   "id": "S14",
+   "kind": "synergy",
+   "domain": "cooking",
+   "target": "A+D",
+   "direction": "L->H",
+   "old": 0.8,
+   "new": 1.4,
+   "old_level": "low",
+   "new_level": "high",
+   "valid": true,
+   "tie": false,
+   "kendall": 3,
+   "footrule": 6,
+   "gap_cv": 0.376,
+   "gaps": [
+    5.18,
+    2.24,
+    1.68,
+    3.6,
+    4.1
+   ],
+   "base_gaps": [
+    2.24,
+    1.68,
+    0.5,
+    3.1,
+    4.1
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 13.3,
+     "rev": 13.3,
+     "base_rank": 3,
+     "rev_rank": 4,
+     "affected": false
+    },
+    {
+     "team": "A+C",
+     "base": 14.98,
+     "rev": 14.98,
+     "base_rank": 2,
+     "rev_rank": 3,
+     "affected": false
+    },
+    {
+     "team": "A+D",
+     "base": 12.8,
+     "rev": 22.4,
+     "base_rank": 4,
+     "rev_rank": 1,
+     "affected": true
+    },
+    {
+     "team": "B+C",
+     "base": 5.6,
+     "rev": 5.6,
+     "base_rank": 6,
+     "rev_rank": 6,
+     "affected": false
+    },
+    {
+     "team": "B+D",
+     "base": 17.22,
+     "rev": 17.22,
+     "base_rank": 1,
+     "rev_rank": 2,
+     "affected": false
+    },
+    {
+     "team": "C+D",
+     "base": 9.7,
+     "rev": 9.7,
+     "base_rank": 5,
+     "rev_rank": 5,
+     "affected": false
+    }
+   ],
+   "to_extreme": [
+    "A+D"
+   ],
+   "robust_obs": 1,
+   "robust_design": 1,
+   "breakpoints": [],
+   "domain_value": true,
+   "to_top": 1,
+   "to_bottom": 0
+  },
+  {
+   "id": "S15",
+   "kind": "synergy",
+   "domain": "cooking",
+   "target": "B+C",
+   "direction": "L->H",
+   "old": 0.8,
+   "new": 1.4,
+   "old_level": "low",
+   "new_level": "high",
+   "valid": true,
+   "tie": false,
+   "kendall": 1,
+   "footrule": 2,
+   "gap_cv": 0.715,
+   "gaps": [
+    2.24,
+    1.68,
+    0.5,
+    3.0,
+    0.1
+   ],
+   "base_gaps": [
+    2.24,
+    1.68,
+    0.5,
+    3.1,
+    4.1
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 13.3,
+     "rev": 13.3,
+     "base_rank": 3,
+     "rev_rank": 3,
+     "affected": false
+    },
+    {
+     "team": "A+C",
+     "base": 14.98,
+     "rev": 14.98,
+     "base_rank": 2,
+     "rev_rank": 2,
+     "affected": false
+    },
+    {
+     "team": "A+D",
+     "base": 12.8,
+     "rev": 12.8,
+     "base_rank": 4,
+     "rev_rank": 4,
+     "affected": false
+    },
+    {
+     "team": "B+C",
+     "base": 5.6,
+     "rev": 9.8,
+     "base_rank": 6,
+     "rev_rank": 5,
+     "affected": true
+    },
+    {
+     "team": "B+D",
+     "base": 17.22,
+     "rev": 17.22,
+     "base_rank": 1,
+     "rev_rank": 1,
+     "affected": false
+    },
+    {
+     "team": "C+D",
+     "base": 9.7,
+     "rev": 9.7,
+     "base_rank": 5,
+     "rev_rank": 6,
+     "affected": false
+    }
+   ],
+   "to_extreme": [],
+   "robust_obs": 1,
+   "robust_design": 1,
+   "breakpoints": [],
+   "domain_value": true,
+   "to_top": 0,
+   "to_bottom": 0
+  },
+  {
+   "id": "S16",
+   "kind": "synergy",
+   "domain": "cooking",
+   "target": "B+D",
+   "direction": "H->L",
+   "old": 1.4,
+   "new": 0.8,
+   "old_level": "high",
+   "new_level": "low",
+   "valid": true,
+   "tie": false,
+   "kendall": 3,
+   "footrule": 6,
+   "gap_cv": 0.793,
+   "gaps": [
+    1.68,
+    0.5,
+    2.96,
+    0.14,
+    4.1
+   ],
+   "base_gaps": [
+    2.24,
+    1.68,
+    0.5,
+    3.1,
+    4.1
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 13.3,
+     "rev": 13.3,
+     "base_rank": 3,
+     "rev_rank": 2,
+     "affected": false
+    },
+    {
+     "team": "A+C",
+     "base": 14.98,
+     "rev": 14.98,
+     "base_rank": 2,
+     "rev_rank": 1,
+     "affected": false
+    },
+    {
+     "team": "A+D",
+     "base": 12.8,
+     "rev": 12.8,
+     "base_rank": 4,
+     "rev_rank": 3,
+     "affected": false
+    },
+    {
+     "team": "B+C",
+     "base": 5.6,
+     "rev": 5.6,
+     "base_rank": 6,
+     "rev_rank": 6,
+     "affected": false
+    },
+    {
+     "team": "B+D",
+     "base": 17.22,
+     "rev": 9.84,
+     "base_rank": 1,
+     "rev_rank": 4,
+     "affected": true
+    },
+    {
+     "team": "C+D",
+     "base": 9.7,
+     "rev": 9.7,
+     "base_rank": 5,
+     "rev_rank": 5,
+     "affected": false
+    }
+   ],
+   "to_extreme": [],
+   "robust_obs": 1,
+   "robust_design": 1,
+   "breakpoints": [],
+   "domain_value": true,
+   "to_top": 0,
+   "to_bottom": 0
+  },
+  {
+   "id": "C17",
+   "kind": "competence",
+   "domain": "repairing",
+   "target": "B",
+   "direction": "H->L",
+   "old": 8.2,
+   "new": 1.9,
+   "old_level": "high",
+   "new_level": "low",
+   "valid": false,
+   "tie": true,
+   "kendall": 5,
+   "footrule": 8,
+   "gap_cv": 1.453,
+   "gaps": [
+    6.38,
+    0.7,
+    0.9,
+    0.0,
+    0.24
+   ],
+   "base_gaps": [
+    0.84,
+    0.78,
+    2.16,
+    3.44,
+    1.84
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 12.8,
+     "rev": 6.5,
+     "base_rank": 3,
+     "rev_rank": 3,
+     "affected": true
+    },
+    {
+     "team": "A+C",
+     "base": 13.58,
+     "rev": 13.58,
+     "base_rank": 2,
+     "rev_rank": 1,
+     "affected": false
+    },
+    {
+     "team": "A+D",
+     "base": 5.36,
+     "rev": 5.36,
+     "base_rank": 6,
+     "rev_rank": 6,
+     "affected": false
+    },
+    {
+     "team": "B+C",
+     "base": 10.64,
+     "rev": 5.6,
+     "base_rank": 4,
+     "rev_rank": 4,
+     "affected": true
+    },
+    {
+     "team": "B+D",
+     "base": 14.42,
+     "rev": 5.6,
+     "base_rank": 1,
+     "rev_rank": 5,
+     "affected": true
+    },
+    {
+     "team": "C+D",
+     "base": 7.2,
+     "rev": 7.2,
+     "base_rank": 5,
+     "rev_rank": 2,
+     "affected": false
+    }
+   ],
+   "to_extreme": [],
+   "robust_obs": 1,
+   "robust_design": 5,
+   "breakpoints": [
+    1.6,
+    1.7286,
+    1.9,
+    2.6
+   ],
+   "domain_value": false,
+   "to_top": 0,
+   "to_bottom": 0
+  },
+  {
+   "id": "C18",
+   "kind": "competence",
+   "domain": "repairing",
+   "target": "B",
+   "direction": "H->L",
+   "old": 8.2,
+   "new": 2.0,
+   "old_level": "high",
+   "new_level": "low",
+   "valid": true,
+   "tie": false,
+   "kendall": 5,
+   "footrule": 8,
+   "gap_cv": 1.45,
+   "gaps": [
+    6.38,
+    0.6,
+    0.86,
+    0.06,
+    0.32
+   ],
+   "base_gaps": [
+    0.84,
+    0.78,
+    2.16,
+    3.44,
+    1.84
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 12.8,
+     "rev": 6.6,
+     "base_rank": 3,
+     "rev_rank": 3,
+     "affected": true
+    },
+    {
+     "team": "A+C",
+     "base": 13.58,
+     "rev": 13.58,
+     "base_rank": 2,
+     "rev_rank": 1,
+     "affected": false
+    },
+    {
+     "team": "A+D",
+     "base": 5.36,
+     "rev": 5.36,
+     "base_rank": 6,
+     "rev_rank": 6,
+     "affected": false
+    },
+    {
+     "team": "B+C",
+     "base": 10.64,
+     "rev": 5.68,
+     "base_rank": 4,
+     "rev_rank": 5,
+     "affected": true
+    },
+    {
+     "team": "B+D",
+     "base": 14.42,
+     "rev": 5.74,
+     "base_rank": 1,
+     "rev_rank": 4,
+     "affected": true
+    },
+    {
+     "team": "C+D",
+     "base": 7.2,
+     "rev": 7.2,
+     "base_rank": 5,
+     "rev_rank": 2,
+     "affected": false
+    }
+   ],
+   "to_extreme": [],
+   "robust_obs": 1,
+   "robust_design": 5,
+   "breakpoints": [
+    1.6,
+    1.7286,
+    1.9,
+    2.6
+   ],
+   "domain_value": false,
+   "to_top": 0,
+   "to_bottom": 0
+  },
+  {
+   "id": "C19",
+   "kind": "competence",
+   "domain": "repairing",
+   "target": "B",
+   "direction": "H->L",
+   "old": 8.2,
+   "new": 2.1,
+   "old_level": "high",
+   "new_level": "low",
+   "valid": true,
+   "tie": false,
+   "kendall": 5,
+   "footrule": 8,
+   "gap_cv": 1.447,
+   "gaps": [
+    6.38,
+    0.5,
+    0.82,
+    0.12,
+    0.4
+   ],
+   "base_gaps": [
+    0.84,
+    0.78,
+    2.16,
+    3.44,
+    1.84
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 12.8,
+     "rev": 6.7,
+     "base_rank": 3,
+     "rev_rank": 3,
+     "affected": true
+    },
+    {
+     "team": "A+C",
+     "base": 13.58,
+     "rev": 13.58,
+     "base_rank": 2,
+     "rev_rank": 1,
+     "affected": false
+    },
+    {
+     "team": "A+D",
+     "base": 5.36,
+     "rev": 5.36,
+     "base_rank": 6,
+     "rev_rank": 6,
+     "affected": false
+    },
+    {
+     "team": "B+C",
+     "base": 10.64,
+     "rev": 5.76,
+     "base_rank": 4,
+     "rev_rank": 5,
+     "affected": true
+    },
+    {
+     "team": "B+D",
+     "base": 14.42,
+     "rev": 5.88,
+     "base_rank": 1,
+     "rev_rank": 4,
+     "affected": true
+    },
+    {
+     "team": "C+D",
+     "base": 7.2,
+     "rev": 7.2,
+     "base_rank": 5,
+     "rev_rank": 2,
+     "affected": false
+    }
+   ],
+   "to_extreme": [],
+   "robust_obs": 1,
+   "robust_design": 5,
+   "breakpoints": [
+    1.6,
+    1.7286,
+    1.9,
+    2.6
+   ],
+   "domain_value": true,
+   "to_top": 0,
+   "to_bottom": 0
+  },
+  {
+   "id": "C20",
+   "kind": "competence",
+   "domain": "repairing",
+   "target": "B",
+   "direction": "H->L",
+   "old": 8.2,
+   "new": 2.2,
+   "old_level": "high",
+   "new_level": "low",
+   "valid": true,
+   "tie": false,
+   "kendall": 5,
+   "footrule": 8,
+   "gap_cv": 1.445,
+   "gaps": [
+    6.38,
+    0.4,
+    0.78,
+    0.18,
+    0.48
+   ],
+   "base_gaps": [
+    0.84,
+    0.78,
+    2.16,
+    3.44,
+    1.84
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 12.8,
+     "rev": 6.8,
+     "base_rank": 3,
+     "rev_rank": 3,
+     "affected": true
+    },
+    {
+     "team": "A+C",
+     "base": 13.58,
+     "rev": 13.58,
+     "base_rank": 2,
+     "rev_rank": 1,
+     "affected": false
+    },
+    {
+     "team": "A+D",
+     "base": 5.36,
+     "rev": 5.36,
+     "base_rank": 6,
+     "rev_rank": 6,
+     "affected": false
+    },
+    {
+     "team": "B+C",
+     "base": 10.64,
+     "rev": 5.84,
+     "base_rank": 4,
+     "rev_rank": 5,
+     "affected": true
+    },
+    {
+     "team": "B+D",
+     "base": 14.42,
+     "rev": 6.02,
+     "base_rank": 1,
+     "rev_rank": 4,
+     "affected": true
+    },
+    {
+     "team": "C+D",
+     "base": 7.2,
+     "rev": 7.2,
+     "base_rank": 5,
+     "rev_rank": 2,
+     "affected": false
+    }
+   ],
+   "to_extreme": [],
+   "robust_obs": 1,
+   "robust_design": 5,
+   "breakpoints": [
+    1.6,
+    1.7286,
+    1.9,
+    2.6
+   ],
+   "domain_value": false,
+   "to_top": 0,
+   "to_bottom": 0
+  },
+  {
+   "id": "C21",
+   "kind": "competence",
+   "domain": "repairing",
+   "target": "D",
+   "direction": "L->H",
+   "old": 2.1,
+   "new": 7.5,
+   "old_level": "low",
+   "new_level": "high",
+   "valid": true,
+   "tie": false,
+   "kendall": 1,
+   "footrule": 2,
+   "gap_cv": 1.229,
+   "gaps": [
+    8.4,
+    0.78,
+    0.2,
+    1.96,
+    0.96
+   ],
+   "base_gaps": [
+    0.84,
+    0.78,
+    2.16,
+    3.44,
+    1.84
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 12.8,
+     "rev": 12.8,
+     "base_rank": 3,
+     "rev_rank": 3,
+     "affected": false
+    },
+    {
+     "team": "A+C",
+     "base": 13.58,
+     "rev": 13.58,
+     "base_rank": 2,
+     "rev_rank": 2,
+     "affected": false
+    },
+    {
+     "team": "A+D",
+     "base": 5.36,
+     "rev": 9.68,
+     "base_rank": 6,
+     "rev_rank": 6,
+     "affected": true
+    },
+    {
+     "team": "B+C",
+     "base": 10.64,
+     "rev": 10.64,
+     "base_rank": 4,
+     "rev_rank": 5,
+     "affected": false
+    },
+    {
+     "team": "B+D",
+     "base": 14.42,
+     "rev": 21.98,
+     "base_rank": 1,
+     "rev_rank": 1,
+     "affected": true
+    },
+    {
+     "team": "C+D",
+     "base": 7.2,
+     "rev": 12.6,
+     "base_rank": 5,
+     "rev_rank": 4,
+     "affected": true
+    }
+   ],
+   "to_extreme": [],
+   "robust_obs": 3,
+   "robust_design": 4,
+   "breakpoints": [
+    7.7,
+    8.48,
+    8.7
+   ],
+   "domain_value": false,
+   "to_top": 0,
+   "to_bottom": 0
+  },
+  {
+   "id": "C22",
+   "kind": "competence",
+   "domain": "repairing",
+   "target": "D",
+   "direction": "L->H",
+   "old": 2.1,
+   "new": 7.7,
+   "old_level": "low",
+   "new_level": "high",
+   "valid": false,
+   "tie": true,
+   "kendall": 1,
+   "footrule": 2,
+   "gap_cv": 1.278,
+   "gaps": [
+    8.68,
+    0.78,
+    0.0,
+    2.16,
+    0.8
+   ],
+   "base_gaps": [
+    0.84,
+    0.78,
+    2.16,
+    3.44,
+    1.84
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 12.8,
+     "rev": 12.8,
+     "base_rank": 3,
+     "rev_rank": 3,
+     "affected": false
+    },
+    {
+     "team": "A+C",
+     "base": 13.58,
+     "rev": 13.58,
+     "base_rank": 2,
+     "rev_rank": 2,
+     "affected": false
+    },
+    {
+     "team": "A+D",
+     "base": 5.36,
+     "rev": 9.84,
+     "base_rank": 6,
+     "rev_rank": 6,
+     "affected": true
+    },
+    {
+     "team": "B+C",
+     "base": 10.64,
+     "rev": 10.64,
+     "base_rank": 4,
+     "rev_rank": 5,
+     "affected": false
+    },
+    {
+     "team": "B+D",
+     "base": 14.42,
+     "rev": 22.26,
+     "base_rank": 1,
+     "rev_rank": 1,
+     "affected": true
+    },
+    {
+     "team": "C+D",
+     "base": 7.2,
+     "rev": 12.8,
+     "base_rank": 5,
+     "rev_rank": 4,
+     "affected": true
+    }
+   ],
+   "to_extreme": [],
+   "robust_obs": 3,
+   "robust_design": 4,
+   "breakpoints": [
+    7.7,
+    8.48,
+    8.7
+   ],
+   "domain_value": false,
+   "to_top": 0,
+   "to_bottom": 0
+  },
+  {
+   "id": "C23",
+   "kind": "competence",
+   "domain": "repairing",
+   "target": "D",
+   "direction": "L->H",
+   "old": 2.1,
+   "new": 8.2,
+   "old_level": "low",
+   "new_level": "high",
+   "valid": true,
+   "tie": false,
+   "kendall": 2,
+   "footrule": 4,
+   "gap_cv": 1.37,
+   "gaps": [
+    9.38,
+    0.28,
+    0.5,
+    2.16,
+    0.4
+   ],
+   "base_gaps": [
+    0.84,
+    0.78,
+    2.16,
+    3.44,
+    1.84
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 12.8,
+     "rev": 12.8,
+     "base_rank": 3,
+     "rev_rank": 4,
+     "affected": false
+    },
+    {
+     "team": "A+C",
+     "base": 13.58,
+     "rev": 13.58,
+     "base_rank": 2,
+     "rev_rank": 2,
+     "affected": false
+    },
+    {
+     "team": "A+D",
+     "base": 5.36,
+     "rev": 10.24,
+     "base_rank": 6,
+     "rev_rank": 6,
+     "affected": true
+    },
+    {
+     "team": "B+C",
+     "base": 10.64,
+     "rev": 10.64,
+     "base_rank": 4,
+     "rev_rank": 5,
+     "affected": false
+    },
+    {
+     "team": "B+D",
+     "base": 14.42,
+     "rev": 22.96,
+     "base_rank": 1,
+     "rev_rank": 1,
+     "affected": true
+    },
+    {
+     "team": "C+D",
+     "base": 7.2,
+     "rev": 13.3,
+     "base_rank": 5,
+     "rev_rank": 3,
+     "affected": true
+    }
+   ],
+   "to_extreme": [],
+   "robust_obs": 3,
+   "robust_design": 4,
+   "breakpoints": [
+    7.7,
+    8.48,
+    8.7
+   ],
+   "domain_value": true,
+   "to_top": 0,
+   "to_bottom": 0
+  },
+  {
+   "id": "C24",
+   "kind": "competence",
+   "domain": "repairing",
+   "target": "D",
+   "direction": "L->H",
+   "old": 2.1,
+   "new": 8.5,
+   "old_level": "low",
+   "new_level": "high",
+   "valid": true,
+   "tie": false,
+   "kendall": 3,
+   "footrule": 6,
+   "gap_cv": 1.426,
+   "gaps": [
+    9.78,
+    0.02,
+    0.78,
+    2.16,
+    0.16
+   ],
+   "base_gaps": [
+    0.84,
+    0.78,
+    2.16,
+    3.44,
+    1.84
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 12.8,
+     "rev": 12.8,
+     "base_rank": 3,
+     "rev_rank": 4,
+     "affected": false
+    },
+    {
+     "team": "A+C",
+     "base": 13.58,
+     "rev": 13.58,
+     "base_rank": 2,
+     "rev_rank": 3,
+     "affected": false
+    },
+    {
+     "team": "A+D",
+     "base": 5.36,
+     "rev": 10.48,
+     "base_rank": 6,
+     "rev_rank": 6,
+     "affected": true
+    },
+    {
+     "team": "B+C",
+     "base": 10.64,
+     "rev": 10.64,
+     "base_rank": 4,
+     "rev_rank": 5,
+     "affected": false
+    },
+    {
+     "team": "B+D",
+     "base": 14.42,
+     "rev": 23.38,
+     "base_rank": 1,
+     "rev_rank": 1,
+     "affected": true
+    },
+    {
+     "team": "C+D",
+     "base": 7.2,
+     "rev": 13.6,
+     "base_rank": 5,
+     "rev_rank": 2,
+     "affected": true
+    }
+   ],
+   "to_extreme": [],
+   "robust_obs": 3,
+   "robust_design": 4,
+   "breakpoints": [
+    7.7,
+    8.48,
+    8.7
+   ],
+   "domain_value": false,
+   "to_top": 0,
+   "to_bottom": 0
+  },
+  {
+   "id": "S25",
+   "kind": "synergy",
+   "domain": "repairing",
+   "target": "A+C",
+   "direction": "H->L",
+   "old": 1.4,
+   "new": 0.8,
+   "old_level": "high",
+   "new_level": "low",
+   "valid": true,
+   "tie": false,
+   "kendall": 2,
+   "footrule": 4,
+   "gap_cv": 0.418,
+   "gaps": [
+    1.62,
+    2.16,
+    2.88,
+    0.56,
+    1.84
+   ],
+   "base_gaps": [
+    0.84,
+    0.78,
+    2.16,
+    3.44,
+    1.84
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 12.8,
+     "rev": 12.8,
+     "base_rank": 3,
+     "rev_rank": 2,
+     "affected": false
+    },
+    {
+     "team": "A+C",
+     "base": 13.58,
+     "rev": 7.76,
+     "base_rank": 2,
+     "rev_rank": 4,
+     "affected": true
+    },
+    {
+     "team": "A+D",
+     "base": 5.36,
+     "rev": 5.36,
+     "base_rank": 6,
+     "rev_rank": 6,
+     "affected": false
+    },
+    {
+     "team": "B+C",
+     "base": 10.64,
+     "rev": 10.64,
+     "base_rank": 4,
+     "rev_rank": 3,
+     "affected": false
+    },
+    {
+     "team": "B+D",
+     "base": 14.42,
+     "rev": 14.42,
+     "base_rank": 1,
+     "rev_rank": 1,
+     "affected": false
+    },
+    {
+     "team": "C+D",
+     "base": 7.2,
+     "rev": 7.2,
+     "base_rank": 5,
+     "rev_rank": 5,
+     "affected": false
+    }
+   ],
+   "to_extreme": [],
+   "robust_obs": 1,
+   "robust_design": 1,
+   "breakpoints": [],
+   "domain_value": true,
+   "to_top": 0,
+   "to_bottom": 0
+  },
+  {
+   "id": "S26",
+   "kind": "synergy",
+   "domain": "repairing",
+   "target": "A+D",
+   "direction": "L->H",
+   "old": 0.8,
+   "new": 1.4,
+   "old_level": "low",
+   "new_level": "high",
+   "valid": true,
+   "tie": false,
+   "kendall": 1,
+   "footrule": 2,
+   "gap_cv": 0.426,
+   "gaps": [
+    0.84,
+    0.78,
+    2.16,
+    1.26,
+    2.18
+   ],
+   "base_gaps": [
+    0.84,
+    0.78,
+    2.16,
+    3.44,
+    1.84
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 12.8,
+     "rev": 12.8,
+     "base_rank": 3,
+     "rev_rank": 3,
+     "affected": false
+    },
+    {
+     "team": "A+C",
+     "base": 13.58,
+     "rev": 13.58,
+     "base_rank": 2,
+     "rev_rank": 2,
+     "affected": false
+    },
+    {
+     "team": "A+D",
+     "base": 5.36,
+     "rev": 9.38,
+     "base_rank": 6,
+     "rev_rank": 5,
+     "affected": true
+    },
+    {
+     "team": "B+C",
+     "base": 10.64,
+     "rev": 10.64,
+     "base_rank": 4,
+     "rev_rank": 4,
+     "affected": false
+    },
+    {
+     "team": "B+D",
+     "base": 14.42,
+     "rev": 14.42,
+     "base_rank": 1,
+     "rev_rank": 1,
+     "affected": false
+    },
+    {
+     "team": "C+D",
+     "base": 7.2,
+     "rev": 7.2,
+     "base_rank": 5,
+     "rev_rank": 6,
+     "affected": false
+    }
+   ],
+   "to_extreme": [],
+   "robust_obs": 1,
+   "robust_design": 1,
+   "breakpoints": [],
+   "domain_value": true,
+   "to_top": 0,
+   "to_bottom": 0
+  },
+  {
+   "id": "S27",
+   "kind": "synergy",
+   "domain": "repairing",
+   "target": "B+C",
+   "direction": "L->H",
+   "old": 0.8,
+   "new": 1.4,
+   "old_level": "low",
+   "new_level": "high",
+   "valid": true,
+   "tie": false,
+   "kendall": 3,
+   "footrule": 6,
+   "gap_cv": 0.726,
+   "gaps": [
+    4.2,
+    0.84,
+    0.78,
+    5.6,
+    1.84
+   ],
+   "base_gaps": [
+    0.84,
+    0.78,
+    2.16,
+    3.44,
+    1.84
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 12.8,
+     "rev": 12.8,
+     "base_rank": 3,
+     "rev_rank": 4,
+     "affected": false
+    },
+    {
+     "team": "A+C",
+     "base": 13.58,
+     "rev": 13.58,
+     "base_rank": 2,
+     "rev_rank": 3,
+     "affected": false
+    },
+    {
+     "team": "A+D",
+     "base": 5.36,
+     "rev": 5.36,
+     "base_rank": 6,
+     "rev_rank": 6,
+     "affected": false
+    },
+    {
+     "team": "B+C",
+     "base": 10.64,
+     "rev": 18.62,
+     "base_rank": 4,
+     "rev_rank": 1,
+     "affected": true
+    },
+    {
+     "team": "B+D",
+     "base": 14.42,
+     "rev": 14.42,
+     "base_rank": 1,
+     "rev_rank": 2,
+     "affected": false
+    },
+    {
+     "team": "C+D",
+     "base": 7.2,
+     "rev": 7.2,
+     "base_rank": 5,
+     "rev_rank": 5,
+     "affected": false
+    }
+   ],
+   "to_extreme": [
+    "B+C"
+   ],
+   "robust_obs": 1,
+   "robust_design": 1,
+   "breakpoints": [],
+   "domain_value": true,
+   "to_top": 1,
+   "to_bottom": 0
+  },
+  {
+   "id": "S28",
+   "kind": "synergy",
+   "domain": "repairing",
+   "target": "B+D",
+   "direction": "H->L",
+   "old": 1.4,
+   "new": 0.8,
+   "old_level": "high",
+   "new_level": "low",
+   "valid": true,
+   "tie": false,
+   "kendall": 3,
+   "footrule": 6,
+   "gap_cv": 0.384,
+   "gaps": [
+    0.78,
+    2.16,
+    2.4,
+    1.04,
+    1.84
+   ],
+   "base_gaps": [
+    0.84,
+    0.78,
+    2.16,
+    3.44,
+    1.84
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 12.8,
+     "rev": 12.8,
+     "base_rank": 3,
+     "rev_rank": 2,
+     "affected": false
+    },
+    {
+     "team": "A+C",
+     "base": 13.58,
+     "rev": 13.58,
+     "base_rank": 2,
+     "rev_rank": 1,
+     "affected": false
+    },
+    {
+     "team": "A+D",
+     "base": 5.36,
+     "rev": 5.36,
+     "base_rank": 6,
+     "rev_rank": 6,
+     "affected": false
+    },
+    {
+     "team": "B+C",
+     "base": 10.64,
+     "rev": 10.64,
+     "base_rank": 4,
+     "rev_rank": 3,
+     "affected": false
+    },
+    {
+     "team": "B+D",
+     "base": 14.42,
+     "rev": 8.24,
+     "base_rank": 1,
+     "rev_rank": 4,
+     "affected": true
+    },
+    {
+     "team": "C+D",
+     "base": 7.2,
+     "rev": 7.2,
+     "base_rank": 5,
+     "rev_rank": 5,
+     "affected": false
+    }
+   ],
+   "to_extreme": [],
+   "robust_obs": 1,
+   "robust_design": 1,
+   "breakpoints": [],
+   "domain_value": true,
+   "to_top": 0,
+   "to_bottom": 0
+  },
+  {
+   "id": "C29",
+   "kind": "competence",
+   "domain": "tennis",
+   "target": "A",
+   "direction": "L->H",
+   "old": 1.9,
+   "new": 7.5,
+   "old_level": "low",
+   "new_level": "high",
+   "valid": true,
+   "tie": false,
+   "kendall": 2,
+   "footrule": 4,
+   "gap_cv": 1.066,
+   "gaps": [
+    8.18,
+    2.74,
+    0.04,
+    0.82,
+    1.74
+   ],
+   "base_gaps": [
+    0.34,
+    2.74,
+    2.6,
+    1.92,
+    1.94
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 3.9,
+     "rev": 9.5,
+     "base_rank": 6,
+     "rev_rank": 5,
+     "affected": true
+    },
+    {
+     "team": "A+C",
+     "base": 13.44,
+     "rev": 21.28,
+     "base_rank": 1,
+     "rev_rank": 1,
+     "affected": true
+    },
+    {
+     "team": "A+D",
+     "base": 5.84,
+     "rev": 10.32,
+     "base_rank": 5,
+     "rev_rank": 4,
+     "affected": true
+    },
+    {
+     "team": "B+C",
+     "base": 7.76,
+     "rev": 7.76,
+     "base_rank": 4,
+     "rev_rank": 6,
+     "affected": false
+    },
+    {
+     "team": "B+D",
+     "base": 10.36,
+     "rev": 10.36,
+     "base_rank": 3,
+     "rev_rank": 3,
+     "affected": false
+    },
+    {
+     "team": "C+D",
+     "base": 13.1,
+     "rev": 13.1,
+     "base_rank": 2,
+     "rev_rank": 2,
+     "affected": false
+    }
+   ],
+   "to_extreme": [],
+   "robust_obs": 3,
+   "robust_design": 3,
+   "breakpoints": [
+    7.55,
+    8.36
+   ],
+   "domain_value": false,
+   "to_top": 0,
+   "to_bottom": 0
+  },
+  {
+   "id": "C30",
+   "kind": "competence",
+   "domain": "tennis",
+   "target": "A",
+   "direction": "L->H",
+   "old": 1.9,
+   "new": 7.7,
+   "old_level": "low",
+   "new_level": "high",
+   "valid": true,
+   "tie": false,
+   "kendall": 3,
+   "footrule": 6,
+   "gap_cv": 1.082,
+   "gaps": [
+    8.46,
+    2.62,
+    0.12,
+    0.66,
+    1.94
+   ],
+   "base_gaps": [
+    0.34,
+    2.74,
+    2.6,
+    1.92,
+    1.94
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 3.9,
+     "rev": 9.7,
+     "base_rank": 6,
+     "rev_rank": 5,
+     "affected": true
+    },
+    {
+     "team": "A+C",
+     "base": 13.44,
+     "rev": 21.56,
+     "base_rank": 1,
+     "rev_rank": 1,
+     "affected": true
+    },
+    {
+     "team": "A+D",
+     "base": 5.84,
+     "rev": 10.48,
+     "base_rank": 5,
+     "rev_rank": 3,
+     "affected": true
+    },
+    {
+     "team": "B+C",
+     "base": 7.76,
+     "rev": 7.76,
+     "base_rank": 4,
+     "rev_rank": 6,
+     "affected": false
+    },
+    {
+     "team": "B+D",
+     "base": 10.36,
+     "rev": 10.36,
+     "base_rank": 3,
+     "rev_rank": 4,
+     "affected": false
+    },
+    {
+     "team": "C+D",
+     "base": 13.1,
+     "rev": 13.1,
+     "base_rank": 2,
+     "rev_rank": 2,
+     "affected": false
+    }
+   ],
+   "to_extreme": [],
+   "robust_obs": 3,
+   "robust_design": 3,
+   "breakpoints": [
+    7.55,
+    8.36
+   ],
+   "domain_value": true,
+   "to_top": 0,
+   "to_bottom": 0
+  },
+  {
+   "id": "C31",
+   "kind": "competence",
+   "domain": "tennis",
+   "target": "A",
+   "direction": "L->H",
+   "old": 1.9,
+   "new": 8.2,
+   "old_level": "low",
+   "new_level": "high",
+   "valid": true,
+   "tie": false,
+   "kendall": 3,
+   "footrule": 6,
+   "gap_cv": 1.123,
+   "gaps": [
+    9.16,
+    2.22,
+    0.52,
+    0.16,
+    2.44
+   ],
+   "base_gaps": [
+    0.34,
+    2.74,
+    2.6,
+    1.92,
+    1.94
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 3.9,
+     "rev": 10.2,
+     "base_rank": 6,
+     "rev_rank": 5,
+     "affected": true
+    },
+    {
+     "team": "A+C",
+     "base": 13.44,
+     "rev": 22.26,
+     "base_rank": 1,
+     "rev_rank": 1,
+     "affected": true
+    },
+    {
+     "team": "A+D",
+     "base": 5.84,
+     "rev": 10.88,
+     "base_rank": 5,
+     "rev_rank": 3,
+     "affected": true
+    },
+    {
+     "team": "B+C",
+     "base": 7.76,
+     "rev": 7.76,
+     "base_rank": 4,
+     "rev_rank": 6,
+     "affected": false
+    },
+    {
+     "team": "B+D",
+     "base": 10.36,
+     "rev": 10.36,
+     "base_rank": 3,
+     "rev_rank": 4,
+     "affected": false
+    },
+    {
+     "team": "C+D",
+     "base": 13.1,
+     "rev": 13.1,
+     "base_rank": 2,
+     "rev_rank": 2,
+     "affected": false
+    }
+   ],
+   "to_extreme": [],
+   "robust_obs": 3,
+   "robust_design": 3,
+   "breakpoints": [
+    7.55,
+    8.36
+   ],
+   "domain_value": false,
+   "to_top": 0,
+   "to_bottom": 0
+  },
+  {
+   "id": "C32",
+   "kind": "competence",
+   "domain": "tennis",
+   "target": "A",
+   "direction": "L->H",
+   "old": 1.9,
+   "new": 8.5,
+   "old_level": "low",
+   "new_level": "high",
+   "valid": true,
+   "tie": false,
+   "kendall": 4,
+   "footrule": 8,
+   "gap_cv": 1.145,
+   "gaps": [
+    9.58,
+    1.98,
+    0.62,
+    0.14,
+    2.6
+   ],
+   "base_gaps": [
+    0.34,
+    2.74,
+    2.6,
+    1.92,
+    1.94
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 3.9,
+     "rev": 10.5,
+     "base_rank": 6,
+     "rev_rank": 4,
+     "affected": true
+    },
+    {
+     "team": "A+C",
+     "base": 13.44,
+     "rev": 22.68,
+     "base_rank": 1,
+     "rev_rank": 1,
+     "affected": true
+    },
+    {
+     "team": "A+D",
+     "base": 5.84,
+     "rev": 11.12,
+     "base_rank": 5,
+     "rev_rank": 3,
+     "affected": true
+    },
+    {
+     "team": "B+C",
+     "base": 7.76,
+     "rev": 7.76,
+     "base_rank": 4,
+     "rev_rank": 6,
+     "affected": false
+    },
+    {
+     "team": "B+D",
+     "base": 10.36,
+     "rev": 10.36,
+     "base_rank": 3,
+     "rev_rank": 5,
+     "affected": false
+    },
+    {
+     "team": "C+D",
+     "base": 13.1,
+     "rev": 13.1,
+     "base_rank": 2,
+     "rev_rank": 2,
+     "affected": false
+    }
+   ],
+   "to_extreme": [],
+   "robust_obs": 3,
+   "robust_design": 3,
+   "breakpoints": [
+    7.55,
+    8.36
+   ],
+   "domain_value": false,
+   "to_top": 0,
+   "to_bottom": 0
+  },
+  {
+   "id": "C33",
+   "kind": "competence",
+   "domain": "tennis",
+   "target": "B",
+   "direction": "L->H",
+   "old": 2.0,
+   "new": 7.5,
+   "old_level": "low",
+   "new_level": "high",
+   "valid": true,
+   "tie": false,
+   "kendall": 3,
+   "footrule": 6,
+   "gap_cv": 0.654,
+   "gaps": [
+    4.62,
+    0.34,
+    0.94,
+    2.76,
+    3.56
+   ],
+   "base_gaps": [
+    0.34,
+    2.74,
+    2.6,
+    1.92,
+    1.94
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 3.9,
+     "rev": 9.4,
+     "base_rank": 6,
+     "rev_rank": 5,
+     "affected": true
+    },
+    {
+     "team": "A+C",
+     "base": 13.44,
+     "rev": 13.44,
+     "base_rank": 1,
+     "rev_rank": 2,
+     "affected": false
+    },
+    {
+     "team": "A+D",
+     "base": 5.84,
+     "rev": 5.84,
+     "base_rank": 5,
+     "rev_rank": 6,
+     "affected": false
+    },
+    {
+     "team": "B+C",
+     "base": 7.76,
+     "rev": 12.16,
+     "base_rank": 4,
+     "rev_rank": 4,
+     "affected": true
+    },
+    {
+     "team": "B+D",
+     "base": 10.36,
+     "rev": 18.06,
+     "base_rank": 3,
+     "rev_rank": 1,
+     "affected": true
+    },
+    {
+     "team": "C+D",
+     "base": 13.1,
+     "rev": 13.1,
+     "base_rank": 2,
+     "rev_rank": 3,
+     "affected": false
+    }
+   ],
+   "to_extreme": [
+    "B+D"
+   ],
+   "robust_obs": 1,
+   "robust_design": 2,
+   "breakpoints": [
+    8.675
+   ],
+   "domain_value": false,
+   "to_top": 1,
+   "to_bottom": 0
+  },
+  {
+   "id": "C34",
+   "kind": "competence",
+   "domain": "tennis",
+   "target": "B",
+   "direction": "L->H",
+   "old": 2.0,
+   "new": 7.7,
+   "old_level": "low",
+   "new_level": "high",
+   "valid": true,
+   "tie": false,
+   "kendall": 3,
+   "footrule": 6,
+   "gap_cv": 0.693,
+   "gaps": [
+    4.9,
+    0.34,
+    0.78,
+    2.72,
+    3.76
+   ],
+   "base_gaps": [
+    0.34,
+    2.74,
+    2.6,
+    1.92,
+    1.94
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 3.9,
+     "rev": 9.6,
+     "base_rank": 6,
+     "rev_rank": 5,
+     "affected": true
+    },
+    {
+     "team": "A+C",
+     "base": 13.44,
+     "rev": 13.44,
+     "base_rank": 1,
+     "rev_rank": 2,
+     "affected": false
+    },
+    {
+     "team": "A+D",
+     "base": 5.84,
+     "rev": 5.84,
+     "base_rank": 5,
+     "rev_rank": 6,
+     "affected": false
+    },
+    {
+     "team": "B+C",
+     "base": 7.76,
+     "rev": 12.32,
+     "base_rank": 4,
+     "rev_rank": 4,
+     "affected": true
+    },
+    {
+     "team": "B+D",
+     "base": 10.36,
+     "rev": 18.34,
+     "base_rank": 3,
+     "rev_rank": 1,
+     "affected": true
+    },
+    {
+     "team": "C+D",
+     "base": 13.1,
+     "rev": 13.1,
+     "base_rank": 2,
+     "rev_rank": 3,
+     "affected": false
+    }
+   ],
+   "to_extreme": [
+    "B+D"
+   ],
+   "robust_obs": 1,
+   "robust_design": 2,
+   "breakpoints": [
+    8.675
+   ],
+   "domain_value": true,
+   "to_top": 1,
+   "to_bottom": 0
+  },
+  {
+   "id": "C35",
+   "kind": "competence",
+   "domain": "tennis",
+   "target": "B",
+   "direction": "L->H",
+   "old": 2.0,
+   "new": 8.2,
+   "old_level": "low",
+   "new_level": "high",
+   "valid": true,
+   "tie": false,
+   "kendall": 3,
+   "footrule": 6,
+   "gap_cv": 0.791,
+   "gaps": [
+    5.6,
+    0.34,
+    0.38,
+    2.62,
+    4.26
+   ],
+   "base_gaps": [
+    0.34,
+    2.74,
+    2.6,
+    1.92,
+    1.94
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 3.9,
+     "rev": 10.1,
+     "base_rank": 6,
+     "rev_rank": 5,
+     "affected": true
+    },
+    {
+     "team": "A+C",
+     "base": 13.44,
+     "rev": 13.44,
+     "base_rank": 1,
+     "rev_rank": 2,
+     "affected": false
+    },
+    {
+     "team": "A+D",
+     "base": 5.84,
+     "rev": 5.84,
+     "base_rank": 5,
+     "rev_rank": 6,
+     "affected": false
+    },
+    {
+     "team": "B+C",
+     "base": 7.76,
+     "rev": 12.72,
+     "base_rank": 4,
+     "rev_rank": 4,
+     "affected": true
+    },
+    {
+     "team": "B+D",
+     "base": 10.36,
+     "rev": 19.04,
+     "base_rank": 3,
+     "rev_rank": 1,
+     "affected": true
+    },
+    {
+     "team": "C+D",
+     "base": 13.1,
+     "rev": 13.1,
+     "base_rank": 2,
+     "rev_rank": 3,
+     "affected": false
+    }
+   ],
+   "to_extreme": [
+    "B+D"
+   ],
+   "robust_obs": 1,
+   "robust_design": 2,
+   "breakpoints": [
+    8.675
+   ],
+   "domain_value": false,
+   "to_top": 1,
+   "to_bottom": 0
+  },
+  {
+   "id": "C36",
+   "kind": "competence",
+   "domain": "tennis",
+   "target": "B",
+   "direction": "L->H",
+   "old": 2.0,
+   "new": 8.5,
+   "old_level": "low",
+   "new_level": "high",
+   "valid": true,
+   "tie": false,
+   "kendall": 3,
+   "footrule": 6,
+   "gap_cv": 0.847,
+   "gaps": [
+    6.02,
+    0.34,
+    0.14,
+    2.56,
+    4.56
+   ],
+   "base_gaps": [
+    0.34,
+    2.74,
+    2.6,
+    1.92,
+    1.94
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 3.9,
+     "rev": 10.4,
+     "base_rank": 6,
+     "rev_rank": 5,
+     "affected": true
+    },
+    {
+     "team": "A+C",
+     "base": 13.44,
+     "rev": 13.44,
+     "base_rank": 1,
+     "rev_rank": 2,
+     "affected": false
+    },
+    {
+     "team": "A+D",
+     "base": 5.84,
+     "rev": 5.84,
+     "base_rank": 5,
+     "rev_rank": 6,
+     "affected": false
+    },
+    {
+     "team": "B+C",
+     "base": 7.76,
+     "rev": 12.96,
+     "base_rank": 4,
+     "rev_rank": 4,
+     "affected": true
+    },
+    {
+     "team": "B+D",
+     "base": 10.36,
+     "rev": 19.46,
+     "base_rank": 3,
+     "rev_rank": 1,
+     "affected": true
+    },
+    {
+     "team": "C+D",
+     "base": 13.1,
+     "rev": 13.1,
+     "base_rank": 2,
+     "rev_rank": 3,
+     "affected": false
+    }
+   ],
+   "to_extreme": [
+    "B+D"
+   ],
+   "robust_obs": 1,
+   "robust_design": 2,
+   "breakpoints": [
+    8.675
+   ],
+   "domain_value": false,
+   "to_top": 1,
+   "to_bottom": 0
+  },
+  {
+   "id": "C37",
+   "kind": "competence",
+   "domain": "tennis",
+   "target": "C",
+   "direction": "H->L",
+   "old": 7.7,
+   "new": 1.9,
+   "old_level": "high",
+   "new_level": "low",
+   "valid": true,
+   "tie": false,
+   "kendall": 6,
+   "footrule": 10,
+   "gap_cv": 0.61,
+   "gaps": [
+    3.06,
+    1.46,
+    0.52,
+    1.42,
+    0.78
+   ],
+   "base_gaps": [
+    0.34,
+    2.74,
+    2.6,
+    1.92,
+    1.94
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 3.9,
+     "rev": 3.9,
+     "base_rank": 6,
+     "rev_rank": 5,
+     "affected": false
+    },
+    {
+     "team": "A+C",
+     "base": 13.44,
+     "rev": 5.32,
+     "base_rank": 1,
+     "rev_rank": 4,
+     "affected": true
+    },
+    {
+     "team": "A+D",
+     "base": 5.84,
+     "rev": 5.84,
+     "base_rank": 5,
+     "rev_rank": 3,
+     "affected": false
+    },
+    {
+     "team": "B+C",
+     "base": 7.76,
+     "rev": 3.12,
+     "base_rank": 4,
+     "rev_rank": 6,
+     "affected": true
+    },
+    {
+     "team": "B+D",
+     "base": 10.36,
+     "rev": 10.36,
+     "base_rank": 3,
+     "rev_rank": 1,
+     "affected": false
+    },
+    {
+     "team": "C+D",
+     "base": 13.1,
+     "rev": 7.3,
+     "base_rank": 2,
+     "rev_rank": 2,
+     "affected": true
+    }
+   ],
+   "to_extreme": [
+    "B+C"
+   ],
+   "robust_obs": 1,
+   "robust_design": 3,
+   "breakpoints": [
+    2.2714,
+    2.875
+   ],
+   "domain_value": true,
+   "to_top": 0,
+   "to_bottom": 1
+  },
+  {
+   "id": "C38",
+   "kind": "competence",
+   "domain": "tennis",
+   "target": "C",
+   "direction": "H->L",
+   "old": 7.7,
+   "new": 2.0,
+   "old_level": "high",
+   "new_level": "low",
+   "valid": true,
+   "tie": false,
+   "kendall": 6,
+   "footrule": 10,
+   "gap_cv": 0.625,
+   "gaps": [
+    2.96,
+    1.56,
+    0.38,
+    1.56,
+    0.7
+   ],
+   "base_gaps": [
+    0.34,
+    2.74,
+    2.6,
+    1.92,
+    1.94
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 3.9,
+     "rev": 3.9,
+     "base_rank": 6,
+     "rev_rank": 5,
+     "affected": false
+    },
+    {
+     "team": "A+C",
+     "base": 13.44,
+     "rev": 5.46,
+     "base_rank": 1,
+     "rev_rank": 4,
+     "affected": true
+    },
+    {
+     "team": "A+D",
+     "base": 5.84,
+     "rev": 5.84,
+     "base_rank": 5,
+     "rev_rank": 3,
+     "affected": false
+    },
+    {
+     "team": "B+C",
+     "base": 7.76,
+     "rev": 3.2,
+     "base_rank": 4,
+     "rev_rank": 6,
+     "affected": true
+    },
+    {
+     "team": "B+D",
+     "base": 10.36,
+     "rev": 10.36,
+     "base_rank": 3,
+     "rev_rank": 1,
+     "affected": false
+    },
+    {
+     "team": "C+D",
+     "base": 13.1,
+     "rev": 7.4,
+     "base_rank": 2,
+     "rev_rank": 2,
+     "affected": true
+    }
+   ],
+   "to_extreme": [
+    "B+C"
+   ],
+   "robust_obs": 1,
+   "robust_design": 3,
+   "breakpoints": [
+    2.2714,
+    2.875
+   ],
+   "domain_value": true,
+   "to_top": 0,
+   "to_bottom": 1
+  },
+  {
+   "id": "C39",
+   "kind": "competence",
+   "domain": "tennis",
+   "target": "C",
+   "direction": "H->L",
+   "old": 7.7,
+   "new": 2.1,
+   "old_level": "high",
+   "new_level": "low",
+   "valid": true,
+   "tie": false,
+   "kendall": 6,
+   "footrule": 10,
+   "gap_cv": 0.65,
+   "gaps": [
+    2.86,
+    1.66,
+    0.24,
+    1.7,
+    0.62
+   ],
+   "base_gaps": [
+    0.34,
+    2.74,
+    2.6,
+    1.92,
+    1.94
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 3.9,
+     "rev": 3.9,
+     "base_rank": 6,
+     "rev_rank": 5,
+     "affected": false
+    },
+    {
+     "team": "A+C",
+     "base": 13.44,
+     "rev": 5.6,
+     "base_rank": 1,
+     "rev_rank": 4,
+     "affected": true
+    },
+    {
+     "team": "A+D",
+     "base": 5.84,
+     "rev": 5.84,
+     "base_rank": 5,
+     "rev_rank": 3,
+     "affected": false
+    },
+    {
+     "team": "B+C",
+     "base": 7.76,
+     "rev": 3.28,
+     "base_rank": 4,
+     "rev_rank": 6,
+     "affected": true
+    },
+    {
+     "team": "B+D",
+     "base": 10.36,
+     "rev": 10.36,
+     "base_rank": 3,
+     "rev_rank": 1,
+     "affected": false
+    },
+    {
+     "team": "C+D",
+     "base": 13.1,
+     "rev": 7.5,
+     "base_rank": 2,
+     "rev_rank": 2,
+     "affected": true
+    }
+   ],
+   "to_extreme": [
+    "B+C"
+   ],
+   "robust_obs": 1,
+   "robust_design": 3,
+   "breakpoints": [
+    2.2714,
+    2.875
+   ],
+   "domain_value": false,
+   "to_top": 0,
+   "to_bottom": 1
+  },
+  {
+   "id": "C40",
+   "kind": "competence",
+   "domain": "tennis",
+   "target": "C",
+   "direction": "H->L",
+   "old": 7.7,
+   "new": 2.2,
+   "old_level": "high",
+   "new_level": "low",
+   "valid": true,
+   "tie": false,
+   "kendall": 6,
+   "footrule": 10,
+   "gap_cv": 0.685,
+   "gaps": [
+    2.76,
+    1.76,
+    0.1,
+    1.84,
+    0.54
+   ],
+   "base_gaps": [
+    0.34,
+    2.74,
+    2.6,
+    1.92,
+    1.94
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 3.9,
+     "rev": 3.9,
+     "base_rank": 6,
+     "rev_rank": 5,
+     "affected": false
+    },
+    {
+     "team": "A+C",
+     "base": 13.44,
+     "rev": 5.74,
+     "base_rank": 1,
+     "rev_rank": 4,
+     "affected": true
+    },
+    {
+     "team": "A+D",
+     "base": 5.84,
+     "rev": 5.84,
+     "base_rank": 5,
+     "rev_rank": 3,
+     "affected": false
+    },
+    {
+     "team": "B+C",
+     "base": 7.76,
+     "rev": 3.36,
+     "base_rank": 4,
+     "rev_rank": 6,
+     "affected": true
+    },
+    {
+     "team": "B+D",
+     "base": 10.36,
+     "rev": 10.36,
+     "base_rank": 3,
+     "rev_rank": 1,
+     "affected": false
+    },
+    {
+     "team": "C+D",
+     "base": 13.1,
+     "rev": 7.6,
+     "base_rank": 2,
+     "rev_rank": 2,
+     "affected": true
+    }
+   ],
+   "to_extreme": [
+    "B+C"
+   ],
+   "robust_obs": 1,
+   "robust_design": 3,
+   "breakpoints": [
+    2.2714,
+    2.875
+   ],
+   "domain_value": false,
+   "to_top": 0,
+   "to_bottom": 1
+  },
+  {
+   "id": "S41",
+   "kind": "synergy",
+   "domain": "tennis",
+   "target": "A+C",
+   "direction": "H->L",
+   "old": 1.4,
+   "new": 0.8,
+   "old_level": "high",
+   "new_level": "low",
+   "valid": true,
+   "tie": false,
+   "kendall": 3,
+   "footrule": 6,
+   "gap_cv": 0.515,
+   "gaps": [
+    2.74,
+    2.6,
+    0.08,
+    1.84,
+    1.94
+   ],
+   "base_gaps": [
+    0.34,
+    2.74,
+    2.6,
+    1.92,
+    1.94
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 3.9,
+     "rev": 3.9,
+     "base_rank": 6,
+     "rev_rank": 6,
+     "affected": false
+    },
+    {
+     "team": "A+C",
+     "base": 13.44,
+     "rev": 7.68,
+     "base_rank": 1,
+     "rev_rank": 4,
+     "affected": true
+    },
+    {
+     "team": "A+D",
+     "base": 5.84,
+     "rev": 5.84,
+     "base_rank": 5,
+     "rev_rank": 5,
+     "affected": false
+    },
+    {
+     "team": "B+C",
+     "base": 7.76,
+     "rev": 7.76,
+     "base_rank": 4,
+     "rev_rank": 3,
+     "affected": false
+    },
+    {
+     "team": "B+D",
+     "base": 10.36,
+     "rev": 10.36,
+     "base_rank": 3,
+     "rev_rank": 2,
+     "affected": false
+    },
+    {
+     "team": "C+D",
+     "base": 13.1,
+     "rev": 13.1,
+     "base_rank": 2,
+     "rev_rank": 1,
+     "affected": false
+    }
+   ],
+   "to_extreme": [],
+   "robust_obs": 1,
+   "robust_design": 1,
+   "breakpoints": [],
+   "domain_value": true,
+   "to_top": 0,
+   "to_bottom": 0
+  },
+  {
+   "id": "S42",
+   "kind": "synergy",
+   "domain": "tennis",
+   "target": "A+D",
+   "direction": "L->H",
+   "old": 0.8,
+   "new": 1.4,
+   "old_level": "low",
+   "new_level": "high",
+   "valid": true,
+   "tie": false,
+   "kendall": 1,
+   "footrule": 2,
+   "gap_cv": 0.756,
+   "gaps": [
+    0.34,
+    2.74,
+    0.14,
+    2.46,
+    3.86
+   ],
+   "base_gaps": [
+    0.34,
+    2.74,
+    2.6,
+    1.92,
+    1.94
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 3.9,
+     "rev": 3.9,
+     "base_rank": 6,
+     "rev_rank": 6,
+     "affected": false
+    },
+    {
+     "team": "A+C",
+     "base": 13.44,
+     "rev": 13.44,
+     "base_rank": 1,
+     "rev_rank": 1,
+     "affected": false
+    },
+    {
+     "team": "A+D",
+     "base": 5.84,
+     "rev": 10.22,
+     "base_rank": 5,
+     "rev_rank": 4,
+     "affected": true
+    },
+    {
+     "team": "B+C",
+     "base": 7.76,
+     "rev": 7.76,
+     "base_rank": 4,
+     "rev_rank": 5,
+     "affected": false
+    },
+    {
+     "team": "B+D",
+     "base": 10.36,
+     "rev": 10.36,
+     "base_rank": 3,
+     "rev_rank": 3,
+     "affected": false
+    },
+    {
+     "team": "C+D",
+     "base": 13.1,
+     "rev": 13.1,
+     "base_rank": 2,
+     "rev_rank": 2,
+     "affected": false
+    }
+   ],
+   "to_extreme": [],
+   "robust_obs": 1,
+   "robust_design": 1,
+   "breakpoints": [],
+   "domain_value": true,
+   "to_top": 0,
+   "to_bottom": 0
+  },
+  {
+   "id": "S43",
+   "kind": "synergy",
+   "domain": "tennis",
+   "target": "B+C",
+   "direction": "L->H",
+   "old": 0.8,
+   "new": 1.4,
+   "old_level": "low",
+   "new_level": "high",
+   "valid": true,
+   "tie": false,
+   "kendall": 3,
+   "footrule": 6,
+   "gap_cv": 0.836,
+   "gaps": [
+    0.14,
+    0.34,
+    2.74,
+    4.52,
+    1.94
+   ],
+   "base_gaps": [
+    0.34,
+    2.74,
+    2.6,
+    1.92,
+    1.94
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 3.9,
+     "rev": 3.9,
+     "base_rank": 6,
+     "rev_rank": 6,
+     "affected": false
+    },
+    {
+     "team": "A+C",
+     "base": 13.44,
+     "rev": 13.44,
+     "base_rank": 1,
+     "rev_rank": 2,
+     "affected": false
+    },
+    {
+     "team": "A+D",
+     "base": 5.84,
+     "rev": 5.84,
+     "base_rank": 5,
+     "rev_rank": 5,
+     "affected": false
+    },
+    {
+     "team": "B+C",
+     "base": 7.76,
+     "rev": 13.58,
+     "base_rank": 4,
+     "rev_rank": 1,
+     "affected": true
+    },
+    {
+     "team": "B+D",
+     "base": 10.36,
+     "rev": 10.36,
+     "base_rank": 3,
+     "rev_rank": 4,
+     "affected": false
+    },
+    {
+     "team": "C+D",
+     "base": 13.1,
+     "rev": 13.1,
+     "base_rank": 2,
+     "rev_rank": 3,
+     "affected": false
+    }
+   ],
+   "to_extreme": [
+    "B+C"
+   ],
+   "robust_obs": 1,
+   "robust_design": 1,
+   "breakpoints": [],
+   "domain_value": true,
+   "to_top": 1,
+   "to_bottom": 0
+  },
+  {
+   "id": "S44",
+   "kind": "synergy",
+   "domain": "tennis",
+   "target": "B+D",
+   "direction": "H->L",
+   "old": 1.4,
+   "new": 0.8,
+   "old_level": "high",
+   "new_level": "low",
+   "valid": true,
+   "tie": false,
+   "kendall": 1,
+   "footrule": 2,
+   "gap_cv": 0.983,
+   "gaps": [
+    0.34,
+    5.34,
+    1.84,
+    0.08,
+    1.94
+   ],
+   "base_gaps": [
+    0.34,
+    2.74,
+    2.6,
+    1.92,
+    1.94
+   ],
+   "teams": [
+    {
+     "team": "A+B",
+     "base": 3.9,
+     "rev": 3.9,
+     "base_rank": 6,
+     "rev_rank": 6,
+     "affected": false
+    },
+    {
+     "team": "A+C",
+     "base": 13.44,
+     "rev": 13.44,
+     "base_rank": 1,
+     "rev_rank": 1,
+     "affected": false
+    },
+    {
+     "team": "A+D",
+     "base": 5.84,
+     "rev": 5.84,
+     "base_rank": 5,
+     "rev_rank": 5,
+     "affected": false
+    },
+    {
+     "team": "B+C",
+     "base": 7.76,
+     "rev": 7.76,
+     "base_rank": 4,
+     "rev_rank": 3,
+     "affected": false
+    },
+    {
+     "team": "B+D",
+     "base": 10.36,
+     "rev": 5.92,
+     "base_rank": 3,
+     "rev_rank": 4,
+     "affected": true
+    },
+    {
+     "team": "C+D",
+     "base": 13.1,
+     "rev": 13.1,
+     "base_rank": 2,
+     "rev_rank": 2,
+     "affected": false
+    }
+   ],
+   "to_extreme": [],
+   "robust_obs": 1,
+   "robust_design": 1,
+   "breakpoints": [],
+   "domain_value": true,
+   "to_top": 0,
+   "to_bottom": 0
+  }
+ ],
+ "sets": {
+  "P1_distance_matched": [
+   {
+    "rank": 1,
+    "cost": 37.886,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 2.167
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C20",
+      "syn": "S27",
+      "dk": 2,
+      "gap_mismatch": 1.88,
+      "gap_mismatch_rel": 0.875,
+      "cv": 1.086,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 10.086
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C33",
+      "syn": "S43",
+      "dk": 0,
+      "gap_mismatch": 1.932,
+      "gap_mismatch_rel": 0.882,
+      "cv": 0.745,
+      "extreme": 2,
+      "nonrobust": 1,
+      "cost": 4.509
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C12",
+      "syn": "S14",
+      "dk": 0,
+      "gap_mismatch": 1.748,
+      "gap_mismatch_rel": 0.638,
+      "cv": 0.41,
+      "extreme": 2,
+      "nonrobust": 0,
+      "cost": 3.187
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C19",
+      "syn": "S28",
+      "dk": 2,
+      "gap_mismatch": 2.24,
+      "gap_mismatch_rel": 1.363,
+      "cv": 0.915,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 10.14
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C34",
+      "syn": "S41",
+      "dk": 0,
+      "gap_mismatch": 1.564,
+      "gap_mismatch_rel": 0.721,
+      "cv": 0.604,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 3.296
+     }
+    ],
+    "sum_dk": 4,
+    "mean_gap_mismatch": 1.728,
+    "mean_gap_cv": 0.725,
+    "to_top": 6,
+    "to_bottom": 1,
+    "n_nonrobust_observed": 0,
+    "n_nonrobust_design": 4,
+    "repeated_comp_targets": 2
+   },
+   {
+    "rank": 2,
+    "cost": 37.886,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 2.167
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C19",
+      "syn": "S28",
+      "dk": 2,
+      "gap_mismatch": 2.24,
+      "gap_mismatch_rel": 1.363,
+      "cv": 0.915,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 10.14
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C34",
+      "syn": "S41",
+      "dk": 0,
+      "gap_mismatch": 1.564,
+      "gap_mismatch_rel": 0.721,
+      "cv": 0.604,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 3.296
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C12",
+      "syn": "S14",
+      "dk": 0,
+      "gap_mismatch": 1.748,
+      "gap_mismatch_rel": 0.638,
+      "cv": 0.41,
+      "extreme": 2,
+      "nonrobust": 0,
+      "cost": 3.187
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C20",
+      "syn": "S27",
+      "dk": 2,
+      "gap_mismatch": 1.88,
+      "gap_mismatch_rel": 0.875,
+      "cv": 1.086,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 10.086
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C33",
+      "syn": "S43",
+      "dk": 0,
+      "gap_mismatch": 1.932,
+      "gap_mismatch_rel": 0.882,
+      "cv": 0.745,
+      "extreme": 2,
+      "nonrobust": 1,
+      "cost": 4.509
+     }
+    ],
+    "sum_dk": 4,
+    "mean_gap_mismatch": 1.728,
+    "mean_gap_cv": 0.725,
+    "to_top": 6,
+    "to_bottom": 1,
+    "n_nonrobust_observed": 0,
+    "n_nonrobust_design": 4,
+    "repeated_comp_targets": 2
+   },
+   {
+    "rank": 3,
+    "cost": 37.886,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C12",
+      "syn": "S14",
+      "dk": 0,
+      "gap_mismatch": 1.748,
+      "gap_mismatch_rel": 0.638,
+      "cv": 0.41,
+      "extreme": 2,
+      "nonrobust": 0,
+      "cost": 3.187
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C20",
+      "syn": "S27",
+      "dk": 2,
+      "gap_mismatch": 1.88,
+      "gap_mismatch_rel": 0.875,
+      "cv": 1.086,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 10.086
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C33",
+      "syn": "S43",
+      "dk": 0,
+      "gap_mismatch": 1.932,
+      "gap_mismatch_rel": 0.882,
+      "cv": 0.745,
+      "extreme": 2,
+      "nonrobust": 1,
+      "cost": 4.509
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 2.167
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C19",
+      "syn": "S28",
+      "dk": 2,
+      "gap_mismatch": 2.24,
+      "gap_mismatch_rel": 1.363,
+      "cv": 0.915,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 10.14
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C34",
+      "syn": "S41",
+      "dk": 0,
+      "gap_mismatch": 1.564,
+      "gap_mismatch_rel": 0.721,
+      "cv": 0.604,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 3.296
+     }
+    ],
+    "sum_dk": 4,
+    "mean_gap_mismatch": 1.728,
+    "mean_gap_cv": 0.725,
+    "to_top": 6,
+    "to_bottom": 1,
+    "n_nonrobust_observed": 0,
+    "n_nonrobust_design": 4,
+    "repeated_comp_targets": 2
+   },
+   {
+    "rank": 4,
+    "cost": 37.886,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C12",
+      "syn": "S14",
+      "dk": 0,
+      "gap_mismatch": 1.748,
+      "gap_mismatch_rel": 0.638,
+      "cv": 0.41,
+      "extreme": 2,
+      "nonrobust": 0,
+      "cost": 3.187
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C19",
+      "syn": "S28",
+      "dk": 2,
+      "gap_mismatch": 2.24,
+      "gap_mismatch_rel": 1.363,
+      "cv": 0.915,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 10.14
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C34",
+      "syn": "S41",
+      "dk": 0,
+      "gap_mismatch": 1.564,
+      "gap_mismatch_rel": 0.721,
+      "cv": 0.604,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 3.296
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 2.167
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C20",
+      "syn": "S27",
+      "dk": 2,
+      "gap_mismatch": 1.88,
+      "gap_mismatch_rel": 0.875,
+      "cv": 1.086,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 10.086
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C33",
+      "syn": "S43",
+      "dk": 0,
+      "gap_mismatch": 1.932,
+      "gap_mismatch_rel": 0.882,
+      "cv": 0.745,
+      "extreme": 2,
+      "nonrobust": 1,
+      "cost": 4.509
+     }
+    ],
+    "sum_dk": 4,
+    "mean_gap_mismatch": 1.728,
+    "mean_gap_cv": 0.725,
+    "to_top": 6,
+    "to_bottom": 1,
+    "n_nonrobust_observed": 0,
+    "n_nonrobust_design": 4,
+    "repeated_comp_targets": 2
+   },
+   {
+    "rank": 5,
+    "cost": 37.887,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 2.167
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C20",
+      "syn": "S27",
+      "dk": 2,
+      "gap_mismatch": 1.88,
+      "gap_mismatch_rel": 0.875,
+      "cv": 1.086,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 10.086
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C33",
+      "syn": "S43",
+      "dk": 0,
+      "gap_mismatch": 1.932,
+      "gap_mismatch_rel": 0.882,
+      "cv": 0.745,
+      "extreme": 2,
+      "nonrobust": 1,
+      "cost": 4.509
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C12",
+      "syn": "S14",
+      "dk": 0,
+      "gap_mismatch": 1.748,
+      "gap_mismatch_rel": 0.638,
+      "cv": 0.41,
+      "extreme": 2,
+      "nonrobust": 0,
+      "cost": 3.187
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C18",
+      "syn": "S28",
+      "dk": 2,
+      "gap_mismatch": 2.24,
+      "gap_mismatch_rel": 1.363,
+      "cv": 0.917,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 10.142
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C34",
+      "syn": "S41",
+      "dk": 0,
+      "gap_mismatch": 1.564,
+      "gap_mismatch_rel": 0.721,
+      "cv": 0.604,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 3.296
+     }
+    ],
+    "sum_dk": 4,
+    "mean_gap_mismatch": 1.728,
+    "mean_gap_cv": 0.725,
+    "to_top": 6,
+    "to_bottom": 1,
+    "n_nonrobust_observed": 0,
+    "n_nonrobust_design": 4,
+    "repeated_comp_targets": 2
+   },
+   {
+    "rank": 6,
+    "cost": 37.887,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 2.167
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C18",
+      "syn": "S28",
+      "dk": 2,
+      "gap_mismatch": 2.24,
+      "gap_mismatch_rel": 1.363,
+      "cv": 0.917,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 10.142
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C34",
+      "syn": "S41",
+      "dk": 0,
+      "gap_mismatch": 1.564,
+      "gap_mismatch_rel": 0.721,
+      "cv": 0.604,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 3.296
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C12",
+      "syn": "S14",
+      "dk": 0,
+      "gap_mismatch": 1.748,
+      "gap_mismatch_rel": 0.638,
+      "cv": 0.41,
+      "extreme": 2,
+      "nonrobust": 0,
+      "cost": 3.187
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C20",
+      "syn": "S27",
+      "dk": 2,
+      "gap_mismatch": 1.88,
+      "gap_mismatch_rel": 0.875,
+      "cv": 1.086,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 10.086
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C33",
+      "syn": "S43",
+      "dk": 0,
+      "gap_mismatch": 1.932,
+      "gap_mismatch_rel": 0.882,
+      "cv": 0.745,
+      "extreme": 2,
+      "nonrobust": 1,
+      "cost": 4.509
+     }
+    ],
+    "sum_dk": 4,
+    "mean_gap_mismatch": 1.728,
+    "mean_gap_cv": 0.725,
+    "to_top": 6,
+    "to_bottom": 1,
+    "n_nonrobust_observed": 0,
+    "n_nonrobust_design": 4,
+    "repeated_comp_targets": 2
+   },
+   {
+    "rank": 7,
+    "cost": 37.887,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C12",
+      "syn": "S14",
+      "dk": 0,
+      "gap_mismatch": 1.748,
+      "gap_mismatch_rel": 0.638,
+      "cv": 0.41,
+      "extreme": 2,
+      "nonrobust": 0,
+      "cost": 3.187
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C20",
+      "syn": "S27",
+      "dk": 2,
+      "gap_mismatch": 1.88,
+      "gap_mismatch_rel": 0.875,
+      "cv": 1.086,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 10.086
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C33",
+      "syn": "S43",
+      "dk": 0,
+      "gap_mismatch": 1.932,
+      "gap_mismatch_rel": 0.882,
+      "cv": 0.745,
+      "extreme": 2,
+      "nonrobust": 1,
+      "cost": 4.509
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 2.167
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C18",
+      "syn": "S28",
+      "dk": 2,
+      "gap_mismatch": 2.24,
+      "gap_mismatch_rel": 1.363,
+      "cv": 0.917,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 10.142
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C34",
+      "syn": "S41",
+      "dk": 0,
+      "gap_mismatch": 1.564,
+      "gap_mismatch_rel": 0.721,
+      "cv": 0.604,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 3.296
+     }
+    ],
+    "sum_dk": 4,
+    "mean_gap_mismatch": 1.728,
+    "mean_gap_cv": 0.725,
+    "to_top": 6,
+    "to_bottom": 1,
+    "n_nonrobust_observed": 0,
+    "n_nonrobust_design": 4,
+    "repeated_comp_targets": 2
+   },
+   {
+    "rank": 8,
+    "cost": 37.887,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C12",
+      "syn": "S14",
+      "dk": 0,
+      "gap_mismatch": 1.748,
+      "gap_mismatch_rel": 0.638,
+      "cv": 0.41,
+      "extreme": 2,
+      "nonrobust": 0,
+      "cost": 3.187
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C18",
+      "syn": "S28",
+      "dk": 2,
+      "gap_mismatch": 2.24,
+      "gap_mismatch_rel": 1.363,
+      "cv": 0.917,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 10.142
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C34",
+      "syn": "S41",
+      "dk": 0,
+      "gap_mismatch": 1.564,
+      "gap_mismatch_rel": 0.721,
+      "cv": 0.604,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 3.296
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 2.167
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C20",
+      "syn": "S27",
+      "dk": 2,
+      "gap_mismatch": 1.88,
+      "gap_mismatch_rel": 0.875,
+      "cv": 1.086,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 10.086
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C33",
+      "syn": "S43",
+      "dk": 0,
+      "gap_mismatch": 1.932,
+      "gap_mismatch_rel": 0.882,
+      "cv": 0.745,
+      "extreme": 2,
+      "nonrobust": 1,
+      "cost": 4.509
+     }
+    ],
+    "sum_dk": 4,
+    "mean_gap_mismatch": 1.728,
+    "mean_gap_cv": 0.725,
+    "to_top": 6,
+    "to_bottom": 1,
+    "n_nonrobust_observed": 0,
+    "n_nonrobust_design": 4,
+    "repeated_comp_targets": 2
+   },
+   {
+    "rank": 9,
+    "cost": 37.901,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 2.167
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C19",
+      "syn": "S27",
+      "dk": 2,
+      "gap_mismatch": 1.896,
+      "gap_mismatch_rel": 0.883,
+      "cv": 1.086,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 10.102
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C33",
+      "syn": "S43",
+      "dk": 0,
+      "gap_mismatch": 1.932,
+      "gap_mismatch_rel": 0.882,
+      "cv": 0.745,
+      "extreme": 2,
+      "nonrobust": 1,
+      "cost": 4.509
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C12",
+      "syn": "S14",
+      "dk": 0,
+      "gap_mismatch": 1.748,
+      "gap_mismatch_rel": 0.638,
+      "cv": 0.41,
+      "extreme": 2,
+      "nonrobust": 0,
+      "cost": 3.187
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C20",
+      "syn": "S28",
+      "dk": 2,
+      "gap_mismatch": 2.24,
+      "gap_mismatch_rel": 1.363,
+      "cv": 0.914,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 10.139
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C34",
+      "syn": "S41",
+      "dk": 0,
+      "gap_mismatch": 1.564,
+      "gap_mismatch_rel": 0.721,
+      "cv": 0.604,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 3.296
+     }
+    ],
+    "sum_dk": 4,
+    "mean_gap_mismatch": 1.731,
+    "mean_gap_cv": 0.725,
+    "to_top": 6,
+    "to_bottom": 1,
+    "n_nonrobust_observed": 0,
+    "n_nonrobust_design": 4,
+    "repeated_comp_targets": 2
+   },
+   {
+    "rank": 10,
+    "cost": 37.901,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 2.167
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C20",
+      "syn": "S28",
+      "dk": 2,
+      "gap_mismatch": 2.24,
+      "gap_mismatch_rel": 1.363,
+      "cv": 0.914,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 10.139
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C34",
+      "syn": "S41",
+      "dk": 0,
+      "gap_mismatch": 1.564,
+      "gap_mismatch_rel": 0.721,
+      "cv": 0.604,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 3.296
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C12",
+      "syn": "S14",
+      "dk": 0,
+      "gap_mismatch": 1.748,
+      "gap_mismatch_rel": 0.638,
+      "cv": 0.41,
+      "extreme": 2,
+      "nonrobust": 0,
+      "cost": 3.187
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C19",
+      "syn": "S27",
+      "dk": 2,
+      "gap_mismatch": 1.896,
+      "gap_mismatch_rel": 0.883,
+      "cv": 1.086,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 10.102
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C33",
+      "syn": "S43",
+      "dk": 0,
+      "gap_mismatch": 1.932,
+      "gap_mismatch_rel": 0.882,
+      "cv": 0.745,
+      "extreme": 2,
+      "nonrobust": 1,
+      "cost": 4.509
+     }
+    ],
+    "sum_dk": 4,
+    "mean_gap_mismatch": 1.731,
+    "mean_gap_cv": 0.725,
+    "to_top": 6,
+    "to_bottom": 1,
+    "n_nonrobust_observed": 0,
+    "n_nonrobust_design": 4,
+    "repeated_comp_targets": 2
+   }
+  ],
+  "P2_fewer_extremes": [
+   {
+    "rank": 1,
+    "cost": 121.91,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C01",
+      "syn": "S15",
+      "dk": 5,
+      "gap_mismatch": 1.636,
+      "gap_mismatch_rel": 0.855,
+      "cv": 0.934,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 18.144
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C20",
+      "syn": "S28",
+      "dk": 2,
+      "gap_mismatch": 2.24,
+      "gap_mismatch_rel": 1.363,
+      "cv": 0.914,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 10.139
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C33",
+      "syn": "S41",
+      "dk": 0,
+      "gap_mismatch": 1.508,
+      "gap_mismatch_rel": 0.704,
+      "cv": 0.585,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 22.493
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 21.417
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C19",
+      "syn": "S26",
+      "dk": 4,
+      "gap_mismatch": 2.016,
+      "gap_mismatch_rel": 1.306,
+      "cv": 0.937,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 16.048
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C34",
+      "syn": "S42",
+      "dk": 2,
+      "gap_mismatch": 1.592,
+      "gap_mismatch_rel": 0.722,
+      "cv": 0.724,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 28.669
+     }
+    ],
+    "sum_dk": 13,
+    "mean_gap_mismatch": 1.666,
+    "mean_gap_cv": 0.78,
+    "to_top": 3,
+    "to_bottom": 0,
+    "n_nonrobust_observed": 0,
+    "n_nonrobust_design": 5,
+    "repeated_comp_targets": 2
+   },
+   {
+    "rank": 2,
+    "cost": 121.91,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C01",
+      "syn": "S15",
+      "dk": 5,
+      "gap_mismatch": 1.636,
+      "gap_mismatch_rel": 0.855,
+      "cv": 0.934,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 18.144
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C19",
+      "syn": "S28",
+      "dk": 2,
+      "gap_mismatch": 2.24,
+      "gap_mismatch_rel": 1.363,
+      "cv": 0.915,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 10.14
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C33",
+      "syn": "S41",
+      "dk": 0,
+      "gap_mismatch": 1.508,
+      "gap_mismatch_rel": 0.704,
+      "cv": 0.585,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 22.493
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 21.417
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C20",
+      "syn": "S26",
+      "dk": 4,
+      "gap_mismatch": 2.016,
+      "gap_mismatch_rel": 1.306,
+      "cv": 0.936,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 16.047
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C34",
+      "syn": "S42",
+      "dk": 2,
+      "gap_mismatch": 1.592,
+      "gap_mismatch_rel": 0.722,
+      "cv": 0.724,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 28.669
+     }
+    ],
+    "sum_dk": 13,
+    "mean_gap_mismatch": 1.666,
+    "mean_gap_cv": 0.78,
+    "to_top": 3,
+    "to_bottom": 0,
+    "n_nonrobust_observed": 0,
+    "n_nonrobust_design": 5,
+    "repeated_comp_targets": 2
+   },
+   {
+    "rank": 3,
+    "cost": 121.91,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C01",
+      "syn": "S15",
+      "dk": 5,
+      "gap_mismatch": 1.636,
+      "gap_mismatch_rel": 0.855,
+      "cv": 0.934,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 18.144
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C20",
+      "syn": "S26",
+      "dk": 4,
+      "gap_mismatch": 2.016,
+      "gap_mismatch_rel": 1.306,
+      "cv": 0.936,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 16.047
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C34",
+      "syn": "S42",
+      "dk": 2,
+      "gap_mismatch": 1.592,
+      "gap_mismatch_rel": 0.722,
+      "cv": 0.724,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 28.669
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 21.417
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C19",
+      "syn": "S28",
+      "dk": 2,
+      "gap_mismatch": 2.24,
+      "gap_mismatch_rel": 1.363,
+      "cv": 0.915,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 10.14
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C33",
+      "syn": "S41",
+      "dk": 0,
+      "gap_mismatch": 1.508,
+      "gap_mismatch_rel": 0.704,
+      "cv": 0.585,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 22.493
+     }
+    ],
+    "sum_dk": 13,
+    "mean_gap_mismatch": 1.666,
+    "mean_gap_cv": 0.78,
+    "to_top": 3,
+    "to_bottom": 0,
+    "n_nonrobust_observed": 0,
+    "n_nonrobust_design": 5,
+    "repeated_comp_targets": 2
+   },
+   {
+    "rank": 4,
+    "cost": 121.91,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C01",
+      "syn": "S15",
+      "dk": 5,
+      "gap_mismatch": 1.636,
+      "gap_mismatch_rel": 0.855,
+      "cv": 0.934,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 18.144
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C19",
+      "syn": "S26",
+      "dk": 4,
+      "gap_mismatch": 2.016,
+      "gap_mismatch_rel": 1.306,
+      "cv": 0.937,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 16.048
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C34",
+      "syn": "S42",
+      "dk": 2,
+      "gap_mismatch": 1.592,
+      "gap_mismatch_rel": 0.722,
+      "cv": 0.724,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 28.669
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 21.417
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C20",
+      "syn": "S28",
+      "dk": 2,
+      "gap_mismatch": 2.24,
+      "gap_mismatch_rel": 1.363,
+      "cv": 0.914,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 10.139
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C33",
+      "syn": "S41",
+      "dk": 0,
+      "gap_mismatch": 1.508,
+      "gap_mismatch_rel": 0.704,
+      "cv": 0.585,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 22.493
+     }
+    ],
+    "sum_dk": 13,
+    "mean_gap_mismatch": 1.666,
+    "mean_gap_cv": 0.78,
+    "to_top": 3,
+    "to_bottom": 0,
+    "n_nonrobust_observed": 0,
+    "n_nonrobust_design": 5,
+    "repeated_comp_targets": 2
+   },
+   {
+    "rank": 5,
+    "cost": 121.91,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 21.417
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C20",
+      "syn": "S28",
+      "dk": 2,
+      "gap_mismatch": 2.24,
+      "gap_mismatch_rel": 1.363,
+      "cv": 0.914,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 10.139
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C33",
+      "syn": "S41",
+      "dk": 0,
+      "gap_mismatch": 1.508,
+      "gap_mismatch_rel": 0.704,
+      "cv": 0.585,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 22.493
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C01",
+      "syn": "S15",
+      "dk": 5,
+      "gap_mismatch": 1.636,
+      "gap_mismatch_rel": 0.855,
+      "cv": 0.934,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 18.144
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C19",
+      "syn": "S26",
+      "dk": 4,
+      "gap_mismatch": 2.016,
+      "gap_mismatch_rel": 1.306,
+      "cv": 0.937,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 16.048
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C34",
+      "syn": "S42",
+      "dk": 2,
+      "gap_mismatch": 1.592,
+      "gap_mismatch_rel": 0.722,
+      "cv": 0.724,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 28.669
+     }
+    ],
+    "sum_dk": 13,
+    "mean_gap_mismatch": 1.666,
+    "mean_gap_cv": 0.78,
+    "to_top": 3,
+    "to_bottom": 0,
+    "n_nonrobust_observed": 0,
+    "n_nonrobust_design": 5,
+    "repeated_comp_targets": 2
+   },
+   {
+    "rank": 6,
+    "cost": 121.91,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 21.417
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C19",
+      "syn": "S28",
+      "dk": 2,
+      "gap_mismatch": 2.24,
+      "gap_mismatch_rel": 1.363,
+      "cv": 0.915,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 10.14
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C33",
+      "syn": "S41",
+      "dk": 0,
+      "gap_mismatch": 1.508,
+      "gap_mismatch_rel": 0.704,
+      "cv": 0.585,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 22.493
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C01",
+      "syn": "S15",
+      "dk": 5,
+      "gap_mismatch": 1.636,
+      "gap_mismatch_rel": 0.855,
+      "cv": 0.934,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 18.144
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C20",
+      "syn": "S26",
+      "dk": 4,
+      "gap_mismatch": 2.016,
+      "gap_mismatch_rel": 1.306,
+      "cv": 0.936,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 16.047
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C34",
+      "syn": "S42",
+      "dk": 2,
+      "gap_mismatch": 1.592,
+      "gap_mismatch_rel": 0.722,
+      "cv": 0.724,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 28.669
+     }
+    ],
+    "sum_dk": 13,
+    "mean_gap_mismatch": 1.666,
+    "mean_gap_cv": 0.78,
+    "to_top": 3,
+    "to_bottom": 0,
+    "n_nonrobust_observed": 0,
+    "n_nonrobust_design": 5,
+    "repeated_comp_targets": 2
+   },
+   {
+    "rank": 7,
+    "cost": 121.91,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 21.417
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C20",
+      "syn": "S26",
+      "dk": 4,
+      "gap_mismatch": 2.016,
+      "gap_mismatch_rel": 1.306,
+      "cv": 0.936,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 16.047
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C34",
+      "syn": "S42",
+      "dk": 2,
+      "gap_mismatch": 1.592,
+      "gap_mismatch_rel": 0.722,
+      "cv": 0.724,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 28.669
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C01",
+      "syn": "S15",
+      "dk": 5,
+      "gap_mismatch": 1.636,
+      "gap_mismatch_rel": 0.855,
+      "cv": 0.934,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 18.144
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C19",
+      "syn": "S28",
+      "dk": 2,
+      "gap_mismatch": 2.24,
+      "gap_mismatch_rel": 1.363,
+      "cv": 0.915,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 10.14
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C33",
+      "syn": "S41",
+      "dk": 0,
+      "gap_mismatch": 1.508,
+      "gap_mismatch_rel": 0.704,
+      "cv": 0.585,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 22.493
+     }
+    ],
+    "sum_dk": 13,
+    "mean_gap_mismatch": 1.666,
+    "mean_gap_cv": 0.78,
+    "to_top": 3,
+    "to_bottom": 0,
+    "n_nonrobust_observed": 0,
+    "n_nonrobust_design": 5,
+    "repeated_comp_targets": 2
+   },
+   {
+    "rank": 8,
+    "cost": 121.91,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 21.417
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C19",
+      "syn": "S26",
+      "dk": 4,
+      "gap_mismatch": 2.016,
+      "gap_mismatch_rel": 1.306,
+      "cv": 0.937,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 16.048
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C34",
+      "syn": "S42",
+      "dk": 2,
+      "gap_mismatch": 1.592,
+      "gap_mismatch_rel": 0.722,
+      "cv": 0.724,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 28.669
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C01",
+      "syn": "S15",
+      "dk": 5,
+      "gap_mismatch": 1.636,
+      "gap_mismatch_rel": 0.855,
+      "cv": 0.934,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 18.144
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C20",
+      "syn": "S28",
+      "dk": 2,
+      "gap_mismatch": 2.24,
+      "gap_mismatch_rel": 1.363,
+      "cv": 0.914,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 10.139
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C33",
+      "syn": "S41",
+      "dk": 0,
+      "gap_mismatch": 1.508,
+      "gap_mismatch_rel": 0.704,
+      "cv": 0.585,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 22.493
+     }
+    ],
+    "sum_dk": 13,
+    "mean_gap_mismatch": 1.666,
+    "mean_gap_cv": 0.78,
+    "to_top": 3,
+    "to_bottom": 0,
+    "n_nonrobust_observed": 0,
+    "n_nonrobust_design": 5,
+    "repeated_comp_targets": 2
+   },
+   {
+    "rank": 9,
+    "cost": 121.911,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C01",
+      "syn": "S15",
+      "dk": 5,
+      "gap_mismatch": 1.636,
+      "gap_mismatch_rel": 0.855,
+      "cv": 0.934,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 18.144
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C20",
+      "syn": "S28",
+      "dk": 2,
+      "gap_mismatch": 2.24,
+      "gap_mismatch_rel": 1.363,
+      "cv": 0.914,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 10.139
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C33",
+      "syn": "S41",
+      "dk": 0,
+      "gap_mismatch": 1.508,
+      "gap_mismatch_rel": 0.704,
+      "cv": 0.585,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 22.493
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 21.417
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C18",
+      "syn": "S26",
+      "dk": 4,
+      "gap_mismatch": 2.016,
+      "gap_mismatch_rel": 1.306,
+      "cv": 0.938,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 16.049
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C34",
+      "syn": "S42",
+      "dk": 2,
+      "gap_mismatch": 1.592,
+      "gap_mismatch_rel": 0.722,
+      "cv": 0.724,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 28.669
+     }
+    ],
+    "sum_dk": 13,
+    "mean_gap_mismatch": 1.666,
+    "mean_gap_cv": 0.78,
+    "to_top": 3,
+    "to_bottom": 0,
+    "n_nonrobust_observed": 0,
+    "n_nonrobust_design": 5,
+    "repeated_comp_targets": 2
+   },
+   {
+    "rank": 10,
+    "cost": 121.911,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C01",
+      "syn": "S15",
+      "dk": 5,
+      "gap_mismatch": 1.636,
+      "gap_mismatch_rel": 0.855,
+      "cv": 0.934,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 18.144
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C18",
+      "syn": "S28",
+      "dk": 2,
+      "gap_mismatch": 2.24,
+      "gap_mismatch_rel": 1.363,
+      "cv": 0.917,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 10.142
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C33",
+      "syn": "S41",
+      "dk": 0,
+      "gap_mismatch": 1.508,
+      "gap_mismatch_rel": 0.704,
+      "cv": 0.585,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 22.493
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 21.417
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C20",
+      "syn": "S26",
+      "dk": 4,
+      "gap_mismatch": 2.016,
+      "gap_mismatch_rel": 1.306,
+      "cv": 0.936,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 16.047
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C34",
+      "syn": "S42",
+      "dk": 2,
+      "gap_mismatch": 1.592,
+      "gap_mismatch_rel": 0.722,
+      "cv": 0.724,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 28.669
+     }
+    ],
+    "sum_dk": 13,
+    "mean_gap_mismatch": 1.666,
+    "mean_gap_cv": 0.78,
+    "to_top": 3,
+    "to_bottom": 0,
+    "n_nonrobust_observed": 0,
+    "n_nonrobust_design": 5,
+    "repeated_comp_targets": 2
+   }
+  ],
+  "P3_distinct_targets": [
+   {
+    "rank": 1,
+    "cost": 38.088,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 2.167
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C21",
+      "syn": "S26",
+      "dk": 0,
+      "gap_mismatch": 2.288,
+      "gap_mismatch_rel": 1.172,
+      "cv": 0.828,
+      "extreme": 0,
+      "nonrobust": 2,
+      "cost": 5.672
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C33",
+      "syn": "S43",
+      "dk": 0,
+      "gap_mismatch": 1.932,
+      "gap_mismatch_rel": 0.882,
+      "cv": 0.745,
+      "extreme": 2,
+      "nonrobust": 1,
+      "cost": 4.509
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C12",
+      "syn": "S14",
+      "dk": 0,
+      "gap_mismatch": 1.748,
+      "gap_mismatch_rel": 0.638,
+      "cv": 0.41,
+      "extreme": 2,
+      "nonrobust": 0,
+      "cost": 3.187
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C20",
+      "syn": "S28",
+      "dk": 2,
+      "gap_mismatch": 2.24,
+      "gap_mismatch_rel": 1.363,
+      "cv": 0.914,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 10.139
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C40",
+      "syn": "S41",
+      "dk": 3,
+      "gap_mismatch": 0.456,
+      "gap_mismatch_rel": 0.281,
+      "cv": 0.6,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 11.413
+     }
+    ],
+    "sum_dk": 5,
+    "mean_gap_mismatch": 1.611,
+    "mean_gap_cv": 0.681,
+    "to_top": 4,
+    "to_bottom": 2,
+    "n_nonrobust_observed": 1,
+    "n_nonrobust_design": 4,
+    "repeated_comp_targets": 0
+   },
+   {
+    "rank": 2,
+    "cost": 38.088,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 2.167
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C20",
+      "syn": "S28",
+      "dk": 2,
+      "gap_mismatch": 2.24,
+      "gap_mismatch_rel": 1.363,
+      "cv": 0.914,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 10.139
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C40",
+      "syn": "S41",
+      "dk": 3,
+      "gap_mismatch": 0.456,
+      "gap_mismatch_rel": 0.281,
+      "cv": 0.6,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 11.413
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C12",
+      "syn": "S14",
+      "dk": 0,
+      "gap_mismatch": 1.748,
+      "gap_mismatch_rel": 0.638,
+      "cv": 0.41,
+      "extreme": 2,
+      "nonrobust": 0,
+      "cost": 3.187
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C21",
+      "syn": "S26",
+      "dk": 0,
+      "gap_mismatch": 2.288,
+      "gap_mismatch_rel": 1.172,
+      "cv": 0.828,
+      "extreme": 0,
+      "nonrobust": 2,
+      "cost": 5.672
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C33",
+      "syn": "S43",
+      "dk": 0,
+      "gap_mismatch": 1.932,
+      "gap_mismatch_rel": 0.882,
+      "cv": 0.745,
+      "extreme": 2,
+      "nonrobust": 1,
+      "cost": 4.509
+     }
+    ],
+    "sum_dk": 5,
+    "mean_gap_mismatch": 1.611,
+    "mean_gap_cv": 0.681,
+    "to_top": 4,
+    "to_bottom": 2,
+    "n_nonrobust_observed": 1,
+    "n_nonrobust_design": 4,
+    "repeated_comp_targets": 0
+   },
+   {
+    "rank": 3,
+    "cost": 38.088,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C12",
+      "syn": "S14",
+      "dk": 0,
+      "gap_mismatch": 1.748,
+      "gap_mismatch_rel": 0.638,
+      "cv": 0.41,
+      "extreme": 2,
+      "nonrobust": 0,
+      "cost": 3.187
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C21",
+      "syn": "S26",
+      "dk": 0,
+      "gap_mismatch": 2.288,
+      "gap_mismatch_rel": 1.172,
+      "cv": 0.828,
+      "extreme": 0,
+      "nonrobust": 2,
+      "cost": 5.672
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C33",
+      "syn": "S43",
+      "dk": 0,
+      "gap_mismatch": 1.932,
+      "gap_mismatch_rel": 0.882,
+      "cv": 0.745,
+      "extreme": 2,
+      "nonrobust": 1,
+      "cost": 4.509
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 2.167
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C20",
+      "syn": "S28",
+      "dk": 2,
+      "gap_mismatch": 2.24,
+      "gap_mismatch_rel": 1.363,
+      "cv": 0.914,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 10.139
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C40",
+      "syn": "S41",
+      "dk": 3,
+      "gap_mismatch": 0.456,
+      "gap_mismatch_rel": 0.281,
+      "cv": 0.6,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 11.413
+     }
+    ],
+    "sum_dk": 5,
+    "mean_gap_mismatch": 1.611,
+    "mean_gap_cv": 0.681,
+    "to_top": 4,
+    "to_bottom": 2,
+    "n_nonrobust_observed": 1,
+    "n_nonrobust_design": 4,
+    "repeated_comp_targets": 0
+   },
+   {
+    "rank": 4,
+    "cost": 38.088,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C12",
+      "syn": "S14",
+      "dk": 0,
+      "gap_mismatch": 1.748,
+      "gap_mismatch_rel": 0.638,
+      "cv": 0.41,
+      "extreme": 2,
+      "nonrobust": 0,
+      "cost": 3.187
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C20",
+      "syn": "S28",
+      "dk": 2,
+      "gap_mismatch": 2.24,
+      "gap_mismatch_rel": 1.363,
+      "cv": 0.914,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 10.139
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C40",
+      "syn": "S41",
+      "dk": 3,
+      "gap_mismatch": 0.456,
+      "gap_mismatch_rel": 0.281,
+      "cv": 0.6,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 11.413
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 2.167
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C21",
+      "syn": "S26",
+      "dk": 0,
+      "gap_mismatch": 2.288,
+      "gap_mismatch_rel": 1.172,
+      "cv": 0.828,
+      "extreme": 0,
+      "nonrobust": 2,
+      "cost": 5.672
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C33",
+      "syn": "S43",
+      "dk": 0,
+      "gap_mismatch": 1.932,
+      "gap_mismatch_rel": 0.882,
+      "cv": 0.745,
+      "extreme": 2,
+      "nonrobust": 1,
+      "cost": 4.509
+     }
+    ],
+    "sum_dk": 5,
+    "mean_gap_mismatch": 1.611,
+    "mean_gap_cv": 0.681,
+    "to_top": 4,
+    "to_bottom": 2,
+    "n_nonrobust_observed": 1,
+    "n_nonrobust_design": 4,
+    "repeated_comp_targets": 0
+   },
+   {
+    "rank": 5,
+    "cost": 38.089,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 2.167
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C21",
+      "syn": "S26",
+      "dk": 0,
+      "gap_mismatch": 2.288,
+      "gap_mismatch_rel": 1.172,
+      "cv": 0.828,
+      "extreme": 0,
+      "nonrobust": 2,
+      "cost": 5.672
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C33",
+      "syn": "S43",
+      "dk": 0,
+      "gap_mismatch": 1.932,
+      "gap_mismatch_rel": 0.882,
+      "cv": 0.745,
+      "extreme": 2,
+      "nonrobust": 1,
+      "cost": 4.509
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C12",
+      "syn": "S14",
+      "dk": 0,
+      "gap_mismatch": 1.748,
+      "gap_mismatch_rel": 0.638,
+      "cv": 0.41,
+      "extreme": 2,
+      "nonrobust": 0,
+      "cost": 3.187
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C19",
+      "syn": "S28",
+      "dk": 2,
+      "gap_mismatch": 2.24,
+      "gap_mismatch_rel": 1.363,
+      "cv": 0.915,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 10.14
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C40",
+      "syn": "S41",
+      "dk": 3,
+      "gap_mismatch": 0.456,
+      "gap_mismatch_rel": 0.281,
+      "cv": 0.6,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 11.413
+     }
+    ],
+    "sum_dk": 5,
+    "mean_gap_mismatch": 1.611,
+    "mean_gap_cv": 0.681,
+    "to_top": 4,
+    "to_bottom": 2,
+    "n_nonrobust_observed": 1,
+    "n_nonrobust_design": 4,
+    "repeated_comp_targets": 0
+   },
+   {
+    "rank": 6,
+    "cost": 38.089,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 2.167
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C19",
+      "syn": "S28",
+      "dk": 2,
+      "gap_mismatch": 2.24,
+      "gap_mismatch_rel": 1.363,
+      "cv": 0.915,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 10.14
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C40",
+      "syn": "S41",
+      "dk": 3,
+      "gap_mismatch": 0.456,
+      "gap_mismatch_rel": 0.281,
+      "cv": 0.6,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 11.413
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C12",
+      "syn": "S14",
+      "dk": 0,
+      "gap_mismatch": 1.748,
+      "gap_mismatch_rel": 0.638,
+      "cv": 0.41,
+      "extreme": 2,
+      "nonrobust": 0,
+      "cost": 3.187
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C21",
+      "syn": "S26",
+      "dk": 0,
+      "gap_mismatch": 2.288,
+      "gap_mismatch_rel": 1.172,
+      "cv": 0.828,
+      "extreme": 0,
+      "nonrobust": 2,
+      "cost": 5.672
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C33",
+      "syn": "S43",
+      "dk": 0,
+      "gap_mismatch": 1.932,
+      "gap_mismatch_rel": 0.882,
+      "cv": 0.745,
+      "extreme": 2,
+      "nonrobust": 1,
+      "cost": 4.509
+     }
+    ],
+    "sum_dk": 5,
+    "mean_gap_mismatch": 1.611,
+    "mean_gap_cv": 0.681,
+    "to_top": 4,
+    "to_bottom": 2,
+    "n_nonrobust_observed": 1,
+    "n_nonrobust_design": 4,
+    "repeated_comp_targets": 0
+   },
+   {
+    "rank": 7,
+    "cost": 38.089,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C12",
+      "syn": "S14",
+      "dk": 0,
+      "gap_mismatch": 1.748,
+      "gap_mismatch_rel": 0.638,
+      "cv": 0.41,
+      "extreme": 2,
+      "nonrobust": 0,
+      "cost": 3.187
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C21",
+      "syn": "S26",
+      "dk": 0,
+      "gap_mismatch": 2.288,
+      "gap_mismatch_rel": 1.172,
+      "cv": 0.828,
+      "extreme": 0,
+      "nonrobust": 2,
+      "cost": 5.672
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C33",
+      "syn": "S43",
+      "dk": 0,
+      "gap_mismatch": 1.932,
+      "gap_mismatch_rel": 0.882,
+      "cv": 0.745,
+      "extreme": 2,
+      "nonrobust": 1,
+      "cost": 4.509
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 2.167
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C19",
+      "syn": "S28",
+      "dk": 2,
+      "gap_mismatch": 2.24,
+      "gap_mismatch_rel": 1.363,
+      "cv": 0.915,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 10.14
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C40",
+      "syn": "S41",
+      "dk": 3,
+      "gap_mismatch": 0.456,
+      "gap_mismatch_rel": 0.281,
+      "cv": 0.6,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 11.413
+     }
+    ],
+    "sum_dk": 5,
+    "mean_gap_mismatch": 1.611,
+    "mean_gap_cv": 0.681,
+    "to_top": 4,
+    "to_bottom": 2,
+    "n_nonrobust_observed": 1,
+    "n_nonrobust_design": 4,
+    "repeated_comp_targets": 0
+   },
+   {
+    "rank": 8,
+    "cost": 38.089,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C12",
+      "syn": "S14",
+      "dk": 0,
+      "gap_mismatch": 1.748,
+      "gap_mismatch_rel": 0.638,
+      "cv": 0.41,
+      "extreme": 2,
+      "nonrobust": 0,
+      "cost": 3.187
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C19",
+      "syn": "S28",
+      "dk": 2,
+      "gap_mismatch": 2.24,
+      "gap_mismatch_rel": 1.363,
+      "cv": 0.915,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 10.14
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C40",
+      "syn": "S41",
+      "dk": 3,
+      "gap_mismatch": 0.456,
+      "gap_mismatch_rel": 0.281,
+      "cv": 0.6,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 11.413
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 2.167
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C21",
+      "syn": "S26",
+      "dk": 0,
+      "gap_mismatch": 2.288,
+      "gap_mismatch_rel": 1.172,
+      "cv": 0.828,
+      "extreme": 0,
+      "nonrobust": 2,
+      "cost": 5.672
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C33",
+      "syn": "S43",
+      "dk": 0,
+      "gap_mismatch": 1.932,
+      "gap_mismatch_rel": 0.882,
+      "cv": 0.745,
+      "extreme": 2,
+      "nonrobust": 1,
+      "cost": 4.509
+     }
+    ],
+    "sum_dk": 5,
+    "mean_gap_mismatch": 1.611,
+    "mean_gap_cv": 0.681,
+    "to_top": 4,
+    "to_bottom": 2,
+    "n_nonrobust_observed": 1,
+    "n_nonrobust_design": 4,
+    "repeated_comp_targets": 0
+   },
+   {
+    "rank": 9,
+    "cost": 38.091,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 2.167
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C21",
+      "syn": "S26",
+      "dk": 0,
+      "gap_mismatch": 2.288,
+      "gap_mismatch_rel": 1.172,
+      "cv": 0.828,
+      "extreme": 0,
+      "nonrobust": 2,
+      "cost": 5.672
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C33",
+      "syn": "S43",
+      "dk": 0,
+      "gap_mismatch": 1.932,
+      "gap_mismatch_rel": 0.882,
+      "cv": 0.745,
+      "extreme": 2,
+      "nonrobust": 1,
+      "cost": 4.509
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C12",
+      "syn": "S14",
+      "dk": 0,
+      "gap_mismatch": 1.748,
+      "gap_mismatch_rel": 0.638,
+      "cv": 0.41,
+      "extreme": 2,
+      "nonrobust": 0,
+      "cost": 3.187
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C18",
+      "syn": "S28",
+      "dk": 2,
+      "gap_mismatch": 2.24,
+      "gap_mismatch_rel": 1.363,
+      "cv": 0.917,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 10.142
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C40",
+      "syn": "S41",
+      "dk": 3,
+      "gap_mismatch": 0.456,
+      "gap_mismatch_rel": 0.281,
+      "cv": 0.6,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 11.413
+     }
+    ],
+    "sum_dk": 5,
+    "mean_gap_mismatch": 1.611,
+    "mean_gap_cv": 0.681,
+    "to_top": 4,
+    "to_bottom": 2,
+    "n_nonrobust_observed": 1,
+    "n_nonrobust_design": 4,
+    "repeated_comp_targets": 0
+   },
+   {
+    "rank": 10,
+    "cost": 38.091,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 2.167
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C18",
+      "syn": "S28",
+      "dk": 2,
+      "gap_mismatch": 2.24,
+      "gap_mismatch_rel": 1.363,
+      "cv": 0.917,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 10.142
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C40",
+      "syn": "S41",
+      "dk": 3,
+      "gap_mismatch": 0.456,
+      "gap_mismatch_rel": 0.281,
+      "cv": 0.6,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 11.413
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C12",
+      "syn": "S14",
+      "dk": 0,
+      "gap_mismatch": 1.748,
+      "gap_mismatch_rel": 0.638,
+      "cv": 0.41,
+      "extreme": 2,
+      "nonrobust": 0,
+      "cost": 3.187
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C21",
+      "syn": "S26",
+      "dk": 0,
+      "gap_mismatch": 2.288,
+      "gap_mismatch_rel": 1.172,
+      "cv": 0.828,
+      "extreme": 0,
+      "nonrobust": 2,
+      "cost": 5.672
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C33",
+      "syn": "S43",
+      "dk": 0,
+      "gap_mismatch": 1.932,
+      "gap_mismatch_rel": 0.882,
+      "cv": 0.745,
+      "extreme": 2,
+      "nonrobust": 1,
+      "cost": 4.509
+     }
+    ],
+    "sum_dk": 5,
+    "mean_gap_mismatch": 1.611,
+    "mean_gap_cv": 0.681,
+    "to_top": 4,
+    "to_bottom": 2,
+    "n_nonrobust_observed": 1,
+    "n_nonrobust_design": 4,
+    "repeated_comp_targets": 0
+   }
+  ],
+  "P4_mixed_direction_blocks": [
+   {
+    "rank": 1,
+    "cost": 49.514,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 2.167
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C20",
+      "syn": "S27",
+      "dk": 2,
+      "gap_mismatch": 1.88,
+      "gap_mismatch_rel": 0.875,
+      "cv": 1.086,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 10.086
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C34",
+      "syn": "S41",
+      "dk": 0,
+      "gap_mismatch": 1.564,
+      "gap_mismatch_rel": 0.721,
+      "cv": 0.604,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 3.296
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C12",
+      "syn": "S14",
+      "dk": 0,
+      "gap_mismatch": 1.748,
+      "gap_mismatch_rel": 0.638,
+      "cv": 0.41,
+      "extreme": 2,
+      "nonrobust": 0,
+      "cost": 3.187
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C19",
+      "syn": "S26",
+      "dk": 4,
+      "gap_mismatch": 2.016,
+      "gap_mismatch_rel": 1.306,
+      "cv": 0.937,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 16.048
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C33",
+      "syn": "S44",
+      "dk": 2,
+      "gap_mismatch": 2.896,
+      "gap_mismatch_rel": 1.331,
+      "cv": 0.818,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 10.73
+     }
+    ],
+    "sum_dk": 8,
+    "mean_gap_mismatch": 1.851,
+    "mean_gap_cv": 0.74,
+    "to_top": 5,
+    "to_bottom": 1,
+    "n_nonrobust_observed": 0,
+    "n_nonrobust_design": 4,
+    "repeated_comp_targets": 2
+   },
+   {
+    "rank": 2,
+    "cost": 49.514,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 2.167
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C20",
+      "syn": "S27",
+      "dk": 2,
+      "gap_mismatch": 1.88,
+      "gap_mismatch_rel": 0.875,
+      "cv": 1.086,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 10.086
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C33",
+      "syn": "S44",
+      "dk": 2,
+      "gap_mismatch": 2.896,
+      "gap_mismatch_rel": 1.331,
+      "cv": 0.818,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 10.73
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C12",
+      "syn": "S14",
+      "dk": 0,
+      "gap_mismatch": 1.748,
+      "gap_mismatch_rel": 0.638,
+      "cv": 0.41,
+      "extreme": 2,
+      "nonrobust": 0,
+      "cost": 3.187
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C19",
+      "syn": "S26",
+      "dk": 4,
+      "gap_mismatch": 2.016,
+      "gap_mismatch_rel": 1.306,
+      "cv": 0.937,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 16.048
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C34",
+      "syn": "S41",
+      "dk": 0,
+      "gap_mismatch": 1.564,
+      "gap_mismatch_rel": 0.721,
+      "cv": 0.604,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 3.296
+     }
+    ],
+    "sum_dk": 8,
+    "mean_gap_mismatch": 1.851,
+    "mean_gap_cv": 0.74,
+    "to_top": 5,
+    "to_bottom": 1,
+    "n_nonrobust_observed": 0,
+    "n_nonrobust_design": 4,
+    "repeated_comp_targets": 2
+   },
+   {
+    "rank": 3,
+    "cost": 49.514,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 2.167
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C19",
+      "syn": "S26",
+      "dk": 4,
+      "gap_mismatch": 2.016,
+      "gap_mismatch_rel": 1.306,
+      "cv": 0.937,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 16.048
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C34",
+      "syn": "S41",
+      "dk": 0,
+      "gap_mismatch": 1.564,
+      "gap_mismatch_rel": 0.721,
+      "cv": 0.604,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 3.296
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C12",
+      "syn": "S14",
+      "dk": 0,
+      "gap_mismatch": 1.748,
+      "gap_mismatch_rel": 0.638,
+      "cv": 0.41,
+      "extreme": 2,
+      "nonrobust": 0,
+      "cost": 3.187
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C20",
+      "syn": "S27",
+      "dk": 2,
+      "gap_mismatch": 1.88,
+      "gap_mismatch_rel": 0.875,
+      "cv": 1.086,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 10.086
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C33",
+      "syn": "S44",
+      "dk": 2,
+      "gap_mismatch": 2.896,
+      "gap_mismatch_rel": 1.331,
+      "cv": 0.818,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 10.73
+     }
+    ],
+    "sum_dk": 8,
+    "mean_gap_mismatch": 1.851,
+    "mean_gap_cv": 0.74,
+    "to_top": 5,
+    "to_bottom": 1,
+    "n_nonrobust_observed": 0,
+    "n_nonrobust_design": 4,
+    "repeated_comp_targets": 2
+   },
+   {
+    "rank": 4,
+    "cost": 49.514,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 2.167
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C19",
+      "syn": "S26",
+      "dk": 4,
+      "gap_mismatch": 2.016,
+      "gap_mismatch_rel": 1.306,
+      "cv": 0.937,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 16.048
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C33",
+      "syn": "S44",
+      "dk": 2,
+      "gap_mismatch": 2.896,
+      "gap_mismatch_rel": 1.331,
+      "cv": 0.818,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 10.73
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C12",
+      "syn": "S14",
+      "dk": 0,
+      "gap_mismatch": 1.748,
+      "gap_mismatch_rel": 0.638,
+      "cv": 0.41,
+      "extreme": 2,
+      "nonrobust": 0,
+      "cost": 3.187
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C20",
+      "syn": "S27",
+      "dk": 2,
+      "gap_mismatch": 1.88,
+      "gap_mismatch_rel": 0.875,
+      "cv": 1.086,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 10.086
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C34",
+      "syn": "S41",
+      "dk": 0,
+      "gap_mismatch": 1.564,
+      "gap_mismatch_rel": 0.721,
+      "cv": 0.604,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 3.296
+     }
+    ],
+    "sum_dk": 8,
+    "mean_gap_mismatch": 1.851,
+    "mean_gap_cv": 0.74,
+    "to_top": 5,
+    "to_bottom": 1,
+    "n_nonrobust_observed": 0,
+    "n_nonrobust_design": 4,
+    "repeated_comp_targets": 2
+   },
+   {
+    "rank": 5,
+    "cost": 49.514,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C12",
+      "syn": "S14",
+      "dk": 0,
+      "gap_mismatch": 1.748,
+      "gap_mismatch_rel": 0.638,
+      "cv": 0.41,
+      "extreme": 2,
+      "nonrobust": 0,
+      "cost": 3.187
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C20",
+      "syn": "S27",
+      "dk": 2,
+      "gap_mismatch": 1.88,
+      "gap_mismatch_rel": 0.875,
+      "cv": 1.086,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 10.086
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C34",
+      "syn": "S41",
+      "dk": 0,
+      "gap_mismatch": 1.564,
+      "gap_mismatch_rel": 0.721,
+      "cv": 0.604,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 3.296
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 2.167
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C19",
+      "syn": "S26",
+      "dk": 4,
+      "gap_mismatch": 2.016,
+      "gap_mismatch_rel": 1.306,
+      "cv": 0.937,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 16.048
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C33",
+      "syn": "S44",
+      "dk": 2,
+      "gap_mismatch": 2.896,
+      "gap_mismatch_rel": 1.331,
+      "cv": 0.818,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 10.73
+     }
+    ],
+    "sum_dk": 8,
+    "mean_gap_mismatch": 1.851,
+    "mean_gap_cv": 0.74,
+    "to_top": 5,
+    "to_bottom": 1,
+    "n_nonrobust_observed": 0,
+    "n_nonrobust_design": 4,
+    "repeated_comp_targets": 2
+   },
+   {
+    "rank": 6,
+    "cost": 49.514,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C12",
+      "syn": "S14",
+      "dk": 0,
+      "gap_mismatch": 1.748,
+      "gap_mismatch_rel": 0.638,
+      "cv": 0.41,
+      "extreme": 2,
+      "nonrobust": 0,
+      "cost": 3.187
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C20",
+      "syn": "S27",
+      "dk": 2,
+      "gap_mismatch": 1.88,
+      "gap_mismatch_rel": 0.875,
+      "cv": 1.086,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 10.086
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C33",
+      "syn": "S44",
+      "dk": 2,
+      "gap_mismatch": 2.896,
+      "gap_mismatch_rel": 1.331,
+      "cv": 0.818,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 10.73
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 2.167
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C19",
+      "syn": "S26",
+      "dk": 4,
+      "gap_mismatch": 2.016,
+      "gap_mismatch_rel": 1.306,
+      "cv": 0.937,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 16.048
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C34",
+      "syn": "S41",
+      "dk": 0,
+      "gap_mismatch": 1.564,
+      "gap_mismatch_rel": 0.721,
+      "cv": 0.604,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 3.296
+     }
+    ],
+    "sum_dk": 8,
+    "mean_gap_mismatch": 1.851,
+    "mean_gap_cv": 0.74,
+    "to_top": 5,
+    "to_bottom": 1,
+    "n_nonrobust_observed": 0,
+    "n_nonrobust_design": 4,
+    "repeated_comp_targets": 2
+   },
+   {
+    "rank": 7,
+    "cost": 49.514,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C12",
+      "syn": "S14",
+      "dk": 0,
+      "gap_mismatch": 1.748,
+      "gap_mismatch_rel": 0.638,
+      "cv": 0.41,
+      "extreme": 2,
+      "nonrobust": 0,
+      "cost": 3.187
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C19",
+      "syn": "S26",
+      "dk": 4,
+      "gap_mismatch": 2.016,
+      "gap_mismatch_rel": 1.306,
+      "cv": 0.937,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 16.048
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C34",
+      "syn": "S41",
+      "dk": 0,
+      "gap_mismatch": 1.564,
+      "gap_mismatch_rel": 0.721,
+      "cv": 0.604,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 3.296
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 2.167
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C20",
+      "syn": "S27",
+      "dk": 2,
+      "gap_mismatch": 1.88,
+      "gap_mismatch_rel": 0.875,
+      "cv": 1.086,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 10.086
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C33",
+      "syn": "S44",
+      "dk": 2,
+      "gap_mismatch": 2.896,
+      "gap_mismatch_rel": 1.331,
+      "cv": 0.818,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 10.73
+     }
+    ],
+    "sum_dk": 8,
+    "mean_gap_mismatch": 1.851,
+    "mean_gap_cv": 0.74,
+    "to_top": 5,
+    "to_bottom": 1,
+    "n_nonrobust_observed": 0,
+    "n_nonrobust_design": 4,
+    "repeated_comp_targets": 2
+   },
+   {
+    "rank": 8,
+    "cost": 49.514,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C12",
+      "syn": "S14",
+      "dk": 0,
+      "gap_mismatch": 1.748,
+      "gap_mismatch_rel": 0.638,
+      "cv": 0.41,
+      "extreme": 2,
+      "nonrobust": 0,
+      "cost": 3.187
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C19",
+      "syn": "S26",
+      "dk": 4,
+      "gap_mismatch": 2.016,
+      "gap_mismatch_rel": 1.306,
+      "cv": 0.937,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 16.048
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C33",
+      "syn": "S44",
+      "dk": 2,
+      "gap_mismatch": 2.896,
+      "gap_mismatch_rel": 1.331,
+      "cv": 0.818,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 10.73
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 2.167
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C20",
+      "syn": "S27",
+      "dk": 2,
+      "gap_mismatch": 1.88,
+      "gap_mismatch_rel": 0.875,
+      "cv": 1.086,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 10.086
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C34",
+      "syn": "S41",
+      "dk": 0,
+      "gap_mismatch": 1.564,
+      "gap_mismatch_rel": 0.721,
+      "cv": 0.604,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 3.296
+     }
+    ],
+    "sum_dk": 8,
+    "mean_gap_mismatch": 1.851,
+    "mean_gap_cv": 0.74,
+    "to_top": 5,
+    "to_bottom": 1,
+    "n_nonrobust_observed": 0,
+    "n_nonrobust_design": 4,
+    "repeated_comp_targets": 2
+   },
+   {
+    "rank": 9,
+    "cost": 49.516,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 2.167
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C20",
+      "syn": "S27",
+      "dk": 2,
+      "gap_mismatch": 1.88,
+      "gap_mismatch_rel": 0.875,
+      "cv": 1.086,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 10.086
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C34",
+      "syn": "S41",
+      "dk": 0,
+      "gap_mismatch": 1.564,
+      "gap_mismatch_rel": 0.721,
+      "cv": 0.604,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 3.296
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C12",
+      "syn": "S14",
+      "dk": 0,
+      "gap_mismatch": 1.748,
+      "gap_mismatch_rel": 0.638,
+      "cv": 0.41,
+      "extreme": 2,
+      "nonrobust": 0,
+      "cost": 3.187
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C18",
+      "syn": "S26",
+      "dk": 4,
+      "gap_mismatch": 2.016,
+      "gap_mismatch_rel": 1.306,
+      "cv": 0.938,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 16.049
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C33",
+      "syn": "S44",
+      "dk": 2,
+      "gap_mismatch": 2.896,
+      "gap_mismatch_rel": 1.331,
+      "cv": 0.818,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 10.73
+     }
+    ],
+    "sum_dk": 8,
+    "mean_gap_mismatch": 1.851,
+    "mean_gap_cv": 0.741,
+    "to_top": 5,
+    "to_bottom": 1,
+    "n_nonrobust_observed": 0,
+    "n_nonrobust_design": 4,
+    "repeated_comp_targets": 2
+   },
+   {
+    "rank": 10,
+    "cost": 49.516,
+    "phase_balanced": true,
+    "blocks": [
+     {
+      "block": 0,
+      "phase": "phase_1",
+      "domain": "cooking",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C05",
+      "syn": "S13",
+      "dk": 0,
+      "gap_mismatch": 1.004,
+      "gap_mismatch_rel": 0.415,
+      "cv": 0.587,
+      "extreme": 1,
+      "nonrobust": 0,
+      "cost": 2.167
+     },
+     {
+      "block": 1,
+      "phase": "phase_2",
+      "domain": "repairing",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C20",
+      "syn": "S27",
+      "dk": 2,
+      "gap_mismatch": 1.88,
+      "gap_mismatch_rel": 0.875,
+      "cv": 1.086,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 10.086
+     },
+     {
+      "block": 2,
+      "phase": "phase_1",
+      "domain": "tennis",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C33",
+      "syn": "S44",
+      "dk": 2,
+      "gap_mismatch": 2.896,
+      "gap_mismatch_rel": 1.331,
+      "cv": 0.818,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 10.73
+     },
+     {
+      "block": 3,
+      "phase": "phase_2",
+      "domain": "cooking",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C12",
+      "syn": "S14",
+      "dk": 0,
+      "gap_mismatch": 1.748,
+      "gap_mismatch_rel": 0.638,
+      "cv": 0.41,
+      "extreme": 2,
+      "nonrobust": 0,
+      "cost": 3.187
+     },
+     {
+      "block": 4,
+      "phase": "phase_1",
+      "domain": "repairing",
+      "order": [
+       "synergy",
+       "competence"
+      ],
+      "comp": "C18",
+      "syn": "S26",
+      "dk": 4,
+      "gap_mismatch": 2.016,
+      "gap_mismatch_rel": 1.306,
+      "cv": 0.938,
+      "extreme": 0,
+      "nonrobust": 1,
+      "cost": 16.049
+     },
+     {
+      "block": 5,
+      "phase": "phase_2",
+      "domain": "tennis",
+      "order": [
+       "competence",
+       "synergy"
+      ],
+      "comp": "C34",
+      "syn": "S41",
+      "dk": 0,
+      "gap_mismatch": 1.564,
+      "gap_mismatch_rel": 0.721,
+      "cv": 0.604,
+      "extreme": 1,
+      "nonrobust": 1,
+      "cost": 3.296
+     }
+    ],
+    "sum_dk": 8,
+    "mean_gap_mismatch": 1.851,
+    "mean_gap_cv": 0.741,
+    "to_top": 5,
+    "to_bottom": 1,
+    "n_nonrobust_observed": 0,
+    "n_nonrobust_design": 4,
+    "repeated_comp_targets": 2
+   }
+  ]
+ },
+ "competence": {
+  "A": {
+   "cooking": 8.5,
+   "repairing": 4.6,
+   "tennis": 1.9
+  },
+  "B": {
+   "cooking": 4.8,
+   "repairing": 8.2,
+   "tennis": 2.0
+  },
+  "C": {
+   "cooking": 2.2,
+   "repairing": 5.1,
+   "tennis": 7.7
+  },
+  "D": {
+   "cooking": 7.5,
+   "repairing": 2.1,
+   "tennis": 5.4
+  }
+ },
+ "synergy": {
+  "A+B": 1.0,
+  "A+C": 1.4,
+  "A+D": 0.8,
+  "B+C": 0.8,
+  "B+D": 1.4,
+  "C+D": 1.0
+ },
+ "table_values": {
+  "low": [
+   1.9,
+   2.0,
+   2.1,
+   2.2
+  ],
+  "high": [
+   7.5,
+   7.7,
+   8.2,
+   8.5
+  ]
+ },
+ "blocks": [
+  {
+   "block": 0,
+   "phase": "phase_1",
+   "domain": "cooking",
+   "order": [
+    "competence",
+    "synergy"
+   ]
+  },
+  {
+   "block": 1,
+   "phase": "phase_2",
+   "domain": "repairing",
+   "order": [
+    "competence",
+    "synergy"
+   ]
+  },
+  {
+   "block": 2,
+   "phase": "phase_1",
+   "domain": "tennis",
+   "order": [
+    "synergy",
+    "competence"
+   ]
+  },
+  {
+   "block": 3,
+   "phase": "phase_2",
+   "domain": "cooking",
+   "order": [
+    "synergy",
+    "competence"
+   ]
+  },
+  {
+   "block": 4,
+   "phase": "phase_1",
+   "domain": "repairing",
+   "order": [
+    "synergy",
+    "competence"
+   ]
+  },
+  {
+   "block": 5,
+   "phase": "phase_2",
+   "domain": "tennis",
+   "order": [
+    "competence",
+    "synergy"
+   ]
+  }
+ ]
+}
