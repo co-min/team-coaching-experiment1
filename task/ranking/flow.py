@@ -45,8 +45,8 @@ class RankingResult:
     n_relocations: int = 0
     change_onset_global: Optional[float] = None   # revised 만: 가상 변화 화면이 나타난 시각
     change_rt:     Optional[float] = None         # revised 만: 가상 변화 화면에서 넘어간 rt
-    reset_onset_global: Optional[float] = None    # 2번째 probe 만: "변화 취소" 화면이 나타난 시각
-    reset_rt:      Optional[float] = None         # 2번째 probe 만: "변화 취소" 화면에서 넘어간 rt
+    reset_onset_global: Optional[float] = None    # 2번째 probe 만: "원래 상황으로" 화면이 나타난 시각
+    reset_rt:      Optional[float] = None         # 2번째 probe 만: "원래 상황으로" 화면에서 넘어간 rt
 
     @property
     def aborted(self) -> bool:

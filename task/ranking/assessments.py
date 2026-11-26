@@ -5,7 +5,7 @@ assessments.py
 
     run_block_rankings  블록 끝: 공유 기준(baseline) 팀 점수 순위 1번
                         → probe 1: 가상 변화 안내 → 수정 순위 (기준 순위에서 출발)
-                        → "변화 취소" 안내
+                        → "원래 상황으로" 안내
                         → probe 2: 가상 변화 안내 → 수정 순위 (다시 기준 순위에서 출발)
 
 두 수정 순위는 같은 기준 순위에서 출발하고(1번 수정 결과와 무관), 두 가상 변화는
@@ -268,7 +268,7 @@ def _run_probe(env: RankingEnv, baseline_spec: RankingSpec, probe: Probe, origin
                reset: Optional[Dict]) -> Optional[RankingResult]:
     """probe 하나: 가상 변화 안내 → 수정 순위(original 에서 출발) → 저장.
 
-    reset : 이 probe 앞에 보여 준 "변화 취소" 화면의 결과 (1번째 probe 는 None)
+    reset : 이 probe 앞에 보여 준 "원래 상황으로" 화면의 결과 (1번째 probe 는 None)
     반환   : 수정 순위 결과. 가상 변화 화면에서 Esc 로 중단하면 None
     """
     spec = replace(baseline_spec, ranking_id=f"b{baseline_spec.block_index}_probe{probe.position}_{probe.change.kind}",

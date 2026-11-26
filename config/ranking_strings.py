@@ -66,12 +66,12 @@ _STRINGS: dict[str, dict[str, str]] = {
     "change_continue": {"ko": "[{key}] 키를 눌러 계속", "en": "Press [{key}] to continue"},
 
     # ── between the two probes ───────────────────────────────────────────────
-    "reset_title": {"ko": "변화 취소", "en": "Change cancelled"},
+    "reset_title": {"ko": "원래 상황으로", "en": "Back to the original"},
     "reset_body": {
-        "ko": "앞의 가상 변화는 이제 적용되지 않아요.\n모든 것이 원래대로 돌아갔어요.\n\n"
-              "다음 질문은 처음에 매긴 순위에서 다시 시작해요.",
-        "en": "The previous hypothetical change no longer applies.\nEverything is back to how it was.\n\n"
-              "The next question starts again from your original ranking.",
+        "ko": "방금 상상한 변화는 이제 잊어 주세요.\n모든 것이 처음 그대로예요.\n\n"
+              "다음 질문은 처음에 매긴 순위에서 시작해요.",
+        "en": "Forget the change you just imagined.\nEverything is as it was at the start.\n\n"
+              "The next question begins from your original ranking.",
     },
 
     "level_low":  {"ko": "낮음", "en": "low"},
