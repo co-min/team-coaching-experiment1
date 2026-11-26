@@ -6,8 +6,9 @@ For each requested block (shared-baseline design):
     → hypothetical change 1 → revised ranking 1 (starts from the baseline)
     → "change no longer applies" screen
     → hypothetical change 2 → revised ranking 2 (starts from the baseline again)
-The ranking domain and probe order come from config/ranking.py
-(PERFORMANCE_RANKING_DOMAINS, PROBE_ORDERS), looked up by original block ID.
+The ranking domain, probe order and probe conditions come from config/ranking.py
+(PERFORMANCE_RANKING_DOMAINS, PROBE_ORDERS, PROBE_CONDITIONS = configuration P1),
+looked up by original block ID.
 
 Blocks run in the subject's counterbalance order (config/settings.py BLOCK_ORDERS:
 group A = odd subject ID, group B = even), restricted to --blocks.
@@ -32,10 +33,6 @@ Checks
                               (refuses to start otherwise)
     after the run           : the saved rankings.csv rows follow the schedules and
                               both revisions start from the shared baseline
-
-The probe conditions in _placeholder_conditions below are placeholders — the actual
-candidate schedule is not decided yet. They carry no domain or position; each is
-bound to the block's ranking domain and probe order at run time.
 """
 
 import argparse
@@ -46,15 +43,6 @@ from psychopy import core, monitors, visual
 from config import settings as S
 from config.paths import DATA_DIR
 from recording.stimuli_loader import load_stimuli
-
-
-# Placeholder probe conditions (role codes, original-table scale). Not the experiment's conditions.
-def _placeholder_conditions():
-    from task.ranking.assessments import ProbeCondition
-    return {
-        'competence': ProbeCondition('competence', ('C',), 8.5),     # C's skill in the block's domain → high
-        'synergy':    ProbeCondition('synergy', ('B', 'C'), 1.4),    # B–C teamwork → high
-    }
 
 
 def _resolve_group(subject_id, group_arg):
@@ -199,7 +187,6 @@ def main() -> None:
     print(f"Key backend: {env.source.backend}")
     start_key = 'space'
     names = key_names()
-    conditions = _placeholder_conditions()
 
     try:
         for position, block_index in enumerate(block_order(group)):
@@ -211,7 +198,7 @@ def main() -> None:
                                    f"{', '.join(stim.animal_groups[block_index])}\n\n"
                                    f"(learning trials skipped)\n\n[Space]", advance_key=start_key)
             show_instructions(win, rt("rank_intro_performance", key=names['select']), advance_key=start_key)
-            if run_block_rankings(env, block_index, position, conditions).aborted:
+            if run_block_rankings(env, block_index, position).aborted:
                 return
     finally:
         win.close()

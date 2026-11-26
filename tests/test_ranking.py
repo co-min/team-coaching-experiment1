@@ -15,6 +15,7 @@ import random
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
 from unittest import mock
 
 from psychopy import core, visual
@@ -26,12 +27,13 @@ from recording.stimuli_loader import load_stimuli
 from task.forced_first import attach_forced_first
 from task.ranking import flow
 from task.ranking.assessments import (
-    Probe, ProbeCondition, RankingEnv, _shuffled, block_probes, change_level, run_block_rankings,
+    Probe, ProbeCondition, RankingEnv, _shuffled, block_conditions, block_probes, change_display, change_level,
+    run_block_rankings,
 )
 from task.ranking.inputs import ScriptedSource, action_map
 from task.ranking.items import (
-    Change, RankItem, RankingSpec, _average_ranks, kendall_distance, load_attributes, pair_items, spearman,
-    true_values,
+    Change, RankItem, RankingSpec, _average_ranks, kendall_distance, load_attributes, pair_items, role_map,
+    spearman, true_values,
 )
 from task.ranking.record import build_ranking_record
 from task.ranking.schedule import (
@@ -483,6 +485,129 @@ class TestProbeBinding(unittest.TestCase):
         self.assertEqual(a.competence['C']['cooking'], 2.2)       # synergy probe does not see the competence one
 
 
+# ── P1 probe conditions ───────────────────────────────────────────────────────
+
+# Typed from analysis/counterfactual/results/selected_configuration_p1.csv (not read from it).
+# block: (baseline true order, [(kind, roles, value, original level → shown level,
+#                                Kendall distance, revised true order, min adjacent revised gap), ...])
+P1 = {
+    0: ('B+D>A+C>A+B>A+D>C+D>B+C',
+        [('competence', ('C',), 7.5, 'low', 'high', 3, 'A+C>B+D>C+D>A+B>A+D>B+C', 0.50),
+         ('synergy', ('A', 'C'), 0.8, 'high', 'low', 3, 'B+D>A+B>A+D>C+D>A+C>B+C', 0.50)]),
+    1: ('B+D>A+C>A+B>B+C>C+D>A+D',
+        [('competence', ('B',), 2.2, 'high', 'low', 5, 'A+C>C+D>A+B>B+D>B+C>A+D', 0.18),
+         ('synergy', ('B', 'C'), 1.4, 'low', 'high', 3, 'B+C>B+D>A+C>A+B>C+D>A+D', 0.78)]),
+    2: ('A+C>C+D>B+D>B+C>A+D>A+B',
+        [('synergy', ('B', 'C'), 1.4, 'low', 'high', 3, 'B+C>A+C>C+D>B+D>A+D>A+B', 0.14),
+         ('competence', ('B',), 7.5, 'low', 'high', 3, 'B+D>A+C>C+D>B+C>A+B>A+D', 0.34)]),
+    3: ('B+D>A+C>A+B>A+D>C+D>B+C',
+        [('synergy', ('A', 'D'), 1.4, 'low', 'high', 3, 'A+D>B+D>A+C>A+B>C+D>B+C', 1.68),
+         ('competence', ('D',), 2.2, 'high', 'low', 3, 'A+C>A+B>B+D>A+D>B+C>C+D', 1.20)]),
+    4: ('B+D>A+C>A+B>B+C>C+D>A+D',
+        [('synergy', ('B', 'D'), 0.8, 'high', 'low', 3, 'A+C>A+B>B+C>B+D>C+D>A+D', 0.78),
+         ('competence', ('B',), 2.1, 'high', 'low', 5, 'A+C>C+D>A+B>B+D>B+C>A+D', 0.12)]),
+    5: ('A+C>C+D>B+D>B+C>A+D>A+B',
+        [('competence', ('B',), 7.7, 'low', 'high', 3, 'B+D>A+C>C+D>B+C>A+B>A+D', 0.34),
+         ('synergy', ('A', 'C'), 0.8, 'high', 'low', 3, 'C+D>B+D>B+C>A+C>A+D>A+B', 0.08)]),
+}
+
+
+def _true_order(attrs, block_index, domain):
+    """Ground-truth ranking (item keys, best first) of a block's six teams, and its adjacent gaps."""
+    truth = true_values(attrs, pair_items(STIM.animal_groups[block_index], STIM.char_code), domain)
+    order = sorted(truth, key=lambda key: -truth[key])
+    gaps = [truth[a] - truth[b] for a, b in zip(order, order[1:])]
+    return order, gaps
+
+
+class TestP1Conditions(unittest.TestCase):
+    def test_twelve_conditions_in_probe_order(self):
+        self.assertEqual(len(R.PROBE_CONDITIONS), len(S.BLOCK_PHASES))
+        for block_index, (_, expected) in P1.items():
+            probes = block_probes(block_index, block_conditions(block_index))
+            got = [(p.change.kind, p.change.roles, p.change.value) for p in probes]
+            self.assertEqual(got, [e[:3] for e in expected], block_index)
+            self.assertEqual(tuple(p.change.kind for p in probes), PROBE_ORDERS[block_index])
+            for probe in probes:
+                if probe.change.kind == 'competence':
+                    self.assertEqual(probe.change.domain, SCHEDULE[block_index])
+
+    def test_ground_truth_kendall_and_no_ties(self):
+        for block_index, (baseline, expected) in P1.items():
+            domain = SCHEDULE[block_index]
+            base_order, base_gaps = _true_order(ATTRS, block_index, domain)
+            self.assertEqual('>'.join(base_order), baseline, block_index)
+            self.assertGreater(min(base_gaps), 0, f"block {block_index}: tie in the baseline")
+            for probe, (*_, k, revised, min_gap) in zip(block_probes(block_index, block_conditions(block_index)),
+                                                         expected):
+                label = f"block {block_index} probe {probe.position}"
+                order, gaps = _true_order(ATTRS.with_change(probe.change), block_index, domain)
+                self.assertEqual('>'.join(order), revised, label)
+                self.assertEqual(kendall_distance(base_order, order), k, label)
+                self.assertGreater(min(gaps), 0, f"{label}: tie in the revised ranking")
+                self.assertAlmostEqual(min(gaps), min_gap, places=2, msg=label)
+
+    def test_same_truth_for_every_animal_set(self):
+        # roles, not animals, carry the attributes: each block's truth is the same with any group's animals
+        for block_index, (baseline, _) in P1.items():
+            for group_index in range(len(STIM.animal_groups)):
+                order, _ = _true_order(ATTRS, group_index, SCHEDULE[block_index])
+                self.assertEqual('>'.join(order), baseline)
+
+    def test_only_the_level_is_shown(self):
+        env = SimpleNamespace(stim=STIM)
+        for block_index, (_, expected) in P1.items():
+            group = tuple(STIM.animal_groups[block_index])
+            roles = role_map(group, STIM.char_code)
+            spec = RankingSpec('t', 'counterfactual', block_index, S.BLOCK_PHASES[block_index], group, roles)
+            for probe, (kind, target, value, before, after, *_) in zip(
+                    block_probes(block_index, block_conditions(block_index)), expected):
+                display, level = change_display(env, spec, probe.change)
+                original = (ATTRS.competence[target[0]][SCHEDULE[block_index]] if kind == 'competence'
+                            else ATTRS.synergy[target])
+                self.assertEqual(change_level(STIM, Change(kind, target, original, probe.change.domain))[0], before)
+                self.assertEqual(level, after)
+                self.assertEqual(list(display.animals), [roles[r] for r in target])
+                self.assertNotIn(str(value), display.text)
+                self.assertNotIn(str(original), display.text)
+                self.assertFalse(hasattr(display, 'value'))
+
+    def test_direction_balance(self):
+        directions = {}
+        for block_index, (_, expected) in P1.items():
+            for kind, _, _, before, after, *_ in expected:
+                key = (kind, S.BLOCK_PHASES[block_index])
+                directions.setdefault(key, []).append(f"{before}>{after}")
+        all_directions = sum(directions.values(), [])
+        self.assertEqual((all_directions.count('high>low'), all_directions.count('low>high')), (6, 6))
+        for kind in R.PROBE_KINDS:
+            per_kind = sum((d for (k, _), d in directions.items() if k == kind), [])
+            self.assertEqual(sorted(per_kind), ['high>low'] * 3 + ['low>high'] * 3, kind)
+        for phase in set(S.BLOCK_PHASES):
+            per_phase = sum((d for (_, p), d in directions.items() if p == phase), [])
+            self.assertEqual(sorted(per_phase), ['high>low'] * 3 + ['low>high'] * 3, phase)
+
+    def test_probes_start_from_the_original_attributes(self):
+        original_competence = copy.deepcopy(ATTRS.competence)
+        original_synergy = copy.deepcopy(ATTRS.synergy)
+        for block_index in P1:
+            first, second = block_probes(block_index, block_conditions(block_index))
+            after_first = ATTRS.with_change(first.change)
+            alone = _true_order(ATTRS.with_change(second.change), block_index, SCHEDULE[block_index])[0]
+            stacked = _true_order(after_first.with_change(second.change), block_index, SCHEDULE[block_index])[0]
+            self.assertEqual('>'.join(alone), P1[block_index][1][1][6])
+            self.assertNotEqual(alone, stacked, block_index)     # inheriting probe 1 would change the answer
+        self.assertEqual(ATTRS.competence, original_competence)
+        self.assertEqual(ATTRS.synergy, original_synergy)
+
+    def test_conditions_follow_the_original_block_in_both_groups(self):
+        for group in sorted(S.BLOCK_ORDERS):
+            for position, block_index in enumerate(block_order(group)):
+                self.assertEqual(block_conditions(block_index),
+                                 {kind: ProbeCondition(kind, roles, value)
+                                  for kind, (roles, value) in R.PROBE_CONDITIONS[block_index].items()})
+
+
 # ── screen tests ──────────────────────────────────────────────────────────────
 
 def _script(*keys, t0=0.1, dt=0.05):
@@ -697,6 +822,37 @@ class TestSharedBaselineScreen(ScreenBase):
         self.assertEqual(recs['b1_baseline']['phase'], 'phase_2')
         with open(self.tmp / 'rankings' / 'b0_probe2_synergy.json', encoding='utf-8') as f:
             self.assertEqual(json.load(f)['record']['change_kind'], 'synergy')
+
+
+class TestP1Screen(ScreenBase):
+    def test_all_blocks_group_b_order_with_p1(self):
+        """All six blocks in group B order with the default (P1) conditions. Probe 1 always moves
+        the 2nd team to the top; probe 2 must still start from the untouched baseline."""
+        one_block = [BASELINE_KEYS, CONTINUE, TestSharedBaselineScreen.MOVE_SECOND_TO_TOP,
+                     CONTINUE, CONTINUE, _script('return')]
+        env = self.env(*(one_block * 6), group='B')
+        for position, block_index in enumerate(block_order('B')):
+            out = run_block_rankings(env, block_index, position)
+            self.assertFalse(out.aborted)
+            self.assertNotEqual(out.revised[0].final, out.baseline.final)
+            self.assertEqual(out.revised[1].initial, out.baseline.final)
+
+        rows = self.rows('rankings.csv')
+        self.assertEqual(len(rows), 18)
+        self.assertEqual(_check(rows), [])
+        recs = {r['ranking_id']: r for r in rows}
+        for position, block_index in enumerate(block_order('B')):
+            baseline_row = recs[f"b{block_index}_baseline"]
+            self.assertEqual(baseline_row['presentation_pos'], str(position))
+            self.assertEqual(baseline_row['true_order'].replace('|', '>'), P1[block_index][0])
+            roles = role_map(STIM.animal_groups[block_index], STIM.char_code)
+            for pos, (kind, target, value, _, level, _, revised, _) in enumerate(P1[block_index][1], start=1):
+                row = recs[f"b{block_index}_probe{pos}_{kind}"]
+                self.assertEqual((row['change_roles'], row['change_value'], row['change_level']),
+                                 ('+'.join(target), str(value), level))
+                self.assertEqual(row['change_animals'], '+'.join(roles[r] for r in target))
+                self.assertEqual(row['initial_ranking'], baseline_row['final_ranking'])
+                self.assertEqual(row['true_order'].replace('|', '>'), revised)
 
 
 if __name__ == '__main__':

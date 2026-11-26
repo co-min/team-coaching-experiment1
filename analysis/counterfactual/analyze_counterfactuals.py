@@ -5,8 +5,8 @@ OFFLINE analysis of every possible counterfactual probe (not imported by the tas
 Reads only the original stimulus tables and writes candidate tables for review;
 it does not choose the final 12 probes.
 
-    python -m tools.analyze_counterfactuals                    # → data/analysis/counterfactual/
-    python -m tools.analyze_counterfactuals --out some/dir
+    python -m analysis.counterfactual.analyze_counterfactuals                    # → data/analysis/counterfactual/
+    python -m analysis.counterfactual.analyze_counterfactuals --out some/dir
 
 Output
     counterfactual_candidates.csv    one row per candidate change

@@ -18,10 +18,8 @@ Test-only differences from main.py
     - output: data/test_single_block/block{N}_{session}/sub-{id}/  (never data/sub-{id}/)
     - the ranking runs after the end estimate, which main.py does not do yet
 
-PROBE CONDITIONS ARE PLACEHOLDERS. The real counterfactual probe conditions are not
-decided (see tools/analyze_counterfactuals.py for the candidates). The probes reuse
-tools/preview_ranking._placeholder_conditions — the same competence and synergy change
-for every block — and the run prints which values are still missing.
+The probes use the block's P1 conditions (config/ranking.py PROBE_CONDITIONS, looked up
+by original block ID); the run prints each change with the block's animals and the level shown.
 
 Usage (from the project root)
 -----------------------------
@@ -48,21 +46,22 @@ TEST_DATA_DIR = DATA_DIR / "test_single_block"
 
 # ── probe conditions ─────────────────────────────────────────────────────────
 
-def _probe_condition_report(block_id: int, conditions) -> list:
-    """Lines describing this block's probe slots and what is still undecided for each."""
+def _probe_condition_report(block_id: int, conditions, stim) -> list:
+    """Lines describing this block's probes: the change, the block's animals, the level shown."""
+    from task.ranking.assessments import block_probes, change_level
+    from task.ranking.items import role_map
     from task.ranking.schedule import probe_order, ranking_domain
 
     domain = ranking_domain(block_id)
+    roles = role_map(stim.animal_groups[block_id], stim.char_code)
     lines = [f"Block {block_id} ({S.BLOCK_PHASES[block_id]}), ranking domain {domain}, "
              f"probe order {' > '.join(probe_order(block_id))}"]
-    for position, kind in enumerate(probe_order(block_id), start=1):
-        condition = conditions[kind]
-        if kind == 'competence':
-            target = f"which animal (role) and its new {domain} competence value"
-        else:
-            target = "which pair (roles) and its new synergy value"
-        lines.append(f"  probe {position} {kind:10s} MISSING: {target}; "
-                     f"placeholder used: roles {'+'.join(condition.roles)} → {condition.value}")
+    for probe in block_probes(block_id, conditions):
+        change = probe.change
+        animals = '+'.join(roles[role] for role in change.roles)
+        level, _ = change_level(stim, change)
+        lines.append(f"  probe {probe.position} {change.kind:10s} {'+'.join(change.roles):4s} ({animals}) "
+                     f"→ {change.value}  shown as '{level}'")
     return lines
 
 
@@ -101,7 +100,7 @@ def _connect_hardware(win, args, subject_id: str, session_id: str):
 
 
 def _save_test_note(subject_dir, args, session_id, conditions, report) -> None:
-    """test_run.json next to the data, so placeholder probes are never mistaken for real ones."""
+    """test_run.json next to the data, so a test run is never mistaken for a participant."""
     record = {
         "test_mode": "single_block",
         "block_id": args.block,
@@ -110,10 +109,10 @@ def _save_test_note(subject_dir, args, session_id, conditions, report) -> None:
         "counterbalancing": "bypassed (presentation_pos 0, counterbalance_group empty)",
         "labjack": args.labjack,
         "neon": args.neon,
-        "probe_conditions_status": "placeholder",
+        "probe_conditions_status": "P1",
         "probe_conditions_used": {kind: {"roles": list(c.roles), "value": c.value}
                                   for kind, c in conditions.items()},
-        "probe_conditions_missing": report[1:],
+        "probe_conditions": report[1:],
     }
     subject_dir.mkdir(parents=True, exist_ok=True)
     with open(subject_dir / "test_run.json", "w", encoding="utf-8") as f:
@@ -210,14 +209,13 @@ def main() -> None:
     from recording.stimuli_loader import load_stimuli
     from recording.writers import get_subject_dir, save_session_metadata
     from task.block import BlockEnv
-    from task.ranking.assessments import RankingEnv, run_block_rankings
+    from task.ranking.assessments import RankingEnv, block_conditions, run_block_rankings
     from task.ranking.inputs import KeySource
     from task.ranking.items import load_attributes
     from task.ranking.view import key_names
     from task.screens.instructions import show_instructions
     from task.session import create_window
     from task.visuals import VisualObjectFactory
-    from tools.preview_ranking import _placeholder_conditions
 
     block_id = args.block
     stim = load_stimuli()
@@ -226,9 +224,8 @@ def main() -> None:
     schedule = block_schedules[block_id]
     _check_schedules(block_id)
 
-    conditions = _placeholder_conditions()
-    report = _probe_condition_report(block_id, conditions)
-    print("WARNING: counterfactual probe conditions are not finalized — running with PLACEHOLDERS.")
+    conditions = block_conditions(block_id)
+    report = _probe_condition_report(block_id, conditions, stim)
     print("\n".join(report))
 
     session_id = datetime.now().strftime("%Y%m%dT%H%M%S")

@@ -61,7 +61,7 @@ def run_blocks(env: BlockEnv, block_schedules, cumulative: dict) -> None:
         run_block(env, block_id, presentation_pos, len(order), block_schedules[block_id], cumulative)
         # Performance + counterfactual ranking go here, after the end estimate
         # (task.ranking.assessments.run_block_rankings(..., block_id, presentation_pos)).
-        # Not wired in yet: the probe conditions are still placeholders (tools/preview_ranking.py).
+        # Not wired in yet: probe conditions are final (P1, config/ranking.py), integration pending.
 
 
 def run_block(env: BlockEnv, block_id: int, presentation_pos: int, n_blocks: int,

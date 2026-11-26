@@ -11,7 +11,7 @@ into the block loop.
 # Fixed for every participant. Each domain appears once in a competence-visible
 # (phase_1) block and once in a synergy-visible (phase_2) block, three blocks
 # apart. Checked by task.ranking.schedule.ranking_domain_problems.
-# Counterfactual probe conditions are defined separately and bound to these
+# Counterfactual probe conditions (PROBE_CONDITIONS below) are bound to these
 # domains at run time (task.ranking.assessments.ProbeCondition).
 PERFORMANCE_RANKING_DOMAINS = ('cooking', 'repairing', 'tennis', 'cooking', 'repairing', 'tennis')
 
@@ -30,6 +30,31 @@ PROBE_ORDERS = (
     ('competence', 'synergy'),      # block 5  phase_2  tennis
 )
 PROBE_KINDS = ('competence', 'synergy')
+
+# ─── Counterfactual probe conditions (configuration P1, selected 2026-11-25) ─
+# Hypothetical change of each probe, block 0 first: {kind: (role codes, new value)}.
+# Values are on the original stimulus-table scale and all occur in the tables.
+# A competence change applies to the block's ranking domain (above); a synergy
+# change has no domain. Each change is applied on its own to the original
+# attributes. Participants see only the new level (low / high), never the value.
+# Roles A–D are mapped to the block's animals at run time.
+# Looked up by original block ID (task.ranking.assessments.block_conditions).
+# Source and metrics: analysis/counterfactual/results/selected_configuration_p1.csv
+#   block  probe 1                          probe 2
+PROBE_CONDITIONS = (
+    {'competence': (('C',), 7.5),        # b0  cf024 C cooking 2.2→7.5 (L→H)  cf040 A+C 1.4→0.8 (H→L)
+     'synergy':    (('A', 'C'), 0.8)},
+    {'competence': (('B',), 2.2),        # b1  cf062 B repairing 8.2→2.2 (H→L)  cf094 B+C 0.8→1.4 (L→H)
+     'synergy':    (('B', 'C'), 1.4)},
+    {'competence': (('B',), 7.5),        # b2  cf144 B+C 0.8→1.4 (L→H)  cf114 B tennis 2.0→7.5 (L→H)
+     'synergy':    (('B', 'C'), 1.4)},
+    {'competence': (('D',), 2.2),        # b3  cf043 A+D 0.8→1.4 (L→H)  cf032 D cooking 7.5→2.2 (H→L)
+     'synergy':    (('A', 'D'), 1.4)},
+    {'competence': (('B',), 2.1),        # b4  cf095 B+D 1.4→0.8 (H→L)  cf061 B repairing 8.2→2.1 (H→L)
+     'synergy':    (('B', 'D'), 0.8)},
+    {'competence': (('B',), 7.7),        # b5  cf115 B tennis 2.0→7.7 (L→H)  cf139 A+C 1.4→0.8 (H→L)
+     'synergy':    (('A', 'C'), 0.8)},
+)
 
 # ─── Input ───────────────────────────────────────────────────────────────────
 # Logical action → keys. Ranking screens only ever see actions, so an MRI

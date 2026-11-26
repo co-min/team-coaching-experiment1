@@ -3,11 +3,11 @@ build_proposals_workbook.py
 ---------------------------
 OFFLINE: builds the review workbook for the counterfactual probe proposals (not imported by the task).
 
-    python -m tools.export_proposals            # first: writes the two CSVs
-    python -m tools.build_proposals_workbook    # → docs/counterfactual/Counterfactual_Probe_Proposed_Combinations.xlsx
-    python -m tools.build_proposals_workbook --out some.xlsx
+    python -m analysis.counterfactual.export_proposals            # first: writes the two CSVs
+    python -m analysis.counterfactual.build_proposals_workbook    # → analysis/counterfactual/results/Counterfactual_Probe_Proposed_Combinations.xlsx
+    python -m analysis.counterfactual.build_proposals_workbook --out some.xlsx
 
-Reads docs/counterfactual/proposed_combinations.csv, selected_configuration_p1.csv (for the
+Reads analysis/counterfactual/results/proposed_combinations.csv, selected_configuration_p1.csv (for the
 before/after sheet) and the stimulus tables (for the baseline section). Needs openpyxl. Summary
 cells, baseline scores and chart data are Excel formulas over the copied rows, so they recalculate
 if a row is edited.
@@ -37,12 +37,12 @@ from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 
 from config import settings as S
-from tools.analyze_counterfactuals import exact_attributes
-from tools.export_proposals import DOCS_DIR, NEAR, TEAMS
+from analysis.counterfactual.analyze_counterfactuals import exact_attributes
+from analysis.counterfactual.export_proposals import RESULTS_DIR, NEAR, TEAMS
 
-CSV_PATH = DOCS_DIR / "proposed_combinations.csv"
-P1_CSV_PATH = DOCS_DIR / "selected_configuration_p1.csv"
-DEFAULT_OUT = DOCS_DIR / "Counterfactual_Probe_Proposed_Combinations.xlsx"
+CSV_PATH = RESULTS_DIR / "proposed_combinations.csv"
+P1_CSV_PATH = RESULTS_DIR / "selected_configuration_p1.csv"
+DEFAULT_OUT = RESULTS_DIR / "Counterfactual_Probe_Proposed_Combinations.xlsx"
 CONFIGS = ["P1", "P2", "P3", "P4", "E-a", "E-b"]
 DOMAINS = ["cooking", "repairing", "tennis"]
 ALT_ORDER_B = (1, 0, 3, 2, 5, 4)   # earlier Group B order (commit fbd3463), see limitation
@@ -241,12 +241,12 @@ def overview(ws, rows):
     for label, text in [
         ("Stimulus tables", "stimuli/tables/competence_d3.csv, synergy.csv (exact values; Performance = S(i,j) × (C_i + C_j))."),
         ("P1–P4", "Rank-1 set of each proposal in the Counterfactual Probe Candidates artifact "
-                  "(claude.ai/artifact/6GWy6wtFVfkGyaVvoU8v7a); saved as docs/counterfactual/source/candidates_artifact_data.json."),
+                  "(claude.ai/artifact/6GWy6wtFVfkGyaVvoU8v7a); saved as analysis/counterfactual/results/source/candidates_artifact_data.json."),
         ("E-a, E-b", "Alternatives in section 3 of the Counterfactual Probe Reassessment artifact "
-                     "(claude.ai/artifact/L48PaNghMKbVu6HpuxSPm7); transcribed in tools/export_proposals.py."),
-        ("Candidate table", "cf001–cf148 from tools/analyze_counterfactuals.py (rebuilt from the stimulus tables)."),
-        ("This workbook", "docs/counterfactual/proposed_combinations.csv (python -m tools.export_proposals), "
-                          "built by python -m tools.build_proposals_workbook. All P1–P4 metrics were checked against "
+                     "(claude.ai/artifact/L48PaNghMKbVu6HpuxSPm7); transcribed in analysis/counterfactual/export_proposals.py."),
+        ("Candidate table", "cf001–cf148 from analysis/counterfactual/analyze_counterfactuals.py (rebuilt from the stimulus tables)."),
+        ("This workbook", "analysis/counterfactual/results/proposed_combinations.csv (python -m analysis.counterfactual.export_proposals), "
+                          "built by python -m analysis.counterfactual.build_proposals_workbook. All P1–P4 metrics were checked against "
                           "the artifact numbers during export."),
     ]:
         _cell(ws, r, 2, label, F_BOLD, align=WRAP)
@@ -421,7 +421,7 @@ def before_after_p1(ws, p1):
     for L, w in widths.items():
         ws.column_dimensions[L].width = w
     _cell(ws, 1, 1, "Before vs After Rankings: configuration P1 (12 selected probes)", F_TITLE)
-    _cell(ws, 2, 1, "Source: docs/counterfactual/selected_configuration_p1.csv, copied without changes. "
+    _cell(ws, 2, 1, "Source: analysis/counterfactual/results/selected_configuration_p1.csv, copied without changes. "
                     "P1 = the selected configuration ID, not experimental phase_1.", F_NOTE)
 
     # how to read

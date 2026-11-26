@@ -12,8 +12,8 @@ assessments.py
 각각 원래 속성값에 따로 적용됩니다(Attributes.with_change). 기준 순위가 완료되지
 않으면(시간 초과 등) 수정 순위는 진행하지 않습니다 — 빈 자리를 채워 넣지 않습니다.
 
-블록의 phase, 순위 도메인, probe 순서는 모두 "원래 블록 번호"로 스케줄에서 찾습니다
-(config.ranking). 제시 위치(presentation_pos)는 기록에만 쓰입니다.
+블록의 phase, 순위 도메인, probe 순서, 가상 변화 조건(P1)은 모두 "원래 블록 번호"로
+스케줄에서 찾습니다 (config.ranking). 제시 위치(presentation_pos)는 기록에만 쓰입니다.
 
 숨은 속성(시너지 / 능력)은 순위로 묻지 않습니다. 그 평가는 별도 모듈의
 High / Medium / Low 평가 페이지가 맡습니다.
@@ -31,6 +31,7 @@ from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
 
+from config.ranking import PROBE_CONDITIONS
 from config.ranking_strings import rt
 from config.settings import BLOCK_PHASES
 from recording.ranking_writers import save_ranking
@@ -103,6 +104,17 @@ class BlockRankings:
     baseline: RankingResult
     revised:  List[RankingResult] = field(default_factory=list)
     aborted:  bool = False                  # 어느 화면에서든 Esc 로 중단했는지
+
+
+def block_conditions(block_index: int) -> Dict[str, ProbeCondition]:
+    """이 블록의 실험용 가상 변화 조건 {'competence': ..., 'synergy': ...}.
+
+    config.ranking.PROBE_CONDITIONS[block_index] (구성 P1) 에서 "원래 블록 번호"로 찾습니다.
+    """
+    conditions = {}
+    for kind, (roles, value) in PROBE_CONDITIONS[block_index].items():
+        conditions[kind] = ProbeCondition(kind, tuple(roles), value)
+    return conditions
 
 
 def block_probes(block_index: int, conditions: Mapping[str, ProbeCondition]) -> List[Probe]:
@@ -196,12 +208,13 @@ def change_display(env: RankingEnv, spec: RankingSpec, change: Change) -> tuple:
 # ── 진입점 ────────────────────────────────────────────────────────────────────
 
 def run_block_rankings(env: RankingEnv, block_index: int, presentation_pos: int,
-                       conditions: Mapping[str, ProbeCondition]) -> BlockRankings:
+                       conditions: Optional[Mapping[str, ProbeCondition]] = None) -> BlockRankings:
     """블록 끝의 순위 평가 전체: 공유 기준 순위 → probe 1 → 변화 취소 안내 → probe 2.
 
-    block_index      : 원래 블록 번호. phase·도메인·probe 순서는 이것으로 스케줄에서 찾습니다.
+    block_index      : 원래 블록 번호. phase·도메인·probe 순서·가상 변화 조건은 이것으로 찾습니다.
     presentation_pos : 이 참가자에게 이 블록이 몇 번째로 제시되는지 (0부터, 기록용)
-    conditions       : {'competence': ..., 'synergy': ...} 가상 변화 조건
+    conditions       : {'competence': ..., 'synergy': ...} 가상 변화 조건.
+                       None 이면 실험용 조건 block_conditions(block_index) (테스트만 다른 값을 넘김)
     반환              : BlockRankings
     부작용            : 순위마다 즉시 파일에 저장합니다 (중간에 중단돼도 앞의 결과는 남음).
 
@@ -210,6 +223,8 @@ def run_block_rankings(env: RankingEnv, block_index: int, presentation_pos: int,
     """
     phase = BLOCK_PHASES[block_index]
     domain = ranking_domain(block_index)
+    if conditions is None:
+        conditions = block_conditions(block_index)
     probes = block_probes(block_index, conditions)
 
     # 1단계: 공유 기준 순위 (현재 속성으로 팀 점수 예측)

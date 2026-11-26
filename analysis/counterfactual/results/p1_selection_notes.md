@@ -1,9 +1,12 @@
 # Counterfactual probe configuration: P1 selected
 
-Status: P1 selected as the final configuration (2026-11-25). The experimental code and
-stimulus tables (`competence_d3.csv`, synergy table) are unchanged. `counterfactual_schedule.csv`
-still has empty candidate columns. P1's IDs are in `selected_configuration_p1.csv` and have not
-been written into the schedule or the task.
+Status: P1 selected as the final configuration (2026-11-25). The stimulus tables
+(`competence_d3.csv`, synergy table) are unchanged. The 12 P1 conditions are now in the task as
+`PROBE_CONDITIONS` in `config/ranking.py` (role codes and new values, looked up by original block ID;
+tests in `tests/test_ranking.py`, `TestP1Conditions`). The ranking is still not wired into `main.py`.
+`counterfactual_schedule.csv` (written by `analyze_counterfactuals`) still has empty candidate columns.
+
+This folder is offline analysis only. The task never imports it.
 
 Naming: **P1** is a *configuration* ID (proposed probe set 1, "distance-matched"). It is not the
 experimental phase **phase_1** (blocks 0, 2, 4, competence visible). Every configuration
@@ -20,12 +23,12 @@ covers both phases.
 
 Reproduce (from the repo root):
 
-    python -m tools.export_proposals                     # → the two CSVs above
-    python -m tools.build_proposals_workbook             # → the .xlsx (needs openpyxl)
+    python -m analysis.counterfactual.export_proposals                     # → the two CSVs above
+    python -m analysis.counterfactual.build_proposals_workbook             # → the .xlsx (needs openpyxl)
 
 The exporter reads only `source/candidates_artifact_data.json`, the E-a/E-b table written in the
 script, and the stimulus tables. It rebuilds the cf candidates and the schedule in process with
-`tools.analyze_counterfactuals`, so it does not need the gitignored `data/analysis/` CSVs. It checks
+`analysis.counterfactual.analyze_counterfactuals`, so it does not need the gitignored `data/analysis/` CSVs. It checks
 that the artifact's attribute values equal the stimulus tables, and that each P1–P4 probe gives the
 artifact's Kendall distance, footrule and gaps.
 

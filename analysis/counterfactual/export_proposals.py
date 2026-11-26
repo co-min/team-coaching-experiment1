@@ -5,18 +5,18 @@ OFFLINE export of the proposed counterfactual probe configurations (not imported
 Writes the six proposals (P1-P4, E-a, E-b; 12 probes each) with their ranking metrics, mapped
 to the repo's candidate IDs (cf001-cf148).
 
-    python -m tools.export_proposals                 # → docs/counterfactual/
-    python -m tools.export_proposals --out some/dir
+    python -m analysis.counterfactual.export_proposals                 # → analysis/counterfactual/results/
+    python -m analysis.counterfactual.export_proposals --out some/dir
 
 Inputs (all inside the repository)
-    docs/counterfactual/source/candidates_artifact_data.json
+    analysis/counterfactual/results/source/candidates_artifact_data.json
         Data embedded in the *Counterfactual Probe Candidates* artifact
         (claude.ai/artifact/6GWy6wtFVfkGyaVvoU8v7a), saved verbatim on 2026-11-25:
         artifact probe IDs (C01-C44, S13-S48), their metrics, and the ranked P1-P4 sets.
     E_A / E_B below
         Transcribed from section 3 of the *Counterfactual Probe Reassessment* artifact
         (claude.ai/artifact/L48PaNghMKbVu6HpuxSPm7).
-    stimulus tables (via tools.analyze_counterfactuals)
+    stimulus tables (via analysis.counterfactual.analyze_counterfactuals)
         The cf candidate table and the 12-slot schedule are rebuilt in process, so the gitignored
         data/analysis/counterfactual/ CSVs are not needed.
 
@@ -41,10 +41,10 @@ from typing import Dict, List, Sequence
 
 from config.paths import ROOT_DIR
 from recording.stimuli_loader import load_stimuli
-from tools.analyze_counterfactuals import analyze, exact_attributes, schedule_schema
+from analysis.counterfactual.analyze_counterfactuals import analyze, exact_attributes, schedule_schema
 
-DOCS_DIR = ROOT_DIR / "docs" / "counterfactual"
-SOURCE_JSON = DOCS_DIR / "source" / "candidates_artifact_data.json"
+RESULTS_DIR = ROOT_DIR / "analysis" / "counterfactual" / "results"
+SOURCE_JSON = RESULTS_DIR / "source" / "candidates_artifact_data.json"
 
 ROLES = "ABCD"
 TEAMS = [a + "+" + b for a, b in combinations(ROLES, 2)]
@@ -242,7 +242,7 @@ def _write(path: Path, rows: Sequence[Dict[str, object]]) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.split('\n\n')[0])
-    parser.add_argument('--out', type=Path, default=DOCS_DIR)
+    parser.add_argument('--out', type=Path, default=RESULTS_DIR)
     args = parser.parse_args()
 
     with open(SOURCE_JSON, encoding="utf-8") as f:
