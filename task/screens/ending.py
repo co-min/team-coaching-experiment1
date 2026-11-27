@@ -15,16 +15,11 @@ from config.strings import t
 from task.screens.instructions import check_escape
 
 # ── colours ───────────────────────────────────────────────────────────────────
+# Neutral only: red / yellow / green are reserved for the competence & synergy hints.
 
-_GOLD   = "#FFD700"
-_SILVER = "#C0C0C0"
-_BRONZE = "#CD7F32"
-_BLUE   = "#4FC3F7"
-_GREEN  = "#4CAF50"
-_GRAY   = "#AAAAAA"
-_WHITE  = "#FFFFFF"
-
-_RANK_COLORS = [_GOLD, _SILVER, _BRONZE, _BLUE]
+_HIGHLIGHT = "#00d9ff"   # current subject; same highlight as the trial arrow keys
+_GRAY      = "#AAAAAA"
+_WHITE     = "#FFFFFF"
 
 # ── layout ───────────────────────────────────────────────────────────────────
 
@@ -90,9 +85,9 @@ def _row_stims(
     subject_id: str,
     accuracy: float,
     y: float,
-    color: str,
     is_me: bool,
 ) -> list:
+    color    = _HIGHLIGHT if is_me else _WHITE
     me_tag   = t("ending_me_tag") if is_me else ""
     bg_color = "#2a2f52" if is_me else "#1a1a1a"
     line_w   = 2 if is_me else 0
@@ -105,7 +100,7 @@ def _row_stims(
         visual.TextStim(win,
                         text=f"{rank_label}   Sub-{subject_id}{me_tag}",
                         pos=(_LABEL_X, y),
-                        color=color if is_me else _WHITE,
+                        color=color,
                         height=34, bold=is_me, font=FONT,
                         anchorHoriz="left"),
         visual.TextStim(win,
@@ -148,7 +143,7 @@ def run_ending(
     # ── header ────────────────────────────────────────────────────────────────
     stims: list = [
         visual.TextStim(win, text=t("ending_title"),
-                        pos=(0, _TITLE_Y), color=_GOLD,
+                        pos=(0, _TITLE_Y), color=_WHITE,
                         height=50, bold=True, font=FONT),
         visual.TextStim(win, text=t("ending_subtitle"),
                         pos=(0, _SUBTITLE_Y), color=_WHITE,
@@ -162,10 +157,9 @@ def run_ending(
     shown = sorted_entries[:4]
     for i, entry in enumerate(shown):
         y     = _ROW_TOP_Y - i * _ROW_STEP
-        color = _RANK_COLORS[i]
         is_me = entry["subject_id"] == subject_id
         stims += _row_stims(win, t("ending_rank_label", rank=i + 1), entry["subject_id"],
-                            entry["accuracy"], y, color, is_me)
+                            entry["accuracy"], y, is_me)
 
     # bottom y of the last shown row (centre)
     last_row_y = _ROW_TOP_Y - (len(shown) - 1) * _ROW_STEP
@@ -179,7 +173,7 @@ def run_ending(
                             color=_GRAY, height=28, font=FONT)
         )
         stims += _row_stims(win, t("ending_rank_label", rank=my_rank), subject_id,
-                            my_acc, my_y, _GREEN, is_me=True)
+                            my_acc, my_y, is_me=True)
         last_row_y = my_y
 
     # ── summary (dynamic, always below the last row) ──────────────────────────

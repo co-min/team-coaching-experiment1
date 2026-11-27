@@ -91,12 +91,12 @@ RANKING_MAX_TIME   = None   # seconds per ranking screen; None = no deadline
 CONFIRM_FEEDBACK_S = 0.5    # confirmed ranking stays on screen this long (no input)
 
 # ─── Colours ─────────────────────────────────────────────────────────────────
-CURSOR_COLOR    = '#FFD54F'
-HELD_COLOR      = '#FF9800'
-CONFIRMED_COLOR = '#4CAF50'
+# Red / yellow / green are reserved for the competence & synergy hints
+# (low / medium / high), so the ranking UI stays neutral.
+CURSOR_COLOR    = '#00d9ff'   # same highlight as the trial arrow keys (task/keyboard.py)
+HELD_COLOR      = 'white'
+CONFIRMED_COLOR = '#bdbdbd'
+TITLE_COLOR     = 'white'
 CARD_COLOR      = '#3a3a3a'
 SLOT_COLOR      = '#555555'
 DIM_TEXT_COLOR  = '#9e9e9e'
-
-# 선택하는 color 변경하기 
-    # gray or black

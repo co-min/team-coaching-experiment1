@@ -241,7 +241,7 @@ class RankingView:
     def draw_sequential(self, state, confirmed: bool = False) -> None:
         """차례로 고르는 화면 (state: SequentialRanking).
 
-        confirmed=True 이면 제출 직후의 확인 화면 (초록 테두리 + "확정" 문구).
+        confirmed=True 이면 제출 직후의 확인 화면 (회색 테두리 + "확정" 문구).
         """
         keys = self._keys
         if confirmed:
@@ -286,7 +286,7 @@ class RankingView:
     def draw_revised(self, state, confirmed: bool = False) -> None:
         """수정 순위 화면 (state: RevisedRanking).
 
-        집은 카드는 오른쪽으로 살짝 튀어나오고, 더 밝은 배경과 주황 테두리로 표시됩니다.
+        집은 카드는 오른쪽으로 살짝 튀어나오고, 더 밝은 배경과 흰 테두리로 표시됩니다.
         """
         keys = self._keys
         if confirmed:
@@ -355,7 +355,7 @@ class ChangePanel:
         self.stims: List = []
         if title:
             self.stims.append(visual.TextStim(win, text=rt("change_title"), font=S.FONT, height=text_height,
-                                              color=R.HELD_COLOR,
+                                              color=R.TITLE_COLOR,
                                               pos=(center_x, image_y + image_size * 0.5 + text_height * 2),
                                               units='pix', bold=True))
         if change.kind == 'synergy':
@@ -405,7 +405,7 @@ def reset_screen_stims(win, domain: Optional[str], continue_key: str) -> List:
     W, H = (int(v) for v in win.size)
     text_height = max(int(H * 0.032), 16)
     stims: List = [
-        visual.TextStim(win, text=rt("reset_title"), font=S.FONT, height=text_height, color=R.HELD_COLOR,
+        visual.TextStim(win, text=rt("reset_title"), font=S.FONT, height=text_height, color=R.TITLE_COLOR,
                         pos=(0, H * 0.16), units='pix', bold=True),
         visual.TextStim(win, text=rt("reset_body"), font=S.FONT, height=text_height, color='white',
                         pos=(0, H * 0.10), wrapWidth=W * 0.7, units='pix', anchorVert='top', alignText='center'),

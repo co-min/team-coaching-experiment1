@@ -60,11 +60,11 @@ _STRINGS: dict[str, dict[str, str]] = {
 
     # ── feedback screen ──────────────────────────────────────────────────────
     "feedback_bubble": {
-        "ko": "{score}점이야.\n{comment}",
-        "en": "{score} points.\n{comment}",
+        "ko": "{score}점이야.",
+        "en": "{score} points.",
     },
     "feedback_domain_score": {"ko": "{domain}: {score}점", "en": "{domain}: {score} pts"},
-    "feedback_phase_score":  {"ko": "단계 점수: {cur}점", "en": "Phase score: {cur}"},
+    "feedback_block_score":  {"ko": "블록 점수: {score}점", "en": "Block score: {score}"},
     "feedback_total_score":  {"ko": "총 점수: {score}점", "en": "Total score: {score}"},
 
     # ── attribute estimate (task/estimate) ───────────────────────────────────
@@ -119,33 +119,3 @@ _DOMAIN_NAMES = {
 
 def domain_name(domain: str) -> str:
     return _DOMAIN_NAMES.get(domain, {}).get(_lang(), domain)
-
-
-# ── monkey narrator comments (feedback.py) ────────────────────────────────────
-
-_MONKEY_COMMENTS = {
-    "repairing": {
-        "ko": ["아직 많이 지저분해...", "꽤 지저분해", "조금 지저분해",
-               "청소 상태가 보통이야", "꽤 깨끗해!", "완벽하게 깨끗해!"],
-        "en": ["Still very messy...", "Pretty messy", "A little messy",
-               "It's an average clean", "Pretty clean!", "Perfectly clean!"],
-    },
-    "cooking": {
-        "ko": ["이 요리는 맛없어...", "이 요리는 별로야", "조금 아쉬워",
-               "이 요리는 보통이야", "정말 맛있어!", "완벽하게 최고야!"],
-        "en": ["This dish tastes bad...", "This dish isn't great", "A bit disappointing",
-               "This dish is average", "Really tasty!", "Absolutely perfect!"],
-    },
-    "tennis": {
-        "ko": ["경기를 많이 졌어...", "꽤 아쉬운 경기야", "조금 아쉬워",
-               "보통 경기야", "정말 잘 했어!", "완벽한 경기야!"],
-        "en": ["Lost a lot of matches...", "A pretty disappointing match", "A bit disappointing",
-               "An average match", "Really well played!", "A perfect match!"],
-    },
-}
-
-
-def monkey_comment(domain: str, stage: int) -> str:
-    """stage is 1-indexed (1..6)."""
-    comments = _MONKEY_COMMENTS.get(domain, _MONKEY_COMMENTS["cooking"])[_lang()]
-    return comments[stage - 1]

@@ -1,15 +1,15 @@
 """
 Feedback screen — domain-specific score display with monkey narrator.
 
-The raw pair score is normalised to stage 1–6 using the domain's (min, max)
-from the active score table; the stage picks the bubble colour and comment.
+The bubble and score texts use neutral colours only: red / yellow / green are
+reserved for the competence & synergy hints (low / medium / high).
 """
 
 from psychopy import visual, core, event
 
 from config.paths import MONKEY_IMAGE, animal_image, domain_image
 from config.settings import FB_TIME, FONT
-from config.strings import t, domain_name, monkey_comment
+from config.strings import t, domain_name
 from hardware.events import callonflip_feedback
 from hardware.frame_marker import get_shared_marker
 from recording.frame_logger import FrameLog, FrameRecorder
@@ -31,8 +31,9 @@ _DOMAIN_IMG_POS  = (-200, 250)
 
 _monkey_stim_cache: dict = {}
 
-# 6-step color ramp (red → green)
-_RESULT_COLORS = ["#F44336", "#FF5722", "#FF9800", "#FFEB3B", "#8BC34A", "#4CAF50"]
+_BUBBLE_COLOR    = "#E0E0E0"
+_HIGHLIGHT_COLOR = "#FFFFFF"
+_DIM_COLOR       = "#AAAAAA"
 
 
 def score_to_stage(score: float, domain: str, score_ranges: dict) -> int:
@@ -45,8 +46,8 @@ def score_to_stage(score: float, domain: str, score_ranges: dict) -> int:
 
 # ── Stim builders ─────────────────────────────────────────────────────────────
 
-def _monkey_text(score: float, stage: int, domain: str) -> str:
-    return t("feedback_bubble", score=f"{score:g}", comment=monkey_comment(domain, stage))
+def _monkey_text(score: float) -> str:
+    return t("feedback_bubble", score=f"{score:g}")
 
 
 def _get_monkey_stim(win: visual.Window) -> 'visual.ImageStim | None':
@@ -82,9 +83,9 @@ def _build_choice_animal_stims(win: visual.Window, animal1: str = None, animal2:
     return stims
 
 
-def _build_monkey_stims(win: visual.Window, stage: int, score: float, domain: str) -> list:
-    bubble_text  = _monkey_text(score, stage, domain)
-    bubble_color = _RESULT_COLORS[stage - 1]
+def _build_monkey_stims(win: visual.Window, score: float) -> list:
+    bubble_text  = _monkey_text(score)
+    bubble_color = _BUBBLE_COLOR
     stims = []
     monkey = _get_monkey_stim(win)
     if monkey is not None:
@@ -133,14 +134,13 @@ def run_feedback(
     block_domains : domains shown in the per-domain score row
     frame_log     : when given (with global_clock), frames are logged under "FEEDBACK"
     """
-    stage     = score_to_stage(score, domain, score_ranges)
     domain_xs = _make_domain_xs(block_domains)
 
     domain_score_stims = []
     if domain_scores:
         for d, x in domain_xs.items():
-            val   = float(domain_scores.get(d, 0))
-            color = "#FF9800" if d == domain else "#AAAAAA"
+            val   = f"{float(domain_scores.get(d, 0)):g}"
+            color = _HIGHLIGHT_COLOR if d == domain else _DIM_COLOR
             domain_score_stims.append(visual.TextStim(
                 win, text=t("feedback_domain_score", domain=domain_name(d), score=val),
                 pos=(x, -225), color=color, height=38, font=FONT, bold=(d == domain),
@@ -149,13 +149,13 @@ def run_feedback(
     stims = (
         _build_domain_img_stims(win, domain)
         + _build_choice_animal_stims(win, animal1, animal2)
-        + _build_monkey_stims(win, stage, score, domain)
+        + _build_monkey_stims(win, score)
         + domain_score_stims
         + [
-            visual.TextStim(win, text=t("feedback_phase_score", cur=int(phase_score)),
-                            pos=(0, -285), color="#AAAAAA", height=40, font=FONT, bold=False),
-            visual.TextStim(win, text=t("feedback_total_score", score=float(cumulative_score)),
-                            pos=(0, -340), color="#FFD700", height=48, font=FONT, bold=True),
+            visual.TextStim(win, text=t("feedback_block_score", score=f"{phase_score:g}"),
+                            pos=(0, -285), color=_DIM_COLOR, height=40, font=FONT, bold=False),
+            visual.TextStim(win, text=t("feedback_total_score", score=f"{cumulative_score:g}"),
+                            pos=(0, -340), color=_HIGHLIGHT_COLOR, height=48, font=FONT, bold=True),
         ]
     )
 
