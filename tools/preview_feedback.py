@@ -64,15 +64,13 @@ def main() -> None:
     win = _make_window(args.fullscr)
     neon = NullNeonClient()
     cumulative = 0.0
-    domain_scores = {d: 0.0 for d in S.DOMAINS}
     for i, score in enumerate(scores):
         cumulative += score
-        domain_scores[args.domain] += score
         print(f"[{i + 1}/{len(scores)}] {args.domain} score={score:g} "
               f"(range {lo:g}–{hi:g}) → stage {score_to_stage(score, args.domain, stim.score_ranges)}")
         run_feedback(
-            win, score, args.domain, stim.score_ranges, S.DOMAINS,
-            cumulative_score=cumulative, phase_score=cumulative, domain_scores=domain_scores,
+            win, score, args.domain, stim.score_ranges,
+            block_score=cumulative,
             handle=None, phase=1, trial_index=i,
             animal1=animals[0], animal2=animals[1], neon_client=neon,
         )

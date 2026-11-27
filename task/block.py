@@ -16,7 +16,6 @@ from typing import Any, Callable, Dict, List, Optional
 
 from psychopy import core
 
-from config.settings import DOMAINS
 from hardware.events import on_block_start, PHASE_INT
 from recording.frame_logger import make_frame_log, get_rows
 from recording.stimuli_loader import StimulusSet, pair_key
@@ -80,10 +79,7 @@ def _score_and_feedback(env: BlockEnv, result, phase, domain, char_order,
     run_feedback(
         env.win, score, domain,
         score_ranges=env.stim.score_ranges,
-        block_domains=DOMAINS,
-        cumulative_score=cumulative['total'],
-        phase_score=cumulative['phase'],
-        domain_scores={d: cumulative[d] for d in DOMAINS},
+        block_score=cumulative['phase'],
         handle=env.handle,
         phase=PHASE_INT[phase],
         trial_index=trial_index,

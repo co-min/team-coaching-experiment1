@@ -9,7 +9,7 @@ from psychopy import visual, core, event
 
 from config.paths import MONKEY_IMAGE, animal_image, domain_image
 from config.settings import FB_TIME, FONT
-from config.strings import t, domain_name
+from config.strings import t
 from hardware.events import callonflip_feedback
 from hardware.frame_marker import get_shared_marker
 from recording.frame_logger import FrameLog, FrameRecorder
@@ -33,7 +33,6 @@ _monkey_stim_cache: dict = {}
 
 _BUBBLE_COLOR    = "#E0E0E0"
 _HIGHLIGHT_COLOR = "#FFFFFF"
-_DIM_COLOR       = "#AAAAAA"
 
 
 def score_to_stage(score: float, domain: str, score_ranges: dict) -> int:
@@ -102,12 +101,6 @@ def _build_monkey_stims(win: visual.Window, score: float) -> list:
     return stims
 
 
-def _make_domain_xs(domains: list) -> dict:
-    n_domains = len(domains)
-    x_spacing = 300 if n_domains <= 2 else 250
-    return {d: int(-x_spacing * (n_domains - 1) / 2 + i * x_spacing) for i, d in enumerate(domains)}
-
-
 # ── Public entry point ────────────────────────────────────────────────────────
 
 def run_feedback(
@@ -115,10 +108,7 @@ def run_feedback(
     score: float,
     domain: str,
     score_ranges: dict,
-    block_domains: list,
-    cumulative_score: float = 0,
-    phase_score: float = 0,
-    domain_scores: dict = None,
+    block_score: float = 0,
     handle=None,
     phase: int = 0,
     trial_index: int = 0,
@@ -130,32 +120,17 @@ def run_feedback(
 ) -> None:
     """Display domain-specific feedback with monkey narrator for FB_TIME seconds.
 
-    score_ranges  : {domain: (min, max)} for the phase being run
-    block_domains : domains shown in the per-domain score row
-    frame_log     : when given (with global_clock), frames are logged under "FEEDBACK"
+    score_ranges : {domain: (min, max)} for the phase being run
+    block_score  : running score within the current block (the only score total shown)
+    frame_log    : when given (with global_clock), frames are logged under "FEEDBACK"
     """
-    domain_xs = _make_domain_xs(block_domains)
-
-    domain_score_stims = []
-    if domain_scores:
-        for d, x in domain_xs.items():
-            val   = f"{float(domain_scores.get(d, 0)):g}"
-            color = _HIGHLIGHT_COLOR if d == domain else _DIM_COLOR
-            domain_score_stims.append(visual.TextStim(
-                win, text=t("feedback_domain_score", domain=domain_name(d), score=val),
-                pos=(x, -225), color=color, height=38, font=FONT, bold=(d == domain),
-            ))
-
     stims = (
         _build_domain_img_stims(win, domain)
         + _build_choice_animal_stims(win, animal1, animal2)
         + _build_monkey_stims(win, score)
-        + domain_score_stims
         + [
-            visual.TextStim(win, text=t("feedback_block_score", score=f"{phase_score:g}"),
-                            pos=(0, -285), color=_DIM_COLOR, height=40, font=FONT, bold=False),
-            visual.TextStim(win, text=t("feedback_total_score", score=f"{cumulative_score:g}"),
-                            pos=(0, -340), color=_HIGHLIGHT_COLOR, height=48, font=FONT, bold=True),
+            visual.TextStim(win, text=t("feedback_block_score", score=f"{block_score:g}"),
+                            pos=(0, -285), color=_HIGHLIGHT_COLOR, height=48, font=FONT, bold=True),
         ]
     )
 

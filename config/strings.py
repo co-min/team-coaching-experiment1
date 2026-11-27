@@ -63,9 +63,7 @@ _STRINGS: dict[str, dict[str, str]] = {
         "ko": "{score}점이야.",
         "en": "{score} points.",
     },
-    "feedback_domain_score": {"ko": "{domain}: {score}점", "en": "{domain}: {score} pts"},
     "feedback_block_score":  {"ko": "블록 점수: {score}점", "en": "Block score: {score}"},
-    "feedback_total_score":  {"ko": "총 점수: {score}점", "en": "Total score: {score}"},
 
     # ── attribute estimate (task/estimate) ───────────────────────────────────
     "estimate_intro_synergy": {
